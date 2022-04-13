@@ -1,0 +1,95 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Chanjet.ZYSoft.HT", "Chanjet.ZYSoft.HT", "{4C65788E-C158-4586-BBDE-FA9C8C2EDB48}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chanjet.ZYSoft.HT.Interface", "Chanjet.ZYSoft.HT\Chanjet.ZYSoft.HT.Interface\Chanjet.ZYSoft.HT.Interface.csproj", "{53A97D13-4FC5-4EA8-B72B-6BD027F516E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chanjet.ZYSoft.HT.Service", "Chanjet.ZYSoft.HT\Chanjet.ZYSoft.HT.Service\Chanjet.ZYSoft.HT.Service.csproj", "{A38B1305-7D39-4FEC-AD7E-D14B381A3853}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chanjet.ZYSoft.HT.UIP", "Chanjet.ZYSoft.HT\Chanjet.ZYSoft.HT.UIP\Chanjet.ZYSoft.HT.UIP.csproj", "{DA236089-9BCC-4D7B-9D25-E3309F32B150}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Website", "Website\", "{712B8FC8-9D5D-4118-AEA9-EFB8E2877E10}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		ProjectReferences = ""
+		Debug.AspNetCompiler.VirtualPath = "/Website"
+		Debug.AspNetCompiler.PhysicalPath = "Website\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\Website\"
+		Debug.AspNetCompiler.Updateable = "false"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "true"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/Website"
+		Release.AspNetCompiler.PhysicalPath = "Website\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\Website\"
+		Release.AspNetCompiler.Updateable = "false"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "true"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "17951"
+		SlnRelativePath = "Website\"
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Appserver", "Appserver", "{CE3A7456-DAA7-435D-96F8-FFA0F079D83F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{B37E9691-84F6-435B-99A1-9D50A071DEC3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ZYSoft", "ZYSoft", "{66626DCD-BB61-446E-BBCE-BB5053FC121A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ZYSoft.HT", "ZYSoft.HT", "{F66C8D0A-FB2D-4551-9A0E-75388256A62D}"
+	ProjectSection(SolutionItems) = preProject
+		Appserver\App\ZYSoft\ZYSoft.HT\ZYSoft.HT.app.xml = Appserver\App\ZYSoft\ZYSoft.HT\ZYSoft.HT.app.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{789CB2E0-43C6-481E-A3AF-174AE1665494}"
+	ProjectSection(SolutionItems) = preProject
+		Appserver\App\ZYSoft\ZYSoft.HT\server\Chanjet.ZYSoft.HT.Interface.dll = Appserver\App\ZYSoft\ZYSoft.HT\server\Chanjet.ZYSoft.HT.Interface.dll
+		Appserver\App\ZYSoft\ZYSoft.HT\server\Chanjet.ZYSoft.HT.Service.dll = Appserver\App\ZYSoft\ZYSoft.HT\server\Chanjet.ZYSoft.HT.Service.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "server", "server", "{44272D72-722B-46EA-8223-0821E4AA5623}"
+	ProjectSection(SolutionItems) = preProject
+		Appserver\App\ZYSoft\ZYSoft.HT\config\services_sample.xml = Appserver\App\ZYSoft\ZYSoft.HT\config\services_sample.xml
+		Appserver\App\ZYSoft\ZYSoft.HT\config\services_zysoft.xml = Appserver\App\ZYSoft\ZYSoft.HT\config\services_zysoft.xml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{53A97D13-4FC5-4EA8-B72B-6BD027F516E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53A97D13-4FC5-4EA8-B72B-6BD027F516E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53A97D13-4FC5-4EA8-B72B-6BD027F516E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53A97D13-4FC5-4EA8-B72B-6BD027F516E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A38B1305-7D39-4FEC-AD7E-D14B381A3853}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A38B1305-7D39-4FEC-AD7E-D14B381A3853}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A38B1305-7D39-4FEC-AD7E-D14B381A3853}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A38B1305-7D39-4FEC-AD7E-D14B381A3853}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA236089-9BCC-4D7B-9D25-E3309F32B150}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA236089-9BCC-4D7B-9D25-E3309F32B150}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA236089-9BCC-4D7B-9D25-E3309F32B150}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA236089-9BCC-4D7B-9D25-E3309F32B150}.Release|Any CPU.Build.0 = Release|Any CPU
+		{712B8FC8-9D5D-4118-AEA9-EFB8E2877E10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{712B8FC8-9D5D-4118-AEA9-EFB8E2877E10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{712B8FC8-9D5D-4118-AEA9-EFB8E2877E10}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{712B8FC8-9D5D-4118-AEA9-EFB8E2877E10}.Release|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{53A97D13-4FC5-4EA8-B72B-6BD027F516E7} = {4C65788E-C158-4586-BBDE-FA9C8C2EDB48}
+		{A38B1305-7D39-4FEC-AD7E-D14B381A3853} = {4C65788E-C158-4586-BBDE-FA9C8C2EDB48}
+		{DA236089-9BCC-4D7B-9D25-E3309F32B150} = {4C65788E-C158-4586-BBDE-FA9C8C2EDB48}
+		{B37E9691-84F6-435B-99A1-9D50A071DEC3} = {CE3A7456-DAA7-435D-96F8-FFA0F079D83F}
+		{66626DCD-BB61-446E-BBCE-BB5053FC121A} = {B37E9691-84F6-435B-99A1-9D50A071DEC3}
+		{F66C8D0A-FB2D-4551-9A0E-75388256A62D} = {66626DCD-BB61-446E-BBCE-BB5053FC121A}
+		{789CB2E0-43C6-481E-A3AF-174AE1665494} = {F66C8D0A-FB2D-4551-9A0E-75388256A62D}
+		{44272D72-722B-46EA-8223-0821E4AA5623} = {F66C8D0A-FB2D-4551-9A0E-75388256A62D}
+	EndGlobalSection
+EndGlobal
