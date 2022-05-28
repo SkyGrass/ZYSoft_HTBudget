@@ -19,7 +19,7 @@
  }
 
  .form-item-max .el-form-item__content {
-     width: 150px;
+     width: 200px;
  }
 
  .form-item-max .el-form-item__label {
@@ -27,7 +27,7 @@
  }
 
  .form-item-full .el-form-item__content {
-     width: 150px;
+     width: 220px;
  }
 
  .el-card__body {

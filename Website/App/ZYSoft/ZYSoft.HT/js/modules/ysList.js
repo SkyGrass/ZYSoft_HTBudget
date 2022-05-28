@@ -108,6 +108,15 @@ var self = (vm = new Vue({
         onBtnYesClick: function (index, layero) {},
       });
     },
+    doExport() {
+      this.grid.download(
+        "xlsx",
+        "预算表统计表" + dayjs().format("YYYY-MM-DD") + ".xlsx",
+        {
+          sheetName: "MyData",
+        }
+      );
+    },
     initGrid(callback) {
       var maxHeight =
         $(window).height() -
@@ -123,11 +132,14 @@ var self = (vm = new Vue({
         columns: tableConf.concat([
           {
             formatter: function (cell, formatterParams, onRendered) {
-              return "<input type='button' value='详情'/>";
+              return "<el-tooltip  effect='dark' content='点击查看详情' placement='right-end'><i class='el-icon-document'/></el-tooltip>";
             },
+            title: "操作",
             width: 80,
+            headerHozAlign: "center",
             hozAlign: "center",
             headerSort: false,
+            download: false,
             cellClick: function (e, cell) {
               self.onClickDetail(cell.getRow().getData());
             },
@@ -152,7 +164,9 @@ var self = (vm = new Vue({
         callback && callback(self.grid);
       });
     },
-    onClickDetail({ FAccountID, FProjectID }) {
+    onClickDetail(item) {
+      var FAccountID = item.FAccountID,
+        FProjectID = item.FProjectID;
       openDialog({
         title: false,
         btn: false,
@@ -171,7 +185,7 @@ var self = (vm = new Vue({
     },
   },
   mounted() {
-    self.initGrid(function () {
+    this.initGrid(function () {
       window.onresize = function () {
         self.grid.setHeight(
           $(window).height() -

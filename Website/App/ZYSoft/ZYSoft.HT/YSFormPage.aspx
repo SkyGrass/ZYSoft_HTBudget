@@ -54,7 +54,7 @@
             </el-header>
             <el-main>
                 <el-row :gutter="5">
-                    <el-col :span=16 style="overflow-x:auto">
+                    <el-col :span=14 style="overflow-x:auto">
                         <el-form ref="form" :rules="rules" :model="form" label-width="100px" size="mini" inline>
                             <table>
                                 <tr>

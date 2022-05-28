@@ -1,10 +1,10 @@
 var tableConf = [
   {
-    title: "行",
-    field: "rid",
+    formatter: "rownum",
     headerHozAlign: "center",
     hozAlign: "center",
     width: 30,
+    download: false,
     headerSort: false,
   },
   {

@@ -33,9 +33,14 @@
 									<span class="tb-item"><span class="tb-text" title="查询">查询</span></span>
 								</a>
 							</li>
-							<li tabindex="1">
+							<li tabindex="1" v-if='false'>
 								<a href="javascript:void(0)" @click='doAdd'>
 									<span class="tb-item"><span class="tb-text" title="新增">新增</span></span>
+								</a>
+							</li>
+							<li tabindex="1">
+								<a href="javascript:void(0)" @click='doExport'>
+									<span class="tb-item"><span class="tb-text" title="导出">导出</span></span>
 								</a>
 							</li>
 						</ul>
@@ -60,6 +65,12 @@
 		window.accounId = accounId || "250116";
 	</script>
 
+	<!-- import poly -->
+	<script src="./js/poly/js.polyfills.js"></script>
+	<script src="./js/poly/es5.polyfills.js"></script>
+	<script src="./js/poly/proxy.min.js"></script>
+
+	<!-- import base javascript-->
 	<script src="./js/lang.js"></script>
 	<script src="./js/jquery.min.js"></script>
 	<script src="./js/luxon.min.js"></script>
@@ -68,13 +79,15 @@
 	<script src="./js/vue.js"></script>
 	<script src="./js/element-ui-index.js"></script>
 	<script src="./js/tabulator.js"></script>
-	<script src="./js/calc/calc.js"></script>
-
+	<script src="./js/math/math.min.js"></script>
 	<script src="./js/layui/layui.js"></script>
 	<script src="./js/dialog/dialog.js"></script>
+	<script src="./js/utils.js"></script>
+	<script src="./js/xlsx/xlsx.js"></script>
+
+	<!-- import bus javascript -->
 	<script src="./js/modules/ysListTableConf.js"></script>
 	<script src="./js/modules/ysList.js"></script>
-	<script src="./js/utils.js"></script>
 </body>
 
 </html>

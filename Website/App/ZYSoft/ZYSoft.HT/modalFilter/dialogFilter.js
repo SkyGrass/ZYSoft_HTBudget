@@ -1,6 +1,6 @@
 var dialog = {};
 function init(opt) {
-  dialog = new Vue({
+  var self = (dialog = new Vue({
     el: "#app",
     data() {
       return {
@@ -21,28 +21,26 @@ function init(opt) {
     },
     methods: {
       openCustom() {
-        var self = this;
-        opt.parent.openBaseDataDialog(
-          "custom",
-          "选择客户",
-          function ([{ id, code, name }]) {
-            self.form.custName = name;
-            self.form.custId = id;
-            self.$refs.form.validateField("custName");
-          }
-        );
+        opt.parent.openBaseDataDialog("custom", "选择客户", function (result) {
+          result = result[0];
+          var id = result.id,
+            code = result.code,
+            name = result.name;
+          self.form.custName = name;
+          self.form.custId = id;
+          self.$refs.form.validateField("custName");
+        });
       },
       openProject() {
-        var self = this;
-        opt.parent.openBaseDataDialog(
-          "project",
-          "选择项目",
-          function ([{ id, code, name }]) {
-            self.form.projectNo = name;
-            self.form.projectId = id;
-            self.$refs.form.validateField("projectNo");
-          }
-        );
+        opt.parent.openBaseDataDialog("project", "选择项目", function (result) {
+          result = result[0];
+          var id = result.id,
+            code = result.code,
+            name = result.name;
+          self.form.projectNo = name;
+          self.form.projectId = id;
+          self.$refs.form.validateField("projectNo");
+        });
       },
       doFilter() {
         this.grid.setFilter([
@@ -61,10 +59,9 @@ function init(opt) {
     },
     watch: {},
     mounted() {
-      var self = this;
-      self.form = opt.parent.form;
+      this.form = opt.parent.form;
     },
-  });
+  }));
 }
 
 function getSelect() {
