@@ -1,0 +1,23 @@
+{
+  "custom": {
+    "url": "",
+    "columns": [
+      {
+        "title": "客户编码",
+        "field": "CustomCode",
+		"headerHozAlign":"center",
+        "hozAlign": "center",
+        "width": 120,
+        "headerSort": false
+      },
+      {
+        "title": "客户名称",
+        "field": "CustomName",
+		"headerHozAlign":"center",
+        "hozAlign": "center",
+        "width": 120,
+        "headerSort": false
+      }
+    ]
+  }
+}

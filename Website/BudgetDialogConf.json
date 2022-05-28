@@ -1,0 +1,65 @@
+{
+  "custom": {
+    "clsName": "往来客户",
+    "url": "../BudgetHandler.ashx",
+    "method1": "getCustCls",
+    "key": "id",
+    "method2": "getCustom",
+    "columns": [
+      {
+        "formatter": "rownum",
+        "headerHozAlign": "center",
+        "hozAlign": "center",
+        "width": 30,
+        "headerSort": false
+      },
+      {
+        "title": "客户编码",
+        "field": "code",
+        "headerHozAlign": "center",
+        "hozAlign": "center",
+        "width": 150,
+        "headerSort": false
+      },
+      {
+        "title": "客户名称",
+        "field": "name",
+        "headerHozAlign": "center",
+        "hozAlign": "center",
+        "width": 250,
+        "headerSort": false
+      }
+    ]
+  },
+  "project": {
+    "clsName": "项目分类",
+    "url": "../BudgetHandler.ashx",
+    "method1": "getProjectCls",
+    "method2": "getProject",
+    "columns": [
+      {
+        "formatter": "rownum",
+        "headerHozAlign": "center",
+        "hozAlign": "center",
+        "width": 30,
+        "headerSort": false
+      },
+      {
+        "title": "项目编码",
+        "field": "code",
+        "headerHozAlign": "center",
+        "hozAlign": "center",
+        "width": 150,
+        "headerSort": false
+      },
+      {
+        "title": "项目名称",
+        "field": "name",
+        "headerHozAlign": "center",
+        "hozAlign": "center",
+        "width": 250,
+        "headerSort": false
+      }
+    ]
+  }
+}

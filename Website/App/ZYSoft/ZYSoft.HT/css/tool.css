@@ -1,0 +1,130 @@
+.tb-group {
+    list-style-type: none;
+    height: 22px;
+    color: #333;
+}
+
+.tb-first-class {
+    display: inline;
+    margin: 0 20px 0 10px;
+    padding: 0;
+    list-style-type: none;
+}
+
+.tb-first-class li {
+    position: relative;
+    /* float: left; */
+    clear: none;
+    display: inline-block;
+    /* height: 25px; */
+    list-style-type: none;
+    vertical-align: middle;
+    text-align: center;
+    /* line-height: 22px; */
+}
+
+.tb-bg>ul.tb-first-class {
+    display: block;
+    /*小屏幕下格式乱了*/
+}
+
+.tb-bg>ul:after {
+    clear: both;
+}
+
+.tb-bg>ul.tb-first-class>li:not(.tb-right) {
+    float: left;
+}
+
+.tb-bg .tb-second-group {
+    z-index: 1;
+}
+
+.tb-bg .tb-first-class .tb-second-group .tb-horizon-group {
+    z-index: 1;
+}
+
+.tb-bg .tb-first-class .tb-second-group .tb-horizon-group .tb-horizon-group {
+    z-index: 2;
+}
+
+.tb-first-class a {
+    /* float: left; */
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    /* height: 22px; */
+    height: 30px;
+    color: #333;
+    list-style-position: outside;
+    list-style-type: none;
+    list-style-image: none;
+    text-decoration: none;
+    /* 2015/2/4
+   line-height: 22px; */
+    line-height: 30px;
+    cursor: default;
+}
+
+/*页面工具条新样式*/
+.t-page-tb .tb-bg {
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+}
+
+.t-page-tb {
+    height: 30px;
+}
+
+.t-page-tb .tb-bg {
+    background: #fff;
+}
+
+.t-page-tb {
+    box-shadow: 2px 2px 4px #ddd;
+}
+
+/*----------页面工具条新样式---t-page-tb---------------*/
+.t-page-tb .tb-first-class>li>a {
+    height: 30px;
+    line-height: 30px;
+}
+
+.t-page-tb .tb-bg {
+    height: 30px;
+}
+
+.t-page-tb .tb-item {
+    padding: 0 10px;
+    cursor: pointer;
+}
+
+.t-page-tb .tb-second-group .tb-item,
+.t-page-tb .tb-horizon-group .tb-item {
+    padding: 0 10px 0 6px;
+}
+
+.t-page-tb .tb-split .tb-item {
+    padding: 0;
+    color: #e2e2e2 !important;
+}
+
+.t-page-tb a.tb-enable+span,
+.t-page-tb a.tb-disable+span,
+.t-page-tb a .tb-item .ticon-right {
+    position: absolute !important;
+    right: 18px;
+    margin-top: 0px !important;
+}
+
+.t-page-tb a .tb-item .ticon-right {
+    font-size: 14px;
+}
+
+.t-page-tb .tb-second-group li {
+    padding-right: 20px;
+    line-height: 30px;
+}
+
+/*-----------t-page-tb end-----------------*/

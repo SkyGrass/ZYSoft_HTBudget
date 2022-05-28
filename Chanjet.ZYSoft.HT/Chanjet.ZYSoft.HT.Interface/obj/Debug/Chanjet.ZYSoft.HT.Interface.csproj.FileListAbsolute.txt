@@ -8,3 +8,9 @@ E:\SpecialCode\ZYSoft_TPlus_HTBudget\Chanjet.ZYSoft.HT\Chanjet.ZYSoft.HT.Interfa
 E:\SpecialCode\ZYSoft_TPlus_HTBudget\Chanjet.ZYSoft.HT\Chanjet.ZYSoft.HT.Interface\obj\Debug\Chanjet.ZYSoft.HT.Interface.csproj.CoreCompileInputs.cache
 E:\SpecialCode\ZYSoft_TPlus_HTBudget\Chanjet.ZYSoft.HT\Chanjet.ZYSoft.HT.Interface\obj\Debug\Chanjet.ZYSoft.HT.Interface.dll
 E:\SpecialCode\ZYSoft_TPlus_HTBudget\Chanjet.ZYSoft.HT\Chanjet.ZYSoft.HT.Interface\obj\Debug\Chanjet.ZYSoft.HT.Interface.pdb
+D:\SourceCode\ZYSoft_TPlus_HTBudget\pubref\Chanjet.ZYSoft.HT.Interface.dll
+D:\SourceCode\ZYSoft_TPlus_HTBudget\pubref\Chanjet.ZYSoft.HT.Interface.pdb
+D:\SourceCode\ZYSoft_TPlus_HTBudget\Chanjet.ZYSoft.HT\Chanjet.ZYSoft.HT.Interface\obj\Debug\Chanjet.ZYSoft.HT.Interface.csproj.AssemblyReference.cache
+D:\SourceCode\ZYSoft_TPlus_HTBudget\Chanjet.ZYSoft.HT\Chanjet.ZYSoft.HT.Interface\obj\Debug\Chanjet.ZYSoft.HT.Interface.csproj.CoreCompileInputs.cache
+D:\SourceCode\ZYSoft_TPlus_HTBudget\Chanjet.ZYSoft.HT\Chanjet.ZYSoft.HT.Interface\obj\Debug\Chanjet.ZYSoft.HT.Interface.dll
+D:\SourceCode\ZYSoft_TPlus_HTBudget\Chanjet.ZYSoft.HT\Chanjet.ZYSoft.HT.Interface\obj\Debug\Chanjet.ZYSoft.HT.Interface.pdb

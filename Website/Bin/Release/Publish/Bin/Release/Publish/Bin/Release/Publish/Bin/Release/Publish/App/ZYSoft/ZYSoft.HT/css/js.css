@@ -1,0 +1,11 @@
+.el-main {
+  padding: 5px;
+}
+
+.form-item-max .el-form-item__content {
+  max-width: 220px;
+}
+
+.form-item-full .el-form-item__content {
+  width: 80%;
+}
