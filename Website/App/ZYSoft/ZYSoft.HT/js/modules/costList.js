@@ -82,7 +82,7 @@ var self = (vm = new Vue({
               Object.assign(
                 {},
                 {
-                  SelectApi: "getbudgetlist",
+                  SelectApi: "getcostlist",
                 },
                 r
               ),
@@ -111,7 +111,7 @@ var self = (vm = new Vue({
     doExport() {
       this.grid.download(
         "xlsx",
-        "预算表统计表" + dayjs().format("YYYY-MM-DD") + ".xlsx",
+        "实际成本统计表" + dayjs().format("YYYY-MM-DD") + ".xlsx",
         {
           sheetName: "MyData",
         }
@@ -173,7 +173,7 @@ var self = (vm = new Vue({
         btn: false,
         area: [$(window).width() - 100 + "px", $(window).height() - 100 + "px"],
         url:
-          "../../ZYSoft/ZYSoft.HT/YSFormPage.aspx?" +
+          "../../ZYSoft/ZYSoft.HT/CostFormPage.aspx?" +
           utils.obj2Url({
             accountId: FAccountID,
             projectId: FProjectID,
@@ -197,13 +197,12 @@ var self = (vm = new Vue({
             5
         );
       };
-
       self.grid.setData(
         "./BudgetHandler.ashx",
         Object.assign(
           {},
           {
-            SelectApi: "getbudgetlist",
+            SelectApi: "getcostlist",
           },
           self.form,
           {

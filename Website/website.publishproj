@@ -18,7 +18,7 @@ website.publishproj
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.30319</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{a2eecc67-9590-410c-a847-2a2ce12712e8}</ProjectGuid>
+    <ProjectGuid>{54504f01-cd95-43a8-9859-4a79ba3cdcaa}</ProjectGuid>
     <SourceWebPhysicalPath>$(MSBuildThisFileDirectory)</SourceWebPhysicalPath>
     <SourceWebVirtualPath>/Website</SourceWebVirtualPath>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>

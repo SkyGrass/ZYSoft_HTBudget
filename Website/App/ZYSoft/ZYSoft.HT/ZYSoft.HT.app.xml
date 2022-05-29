@@ -1,9 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<App id="ZYSoft.HT" name="MainPage" appType="Production">
+<App id="ZYSoft.HT" name="ZYSoftBudget" appType="Production">
   <Web>
     <Extension Point_id="Ufida.T.EAP.Web.Page.Load">
-      <View id="CTLMainPage.aspx"
-            path="App/ZYSoft/ZYSoft.HT/CTLMainPage.aspx"
+      <View id="YSFormPage.aspx"
+            path="App/ZYSoft/ZYSoft.HT/YSFormPage.aspx"
+            class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
+    </Extension>
+    <Extension Point_id="Ufida.T.EAP.Web.Page.Load">
+      <View id="JSFormPage.aspx"
+            path="App/ZYSoft/ZYSoft.HT/JSFormPage.aspx"
             class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
     </Extension>
   </Web>

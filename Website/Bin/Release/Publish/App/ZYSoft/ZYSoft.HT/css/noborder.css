@@ -1,7 +1,0 @@
-.noBorder input,
-.noBorder textarea {
-    border-style: none;
-    border-bottom: 1px solid #e3e3e3;
-    border-radius: 0px;
-    background-color: #fff;
-}

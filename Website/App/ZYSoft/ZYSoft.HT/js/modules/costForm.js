@@ -95,7 +95,7 @@ var self = (vm = new Vue({
           FGroupCode: m.FGroupCode,
           FGroupName: m.FGroupName,
           FSum: m.FChildren.map(function (m) {
-            return Number(m.FBudgetSum);
+            return Number(m.FCostSum);
           }).reduce(function (total, num) {
             return total + num;
           }, 0),
@@ -108,7 +108,7 @@ var self = (vm = new Vue({
           FGroupCode: m.FGroupCode,
           FGroupName: m.FGroupName,
           FSum: m.FChildren.map(function (m) {
-            return Number(m.FBudgetSum);
+            return Number(m.FCostSum);
           }).reduce(function (total, num) {
             return total + num;
           }, 0),
@@ -178,7 +178,7 @@ var self = (vm = new Vue({
       openDialog({
         title: title,
         url:
-          "./modalBudgetTree/ModalBudgetTree.aspx?" +
+          "./modalCostTree/modalCostTree.aspx?" +
           utils.obj2Url({ v: new Date() * 1, state: self.query.state }),
         onSuccess: function (layero, index) {
           var iframeWin = window[layero.find("iframe")[0]["name"]];
@@ -200,16 +200,16 @@ var self = (vm = new Vue({
                 accountId: item.FAccountID,
                 projectId: item.FProjectID,
                 entryId: item.FEntryID,
-                budgetPrice: total.budgetPrice,
-                budgetQty: total.budgetQty,
-                budgetSum: total.budgetSum,
+                costPrice: total.costPrice,
+                costQty: total.costQty,
+                costSum: total.costSum,
                 code: item.FItemCode,
               },
               row,
               function () {
-                item.FBudgetPrice = total.budgetPrice;
-                item.FBudgetQty = total.budgetQty;
-                item.FBudgetSum = total.budgetSum;
+                item.FCostPrice = total.costPrice;
+                item.FCostQty = total.costQty;
+                item.FCostSum = total.costSum;
                 item.FChildren = row;
                 layer.close(index);
               }
@@ -227,7 +227,7 @@ var self = (vm = new Vue({
         url: "./BudgetHandler.ashx",
         async: true,
         data: {
-          SelectApi: "getBudgetlist",
+          SelectApi: "getCostlist",
           accountId: query.accountId,
           billId: query.id,
         },
@@ -266,7 +266,7 @@ var self = (vm = new Vue({
         url: "./BudgetHandler.ashx",
         async: true,
         data: {
-          SelectApi: "genBudgetDetail",
+          SelectApi: "checkcostdetail",
           accountId: this.form.accountId,
           projectId: this.form.projectId,
         },
@@ -283,12 +283,12 @@ var self = (vm = new Vue({
         },
       });
     },
-    doGenBudget() {
+    doGenCost() {
       if (this.form.custId == "" || this.form.projectId == "") {
         return layer.msg("请先选择客户和项目!", { icon: 5 });
       } else {
         layer.confirm(
-          "确定要生成预算单明细吗?",
+          "确定要查看预算单明细吗?",
           { icon: 3, title: "提示" },
           function (index) {
             self.doInitBillEntry(index);
@@ -308,7 +308,7 @@ var self = (vm = new Vue({
         url: "./BudgetHandler.ashx",
         async: true,
         data: {
-          SelectApi: "savebudgetItem",
+          SelectApi: "savecostItem",
           mainStr: JSON.stringify(main),
           formStr: JSON.stringify(forms),
         },
@@ -320,7 +320,7 @@ var self = (vm = new Vue({
           layer.msg(result.msg, { icon: result.icon });
         },
         error: function () {
-          layer.msg("生成预算明细发生错误!", { icon: 5 });
+          layer.msg("生成成本明细发生错误!", { icon: 5 });
         },
       });
     },
@@ -334,7 +334,7 @@ var self = (vm = new Vue({
             return layer.msg("请先生成预算明细再保存!", { icon: 5 });
           }
           layer.confirm(
-            "确定要保存预算单吗?",
+            "确定要保存实际成本单吗?",
             { icon: 3, title: "提示" },
             function (index) {
               $.ajax({
@@ -344,7 +344,7 @@ var self = (vm = new Vue({
                 data: Object.assign(
                   {},
                   {
-                    SelectApi: "savebudget",
+                    SelectApi: "savecost",
                   },
                   self.form
                 ),
