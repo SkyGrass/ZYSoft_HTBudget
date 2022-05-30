@@ -6,7 +6,7 @@ var self = (vm = new Vue({
       form: {
         startDate: curDate.add(-10, "day"),
         endDate: curDate,
-        accountId: "250116",
+        accountId: accountId || "250116",
         contractNo: "",
         manager: "",
         custManager: "",
@@ -94,19 +94,17 @@ var self = (vm = new Vue({
       });
     },
     doAdd() {
-      openDialog({
-        title: false,
-        btn: false,
-        area: [$(window).width() - 100 + "px", $(window).height() - 100 + "px"],
-        url:
-          "../../ZYSoft/ZYSoft.HT/YSFormPage.aspx?" +
-          utils.obj2Url({
-            state: "add",
-            v: new Date() * 1,
-          }),
-        onSuccess: function (layero, index) {},
-        onBtnYesClick: function (index, layero) {},
-      });
+      if ($.isFunction(top.CreateTab)) {
+        top.CreateTab(
+          "App/ZYSoft/ZYSoft.HT/BudgetFormPage.aspx?" +
+            utils.obj2Url({
+              state: "add",
+              v: new Date() * 1,
+            }),
+          "预算表",
+          "YS1001"
+        );
+      }
     },
     doExport() {
       this.grid.download(
@@ -129,7 +127,7 @@ var self = (vm = new Vue({
         langs: langs,
         height: maxHeight,
         columnHeaderVertAlign: "bottom",
-        columns: tableConf.concat([
+        columns: [
           {
             formatter: function (cell, formatterParams, onRendered) {
               return "<el-tooltip  effect='dark' content='点击查看详情' placement='right-end'><i class='el-icon-document'/></el-tooltip>";
@@ -144,7 +142,7 @@ var self = (vm = new Vue({
               self.onClickDetail(cell.getRow().getData());
             },
           },
-        ]),
+        ].concat(tableConf),
         ajaxResponse: function (url, params, response) {
           if (response.state == "success") {
             var t = response.data.map(function (m, i) {
@@ -168,22 +166,20 @@ var self = (vm = new Vue({
       var FAccountID = item.FAccountID,
         FProjectID = item.FProjectID,
         FID = item.FID;
-      openDialog({
-        title: false,
-        btn: false,
-        area: [$(window).width() - 100 + "px", $(window).height() - 100 + "px"],
-        url:
-          "../../ZYSoft/ZYSoft.HT/YSFormPage.aspx?" +
-          utils.obj2Url({
-            accountId: FAccountID,
-            projectId: FProjectID,
-            id: FID,
-            state: "read",
-            v: new Date() * 1,
-          }),
-        onSuccess: function (layero, index) {},
-        onBtnYesClick: function (index, layero) {},
-      });
+      if ($.isFunction(top.CreateTab)) {
+        top.CreateTab(
+          "App/ZYSoft/ZYSoft.HT/BudgetFormPage.aspx?" +
+            utils.obj2Url({
+              accountId: FAccountID,
+              projectId: FProjectID,
+              id: FID,
+              state: "read",
+              v: new Date() * 1,
+            }),
+          "预算表",
+          "YS1001"
+        );
+      }
     },
   },
   mounted() {

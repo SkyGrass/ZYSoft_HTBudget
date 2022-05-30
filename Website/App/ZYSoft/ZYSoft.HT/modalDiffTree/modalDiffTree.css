@@ -1,0 +1,72 @@
+body {
+  margin: 0px !important;
+}
+
+.tabulator-tableholder {
+  background-color: #fff;
+}
+
+.left {
+  padding: 10px;
+  height: 288px;
+  overflow-y: scroll;
+}
+
+.el-tree-node__content {
+  height: 44px;
+}
+
+.inp {
+  margin-left: 10px;
+  border: 1px solid #333;
+  border-left: none;
+}
+
+.inp label {
+  background-color: gray;
+  color: #fff;
+  padding: 1px;
+  border: 1px solid #333;
+}
+
+.inp input {
+  margin-left: 3px;
+  border: none;
+  padding: 1px;
+  width: 150px
+}
+
+.inp input:focus {
+  outline: none;
+}
+
+.custom-tree-node {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  padding: 8px;
+}
+
+
+.txt {
+  /* width: 80px; */
+}
+
+.contr {
+  border-bottom: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+}
+
+.number_noboard {
+  border: none;
+  text-align: right;
+  margin: 3px;
+  background-color: transparent;
+}
+
+.txt:focus {
+  outline: none;
+  border: none;
+}

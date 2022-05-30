@@ -35,19 +35,9 @@ function init(opt) {
                   return f.entryId == m.FEntryID;
                 });
                 if (p.length > 0) {
-                  m.FBudgetPrice = p[0].budgetPrice;
-                }
-                var q = group.FChildren.filter(function (f) {
-                  return f.entryId == m.FEntryID;
-                });
-                if (q.length > 0) {
-                  m.FBudgetQty = q[0].budgetQty;
-                }
-                var s = group.FChildren.filter(function (f) {
-                  return f.entryId == m.FEntryID;
-                });
-                if (s.length > 0) {
-                  m.FBudgetSum = s[0].budgetSum;
+                  m.FBudgetPrice = p[0].budgetPrice; 
+                  m.FBudgetQty = p[0].budgetQty; 
+                  m.FBudgetSum = p[0].budgetSum;
                 }
                 if (i == 0) {
                   self.defaultExpandedKeys.push(m.FItemID);
@@ -71,6 +61,15 @@ function init(opt) {
           if (node.FParentItemID == root.FItemID) {
             if (!Object.keys(root).includes("children")) {
               root.children = [];
+            }
+            if (node.FBudgetQty == 0) {
+              node.FBudgetQty = "";
+            }
+            if (node.FBudgetPrice == 0) {
+              node.FBudgetPrice = "";
+            }
+            if (node.FBudgetSum == 0) {
+              node.FBudgetSum = "";
             }
             root.children.push(node);
             self.formatData(node, data);
@@ -103,7 +102,7 @@ function init(opt) {
         if (!curNode.isLeaf) {
           for (var index = 0; index < curNode.childNodes.length; index++) {
             var node = curNode.childNodes[index];
-            node.data[field] = "0";
+            node.data[field] = "";
             this.onChange(e, node.data, field);
           }
         }
@@ -130,7 +129,10 @@ function init(opt) {
               field == "FBudgetPrice"
                 ? "0"
                 : math.format(
-                    math.add(math.bignumber(total), math.bignumber(val)),
+                    math.add(
+                      math.bignumber(total),
+                      math.bignumber(val == "" ? "0" : val)
+                    ),
                     14
                   );
           }
@@ -159,7 +161,10 @@ function init(opt) {
         var qty = document.getElementById(q_id).value;
 
         var sum = math.format(
-          math.multiply(math.bignumber(qty), math.bignumber(price)),
+          math.multiply(
+            math.bignumber(qty == "" ? "0" : qty),
+            math.bignumber(price == "" ? "0" : price)
+          ),
           14
         );
         document.getElementById(s_id).value = sum;
@@ -188,9 +193,9 @@ function formatForm(rows) {
         accountId: m.FAccountID,
         projectId: m.FProjectID,
         entryId: m.FEntryID,
-        budgetPrice: m.FBudgetPrice,
-        budgetQty: m.FBudgetQty,
-        budgetSum: m.FBudgetSum,
+        budgetPrice: m.FBudgetPrice == "" ? "0" : m.FBudgetPrice,
+        budgetQty: m.FBudgetQty == "" ? "0" : m.FBudgetQty,
+        budgetSum: m.FBudgetSum == "" ? "0" : m.FBudgetSum,
         isLeaf: m.FIsEndNode,
         code: m.FItemCode,
       };

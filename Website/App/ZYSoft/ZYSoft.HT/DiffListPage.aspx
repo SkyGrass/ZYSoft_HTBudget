@@ -7,7 +7,7 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-	<title>预算表统计表</title>
+	<title>预算成本差异统计表</title>
 	<!-- 引入样式 -->
 	<link rel="stylesheet" href="./css/element-ui-index.css" />
 	<link rel="stylesheet" href="./css/theme-chalk-index.css" />
@@ -32,12 +32,7 @@
 								<a href="javascript:void(0)" @click='doQuery'>
 									<span class="tb-item"><span class="tb-text" title="查询">查询</span></span>
 								</a>
-							</li>
-							<li tabindex="1" v-if='false'>
-								<a href="javascript:void(0)" @click='doAdd'>
-									<span class="tb-item"><span class="tb-text" title="新增">新增</span></span>
-								</a>
-							</li>
+							</li> 
 							<li tabindex="1">
 								<a href="javascript:void(0)" @click='doExport'>
 									<span class="tb-item"><span class="tb-text" title="导出">导出</span></span>
@@ -50,7 +45,7 @@
 			<el-main>
 				<el-row :gutter="5">
 					<el-col :span=14 :push=5 :pull=5 style='text-align:center'>
-						<h1 id='title'>预算表统计表</h1>
+						<h1 id='title'>实际成本统计表</h1>
 					</el-col>
 				</el-row>
 			</el-main>
@@ -59,11 +54,10 @@
 	</div>
 	<!-- import Vue before Element -->
 	<script>
-		var loginName = "<%=lblUserName.Text%>";
-		var loginUserId = "<%=lbUserId.Text%>";
-		var accounId = '<%=lbAccount.Text%>'
-		window.accounId = accounId || "250116";
-	</script>
+        var loginName = "<%=lblUserName.Text%>";
+        var loginUserId = "<%=lbUserId.Text%>";
+        var accountId = '<%=lbAccount.Text%>' 
+    </script>
 
 	<!-- import poly -->
 	<script src="./js/poly/js.polyfills.js"></script>
@@ -86,8 +80,8 @@
 	<script src="./js/xlsx/xlsx.js"></script>
 
 	<!-- import bus javascript -->
-	<script src="./js/modules/ysListTableConf.js"></script>
-	<script src="./js/modules/ysList.js"></script>
+	<script src="./js/modules/diffListTableConf.js"></script>
+	<script src="./js/modules/diffList.js"></script>
 </body>
 
 </html>

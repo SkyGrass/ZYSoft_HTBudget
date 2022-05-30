@@ -341,6 +341,92 @@ public class BudgetHandler : IHttpHandler
             }
         }
 
+        public static string GetDiffList(string accountId, HttpRequest request)
+        {
+            try
+            {
+                string sqlWhere = " 1=1 ";
+                var form = request.Form;
+
+                int pageIndex = CommMethod.SafeInt(request.Form["pageIndex"], 1);
+                int pageSize = CommMethod.SafeInt(request.Form["pageSize"], 20);
+                string startDate = CommMethod.SafeString(request.Form["startDate"], "");
+                string endDate = CommMethod.SafeString(request.Form["endDate"], "");
+                string contractNo = CommMethod.SafeString(request.Form["contractNo"], "");
+                string manager = CommMethod.SafeString(request.Form["manager"], "");
+                string custManager = CommMethod.SafeString(request.Form["custManager"], "");
+                string projectId = CommMethod.SafeString(request.Form["projectId"], "");
+                string custId = CommMethod.SafeString(request.Form["custId"], "");
+                string billId = CommMethod.SafeString(request.Form["billId"], "");
+                if (!string.IsNullOrEmpty(startDate))
+                {
+                    sqlWhere += string.Format(@" AND t.FCreateDate >= ''{0} 00:00:00''", startDate);
+                }
+                if (!string.IsNullOrEmpty(endDate))
+                {
+                    sqlWhere += string.Format(@" AND t.FCreateDate <= ''{0} 23:59:59''", endDate);
+                }
+                if (!string.IsNullOrEmpty(contractNo))
+                {
+                    sqlWhere += string.Format(@" AND t.FContractNo like ''%{0}%''", contractNo);
+                }
+                if (!string.IsNullOrEmpty(manager))
+                {
+                    sqlWhere += string.Format(@" AND t.FManager like ''%{0}%''", manager);
+                }
+                if (!string.IsNullOrEmpty(custManager))
+                {
+                    sqlWhere += string.Format(@" AND t.FCustManager like  ''%{0}%''", custManager);
+                }
+                if (!string.IsNullOrEmpty(projectId))
+                {
+                    sqlWhere += string.Format(@" AND t.FProjectId =''{0}''", projectId);
+                }
+                if (!string.IsNullOrEmpty(custId))
+                {
+                    sqlWhere += string.Format(@" AND t.FCustId = ''{0}''", custId);
+                }
+                if (!string.IsNullOrEmpty(billId))
+                {
+                    sqlWhere += string.Format(@" AND t.FID = ''{0}''", billId);
+                }
+
+                string sql = string.Format(@" EXEC dbo.P_GetDiffRecord @FAccountID = '{0}', -- varchar(20)
+                                                @PageIndex = {1},   -- int
+                                                @PageSize = {2},    -- int
+                                                @Where = N'{3}'      -- nvarchar(max)", accountId, pageIndex, pageSize, sqlWhere);
+                DataTable dt = ZYSoft.DB.BLL.Common.ExecuteDataTable(sql);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    return JsonConvert.SerializeObject(new
+                    {
+                        state = dt.Rows.Count > 0 ? "success" : "error",
+                        data = dt,
+                        icon = 1,
+                        msg = "查询成功!"
+                    });
+                }
+                else
+                {
+                    return JsonConvert.SerializeObject(new
+                    {
+                        state = "error",
+                        data = DBNull.Value,
+                        msg = "没有查询到记录!"
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    state = "error",
+                    data = DBNull.Value,
+                    msg = ex.Message
+                });
+            }
+        }
+
         public static string GetBudget(string id)
         {
             try
@@ -1086,7 +1172,9 @@ public class BudgetHandler : IHttpHandler
                     projectId = context.Request.Form["projectId"] ?? "";
                     result = DBMethod.GenBudgetInfo(accountId, projectId, GenBudgetType.Cost.GetHashCode());
                     break;
-                case "getitems":
+                case "checkdiffdetail":
+                    projectId = context.Request.Form["projectId"] ?? "";
+                    result = DBMethod.GenBudgetInfo(accountId, projectId, GenBudgetType.Diff.GetHashCode());
                     break;
                 case "getitemdetail":
                     projectId = context.Request.Form["projectId"] ?? "";
@@ -1107,6 +1195,9 @@ public class BudgetHandler : IHttpHandler
                     break;
                 case "getcostlist":
                     result = DBMethod.GetCostList(accountId, context.Request);
+                    break;
+                case "getdifflist":
+                    result = DBMethod.GetDiffList(accountId, context.Request);
                     break;
                 case "savebudget":
                     result = DBMethod.SaveBudget(context.Request);

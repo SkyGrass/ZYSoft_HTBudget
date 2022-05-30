@@ -7,7 +7,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>实际成本统计表</title>
+    <title>预算表统计表</title>
     <!-- 引入样式 -->
     <link rel="stylesheet" href="./css/element-ui-index.css" />
     <link rel="stylesheet" href="./css/theme-chalk-index.css" />
@@ -50,7 +50,7 @@
             <el-main>
                 <el-row :gutter="5">
                     <el-col :span=14 :push=5 :pull=5 style='text-align:center'>
-                        <h1 id='title'>实际成本统计表</h1>
+                        <h1 id='title'>预算表统计表</h1>
                     </el-col>
                 </el-row>
             </el-main>
@@ -62,6 +62,7 @@
         var loginName = "<%=lblUserName.Text%>";
         var loginUserId = "<%=lbUserId.Text%>";
         var accountId = '<%=lbAccount.Text%>'
+        window.accountId = accountId || "250116";
     </script>
 
     <!-- import poly -->
@@ -85,8 +86,8 @@
     <script src="./js/xlsx/xlsx.js"></script>
 
     <!-- import bus javascript -->
-    <script src="./js/modules/costListTableConf.js"></script>
-    <script src="./js/modules/costList.js"></script>
+    <script src="./js/modules/budgetListTableConf.js"></script>
+    <script src="./js/modules/budgetList.js"></script>
 </body>
 
 </html>

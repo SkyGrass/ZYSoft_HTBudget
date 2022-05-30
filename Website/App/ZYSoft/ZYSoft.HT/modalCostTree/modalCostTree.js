@@ -25,7 +25,7 @@ function init(opt) {
             accountId: group.FAccountID,
             projectId: group.FProjectID,
             clsCode: group.FItemCode,
-            typeId: 1,
+            typeId: 2,
           },
           dataType: "json",
           success: function (result) {
@@ -35,19 +35,9 @@ function init(opt) {
                   return f.entryId == m.FEntryID;
                 });
                 if (p.length > 0) {
-                  m.FCostPrice = p[0].costPrice;
-                }
-                var q = group.FChildren.filter(function (f) {
-                  return f.entryId == m.FEntryID;
-                });
-                if (q.length > 0) {
-                  m.FCostQty = q[0].costQty;
-                }
-                var s = group.FChildren.filter(function (f) {
-                  return f.entryId == m.FEntryID;
-                });
-                if (s.length > 0) {
-                  m.FCostSum = s[0].costSum;
+                  m.FCostPrice = p[0].costPrice; 
+                  m.FCostQty = p[0].costQty; 
+                  m.FCostSum = p[0].costSum;
                 }
                 if (i == 0) {
                   self.defaultExpandedKeys.push(m.FItemID);
@@ -71,6 +61,15 @@ function init(opt) {
           if (node.FParentItemID == root.FItemID) {
             if (!Object.keys(root).includes("children")) {
               root.children = [];
+            }
+            if (node.FCostQty == 0) {
+              node.FCostQty = "";
+            }
+            if (node.FCostPrice == 0) {
+              node.FCostPrice = "";
+            }
+            if (node.FCostSum == 0) {
+              node.FCostSum = "";
             }
             root.children.push(node);
             self.formatData(node, data);
@@ -103,7 +102,7 @@ function init(opt) {
         if (!curNode.isLeaf) {
           for (var index = 0; index < curNode.childNodes.length; index++) {
             var node = curNode.childNodes[index];
-            node.data[field] = "0";
+            node.data[field] = "";
             this.onChange(e, node.data, field);
           }
         }
@@ -130,7 +129,10 @@ function init(opt) {
               field == "FCostPrice"
                 ? "0"
                 : math.format(
-                    math.add(math.bignumber(total), math.bignumber(val)),
+                    math.add(
+                      math.bignumber(total),
+                      math.bignumber(val == "" ? "0" : val)
+                    ),
                     14
                   );
           }
@@ -159,7 +161,10 @@ function init(opt) {
         var qty = document.getElementById(q_id).value;
 
         var sum = math.format(
-          math.multiply(math.bignumber(qty), math.bignumber(price)),
+          math.multiply(
+            math.bignumber(qty == "" ? "0" : qty),
+            math.bignumber(price == "" ? "0" : price)
+          ),
           14
         );
         document.getElementById(s_id).value = sum;
@@ -188,9 +193,9 @@ function formatForm(rows) {
         accountId: m.FAccountID,
         projectId: m.FProjectID,
         entryId: m.FEntryID,
-        costPrice: m.FCostPrice,
-        costQty: m.FCostQty,
-        costSum: m.FCostSum,
+        costPrice: m.FCostPrice == "" ? "0" : m.FCostPrice,
+        costQty: m.FCostQty == "" ? "0" : m.FCostQty,
+        costSum: m.FCostSum == "" ? "0" : m.FCostSum,
         isLeaf: m.FIsEndNode,
         code: m.FItemCode,
       };

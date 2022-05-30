@@ -94,31 +94,23 @@ var self = (vm = new Vue({
         return {
           FGroupCode: m.FGroupCode,
           FGroupName: m.FGroupName,
-          FSum: m.FChildren.map(function (m) {
+          FBudgetSum: m.FChildren.map(function (m) {
             return Number(m.FBudgetSum);
+          }).reduce(function (total, num) {
+            return total + num;
+          }, 0),
+          FCostSum: m.FChildren.map(function (m) {
+            return Number(m.FCostSum);
+          }).reduce(function (total, num) {
+            return total + num;
+          }, 0),
+          FDiffSum: m.FChildren.map(function (m) {
+            return Number(m.FDiffSum);
           }).reduce(function (total, num) {
             return total + num;
           }, 0),
         };
       });
-    },
-    summary1() {
-      var temp = this.tabs.map(function (m) {
-        return {
-          FGroupCode: m.FGroupCode,
-          FGroupName: m.FGroupName,
-          FSum: m.FChildren.map(function (m) {
-            return Number(m.FBudgetSum);
-          }).reduce(function (total, num) {
-            return total + num;
-          }, 0),
-        };
-      });
-      var r = {};
-      temp.forEach(function (row) {
-        r[row.FGroupName] = row["FSum"];
-      });
-      return r;
     },
   },
   watch: {
@@ -177,45 +169,16 @@ var self = (vm = new Vue({
       var title = item.FItemName;
       openDialog({
         title: title,
+        area: ["800px", "500px"],
         url:
-          "./modalBudgetTree/ModalBudgetTree.aspx?" +
+          "./modalDiffTree/ModalDiffTree.aspx?" +
           utils.obj2Url({ v: new Date() * 1, state: self.query.state }),
         onSuccess: function (layero, index) {
           var iframeWin = window[layero.find("iframe")[0]["name"]];
           iframeWin.init({ layer, group: item });
         },
         btn: this.query.state == "read" ? [] : ["确定", "取消"],
-        onBtnYesClick: function (index, layero) {
-          var iframeWin = window[layero.find("iframe")[0]["name"]];
-          var row = iframeWin.getResult();
-
-          if (row.length <= 0) {
-            layer.msg("预算录入不完整!", { icon: 5 });
-          } else {
-            var total = row.filter(function (f) {
-              return f.code == item.FItemCode;
-            })[0];
-            self.doSaveItem(
-              {
-                accountId: item.FAccountID,
-                projectId: item.FProjectID,
-                entryId: item.FEntryID,
-                budgetPrice: total.budgetPrice,
-                budgetQty: total.budgetQty,
-                budgetSum: total.budgetSum,
-                code: item.FItemCode,
-              },
-              row,
-              function () {
-                item.FBudgetPrice = total.budgetPrice;
-                item.FBudgetQty = total.budgetQty;
-                item.FBudgetSum = total.budgetSum;
-                item.FChildren = row;
-                layer.close(index);
-              }
-            );
-          }
-        },
+        onBtnYesClick: function (index, layero) {},
       });
     },
     showGroupDetail(item) {
@@ -227,7 +190,7 @@ var self = (vm = new Vue({
         url: "./BudgetHandler.ashx",
         async: true,
         data: {
-          SelectApi: "getBudgetlist",
+          SelectApi: "getdifflist",
           accountId: query.accountId,
           billId: query.id,
         },
@@ -239,9 +202,9 @@ var self = (vm = new Vue({
             self.form.custId = result.FCustID;
             self.form.projectId = result.FProjectID;
             self.form.contractNo = result.FContractNo;
-            self.form.sum = result.FSum;
-            self.form.addSum = result.FAddSum;
-            self.form.totalSum = result.FTotalSum;
+            self.form.sum = result.FDiffSum;
+            self.form.addSum = result.FDiffAddSum;
+            self.form.totalSum = result.FDiffTotalSum;
             self.form.billerId = result.FBillerID;
             self.form.manager = result.FManager;
             self.form.custManager = result.FCustManager;
@@ -266,7 +229,7 @@ var self = (vm = new Vue({
         url: "./BudgetHandler.ashx",
         async: true,
         data: {
-          SelectApi: "genBudgetDetail",
+          SelectApi: "checkdiffdetail",
           accountId: this.form.accountId,
           projectId: this.form.projectId,
         },
@@ -281,89 +244,6 @@ var self = (vm = new Vue({
           layer.close(index);
           layer.msg("生成预算明细发生错误!", { icon: 5 });
         },
-      });
-    },
-    doGenBudget() {
-      if (this.form.custId == "" || this.form.projectId == "") {
-        return layer.msg("请先选择客户和项目!", { icon: 5 });
-      } else {
-        layer.confirm(
-          "确定要生成预算单明细吗?",
-          { icon: 3, title: "提示" },
-          function (index) {
-            self.doInitBillEntry(index);
-          }
-        );
-      }
-    },
-    doCancelEdit() {
-      this.query.state = "read";
-    },
-    doEdit() {
-      this.query.state = "edit";
-    },
-    doSaveItem(main, forms, success) {
-      $.ajax({
-        type: "POST",
-        url: "./BudgetHandler.ashx",
-        async: true,
-        data: {
-          SelectApi: "savebudgetItem",
-          mainStr: JSON.stringify(main),
-          formStr: JSON.stringify(forms),
-        },
-        dataType: "json",
-        success: function (result) {
-          if (result.state == "success") {
-            success && success();
-          }
-          layer.msg(result.msg, { icon: result.icon });
-        },
-        error: function () {
-          layer.msg("生成预算明细发生错误!", { icon: 5 });
-        },
-      });
-    },
-    doSave() {
-      this.$refs["form"].validate(function (valid) {
-        if (valid) {
-          if (math.add(self.form.sum, 0) == 0) {
-            return layer.msg("预算金额应该大于0!", { icon: 5 });
-          }
-          if (self.tabs.length <= 0) {
-            return layer.msg("请先生成预算明细再保存!", { icon: 5 });
-          }
-          layer.confirm(
-            "确定要保存预算单吗?",
-            { icon: 3, title: "提示" },
-            function (index) {
-              $.ajax({
-                type: "POST",
-                url: "./BudgetHandler.ashx",
-                async: true,
-                data: Object.assign(
-                  {},
-                  {
-                    SelectApi: "savebudget",
-                  },
-                  self.form
-                ),
-                dataType: "json",
-                success: function (result) {
-                  if (result.state == "success") {
-                    layer.close(index);
-                  }
-                  layer.msg(result.msg, { icon: result.icon });
-                },
-                error: function () {
-                  layer.msg("生成预算明细发生错误!", { icon: 5 });
-                },
-              });
-            }
-          );
-        } else {
-          return false;
-        }
       });
     },
   },

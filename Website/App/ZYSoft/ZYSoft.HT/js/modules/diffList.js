@@ -72,7 +72,7 @@ var self = (vm = new Vue({
             r = Object.assign(
               {},
               {
-                SelectApi: "getcostlist",
+                SelectApi: "getdifflist",
               },
               self.form,
               r
@@ -82,7 +82,7 @@ var self = (vm = new Vue({
               Object.assign(
                 {},
                 {
-                  SelectApi: "getcostlist",
+                  SelectApi: "getdifflist",
                 },
                 r
               ),
@@ -93,23 +93,10 @@ var self = (vm = new Vue({
         },
       });
     },
-    doAdd() {
-      if ($.isFunction(top.CreateTab)) {
-        top.CreateTab(
-          "App/ZYSoft/ZYSoft.HT/CostFormPage.aspx?" +
-            utils.obj2Url({
-              state: "add",
-              v: new Date() * 1,
-            }),
-          "成本表",
-          "YS100201"
-        );
-      }
-    },
     doExport() {
       this.grid.download(
         "xlsx",
-        "实际成本统计表" + dayjs().format("YYYY-MM-DD") + ".xlsx",
+        "预算成本差异统计表" + dayjs().format("YYYY-MM-DD") + ".xlsx",
         {
           sheetName: "MyData",
         }
@@ -168,7 +155,7 @@ var self = (vm = new Vue({
         FID = item.FID;
       if ($.isFunction(top.CreateTab)) {
         top.CreateTab(
-          "App/ZYSoft/ZYSoft.HT/CostFormPage.aspx?" +
+          "App/ZYSoft/ZYSoft.HT/DiffFormPage.aspx?" +
             utils.obj2Url({
               accountId: FAccountID,
               projectId: FProjectID,
@@ -176,8 +163,8 @@ var self = (vm = new Vue({
               state: "read",
               v: new Date() * 1,
             }),
-          "成本表",
-          "YS100201"
+          "预算成本差异表",
+          "YS100301"
         );
       }
     },
@@ -193,12 +180,13 @@ var self = (vm = new Vue({
             5
         );
       };
+
       self.grid.setData(
         "./BudgetHandler.ashx",
         Object.assign(
           {},
           {
-            SelectApi: "getcostlist",
+            SelectApi: "getdifflist",
           },
           self.form,
           {

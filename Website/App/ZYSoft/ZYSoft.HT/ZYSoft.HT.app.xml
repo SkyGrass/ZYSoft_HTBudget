@@ -2,13 +2,23 @@
 <App id="ZYSoft.HT" name="ZYSoftBudget" appType="Production">
   <Web>
     <Extension Point_id="Ufida.T.EAP.Web.Page.Load">
-      <View id="YSFormPage.aspx"
-            path="App/ZYSoft/ZYSoft.HT/YSFormPage.aspx"
+      <View id="BudgetFormPage.aspx"
+            path="App/ZYSoft/ZYSoft.HT/BudgetFormPage.aspx"
+            class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
+    </Extension>
+     <Extension Point_id="Ufida.T.EAP.Web.Page.Load">
+      <View id="CostFormPage.aspx"
+            path="App/ZYSoft/ZYSoft.HT/CostFormPage.aspx"
             class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
     </Extension>
     <Extension Point_id="Ufida.T.EAP.Web.Page.Load">
-      <View id="JSFormPage.aspx"
-            path="App/ZYSoft/ZYSoft.HT/JSFormPage.aspx"
+      <View id="YSListPage.aspx"
+            path="App/ZYSoft/ZYSoft.HT/BudgetListPage.aspx"
+            class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
+    </Extension>
+    <Extension Point_id="Ufida.T.EAP.Web.Page.Load">
+      <View id="CostListPage.aspx"
+            path="App/ZYSoft/ZYSoft.HT/CostListPage.aspx"
             class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
     </Extension>
   </Web>
