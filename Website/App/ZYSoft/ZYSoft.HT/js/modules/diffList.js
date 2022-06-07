@@ -24,7 +24,8 @@ var self = (vm = new Vue({
       },
     };
   },
-  computed: {},
+  computed: {
+  },
   watch: {},
   methods: {
     openBaseDataDialog(type, title, success) {
@@ -93,12 +94,41 @@ var self = (vm = new Vue({
         },
       });
     },
+    doRefresh() {
+      self.grid.setData(
+        "./BudgetHandler.ashx",
+        Object.assign(
+          {},
+          {
+            SelectApi: "getdifflist",
+          },
+          self.form,
+          {
+            startDate: dayjs(self.form.startDate).format("YYYY-MM-DD"),
+            endDate: dayjs(self.form.endDate).format("YYYY-MM-DD"),
+          }
+        ),
+        "POST"
+      );
+    },
     doExport() {
-      this.grid.download(
-        "xlsx",
-        "预算成本差异统计表" + dayjs().format("YYYY-MM-DD") + ".xlsx",
-        {
-          sheetName: "MyData",
+      if (this.grid.getData().length <= 0) {
+        return layer.msg("没有可以导出的数据", {
+          zIndex: new Date() * 1,
+          icon: 5,
+        });
+      }
+      layer.confirm(
+        "确定要导出列表吗?",
+        { icon: 3, title: "提示" },
+        function (index) {
+          this.grid.download(
+            "xlsx",
+            "预算成本差异统计表" + dayjs().format("YYYY-MM-DD") + ".xlsx",
+            {
+              sheetName: "预算成本差异统计表",
+            }
+          );
         }
       );
     },
@@ -152,13 +182,15 @@ var self = (vm = new Vue({
     onClickDetail(item) {
       var FAccountID = item.FAccountID,
         FProjectID = item.FProjectID,
-        FID = item.FID;
+        FID = item.FID,
+        FYear = item.FYear;
       if ($.isFunction(top.CreateTab)) {
         top.CreateTab(
           "App/ZYSoft/ZYSoft.HT/DiffFormPage.aspx?" +
             utils.obj2Url({
               accountId: FAccountID,
               projectId: FProjectID,
+              year: FYear,
               id: FID,
               state: "read",
               v: new Date() * 1,

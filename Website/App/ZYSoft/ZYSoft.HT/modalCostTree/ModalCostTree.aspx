@@ -12,34 +12,41 @@
     <link href="../css/tabulator.min.css" rel="stylesheet" />
     <link href="./modalCostTree.css" rel="stylesheet" />
     <link href="../css/noborder.css" rel="stylesheet" />
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
-    <div id="app">
+    <div id="app" v-cloak>
         <el-row>
-            <el-col :push="2" :span="20" :pull="2">
+            <el-col :push="1" :span="22" :pull="1">
                 <el-tree ref='tree' :data="clsData" :default-expanded-keys="defaultExpandedKeys" :expand-on-click-node=false :props="defaultProps" node-key="FItemID">
                     <span class="custom-tree-node" slot-scope="node">
                         <span>{{node.data.FItemCode}}-{{ node.data.FItemName }}</span>
                         <el-row style="margin-left: 20px;" :gutter=5>
-
-                            <el-col :span=8>
+                            <el-col :span='node.data.FIsEndNode == 1? 7: 8'>
                                 <div class='contr'><label>数量:</label>
                                     <input :disabled="query.state == 'read'" @focus='onFocus' @input="onInput($event,node.data,'FCostQty')" @change="onChange($event,
-							node.data,'FCostQty')" @blur="onBlur($event,node.data,'FCostQty')" :precision="2" :id="'qty_'+node.data.FItemID" class="txt number_noboard" :value="node.data.FCostQty" placeholder="数量" :min="0" />
+							node.data,'FCostQty')" @blur="onBlur($event,node.data,'FCostQty')" :precision="2" :id="'qty_'+node.data.FItemID" class="txt number_noboard" :value="node.data.FCostQty" :min="0" />
                                 </div>
                             </el-col>
-                            <el-col :span=8>
+                            <el-col :span='node.data.FIsEndNode == 1? 7: 8'>
                                 <div class='contr'><label>单价:</label>
                                     <input :disabled="query.state == 'read'" @focus='onFocus' @input="onInput($event,node.data,'FCostPrice')" @change="onChange($event,
-							node.data,'FCostPrice')" @blur="onBlur($event,node.data,'FCostPrice')" :precision="2" :id="'price_'+node.data.FItemID" class="txt number_noboard" :value="node.data.FCostPrice" placeholder="单价" :min="0" />
+							node.data,'FCostPrice')" @blur="onBlur($event,node.data,'FCostPrice')" :precision="2" :id="'price_'+node.data.FItemID" class="txt number_noboard" :value="node.data.FCostPrice" :min="0" />
                                 </div>
                             </el-col>
-                            <el-col :span=8>
+                            <el-col :span='node.data.FIsEndNode == 1? 7: 8'>
                                 <div class='contr'><label>金额:</label>
                                     <input :disabled="query.state == 'read'" @focus='onFocus' @change="onChange($event,
-							node.data,'FCostSum')" readonly @blur="onBlur($event,node.data,'FCostSum')" :precision="2" :id="'sum_'+node.data.FItemID" class="txt number_noboard" :value="node.data.FCostSum" placeholder=" 总价" :min="0" />
+							node.data,'FCostSum')" readonly @blur="onBlur($event,node.data,'FCostSum')" :precision="2" :id="'sum_'+node.data.FItemID" class="txt number_noboard" :value="node.data.FCostSum" :min="0" />
                                 </div>
+                            </el-col>
+                            <el-col style="width:50px;" v-if='node.data.FIsEndNode == 1'>
+                                <input type="button" style="margin-left:10px" value='明细' @click='checkDetail(node.data)' />
                             </el-col>
                         </el-row>
                     </span>
@@ -59,6 +66,8 @@
     <script src="../js/tabulator.js"></script>
     <script src="../js/utils.js"></script>
     <script src="../js/math/math.min.js"></script>
+    <script src="../js/layui/layui.js"></script>
+    <script src="../js/dialog/dialog.js"></script>
 
     <!-- import bus javascript -->
     <script src="./modalCostTree.js"></script>

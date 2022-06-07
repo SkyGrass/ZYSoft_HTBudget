@@ -10,6 +10,8 @@ Vue.directive("number", {
   },
 });
 
+Vue.mixin(printMixin);
+
 var self = (vm = new Vue({
   el: "#app",
   data() {
@@ -25,7 +27,7 @@ var self = (vm = new Vue({
         billerId: loginUserId,
         manager: "",
         custManager: "",
-
+        year: "",
         custName: "",
         projectName: "",
         billerName: loginName,
@@ -59,9 +61,12 @@ var self = (vm = new Vue({
         addSum: [
           { required: true, message: "增补金额不能为空", trigger: "blur" },
         ],
+        year: [{ required: false, message: "年份不能为空", trigger: "blur" }],
       },
       grids: {},
       activeName: "",
+      yearSign: false,
+      canEditYear: false,
     };
   },
   computed: {
@@ -102,23 +107,12 @@ var self = (vm = new Vue({
         };
       });
     },
-    summary1() {
-      var temp = this.tabs.map(function (m) {
-        return {
-          FGroupCode: m.FGroupCode,
-          FGroupName: m.FGroupName,
-          FSum: m.FChildren.map(function (m) {
-            return Number(m.FBudgetSum);
-          }).reduce(function (total, num) {
-            return total + num;
-          }, 0),
-        };
-      });
-      var r = {};
-      temp.forEach(function (row) {
-        r[row.FGroupName] = row["FSum"];
-      });
-      return r;
+    printObj() {
+      return {
+        FBillType: 1,
+        FAccountID: this.form.accountId,
+        FItemID: this.form.id,
+      };
     },
   },
   watch: {
@@ -128,6 +122,11 @@ var self = (vm = new Vue({
     "form.addSum"(newV, oldV) {
       this.form.totalSum = math.add(newV, this.form.sum);
     },
+    yearSign(newV, oldV) {
+      if (newV) {
+        this.rules.year[0].required = newV;
+      }
+    },
   },
   methods: {
     openBaseDialog(type, title, success) {
@@ -136,7 +135,11 @@ var self = (vm = new Vue({
         url: "./modal/Dialog.aspx",
         onSuccess: function (layero, index) {
           var iframeWin = window[layero.find("iframe")[0]["name"]];
-          iframeWin.init({ layer, dialogType: type });
+          iframeWin.init({
+            layer,
+            dialogType: type,
+            accountId: self.form.accountId,
+          });
         },
         onBtnYesClick: function (index, layero) {
           var iframeWin = window[layero.find("iframe")[0]["name"]];
@@ -164,9 +167,12 @@ var self = (vm = new Vue({
         var result = result[0];
         var id = result.id,
           code = result.code,
-          name = result.name;
+          name = result.name,
+          yearSign = result.YearSign == "是";
         self.form.projectName = name;
         self.form.projectId = id;
+        self.form.contractNo = code;
+        self.yearSign = yearSign;
         self.$refs.form.validateField("projectName");
       });
     },
@@ -207,8 +213,8 @@ var self = (vm = new Vue({
               },
               row,
               function () {
-                item.FBudgetPrice = total.budgetPrice;
                 item.FBudgetQty = total.budgetQty;
+                item.FBudgetPrice = total.budgetPrice;
                 item.FBudgetSum = total.budgetSum;
                 item.FChildren = row;
                 layer.close(index);
@@ -228,7 +234,7 @@ var self = (vm = new Vue({
         async: true,
         data: {
           SelectApi: "getBudgetlist",
-          accountId: query.accountId,
+          accountId: this.form.accountId,
           billId: query.id,
         },
         dataType: "json",
@@ -245,11 +251,18 @@ var self = (vm = new Vue({
             self.form.billerId = result.FBillerID;
             self.form.manager = result.FManager;
             self.form.custManager = result.FCustManager;
+            self.form.year = result.FYear;
 
             self.form.custName = result.FCustName;
             self.form.projectName = result.FProjectName;
             self.form.billerName = result.FBillerName;
             self.form.id = result.FID;
+
+            self.canEditYear =
+              result.FYear != "" &&
+              result.FYear != null &&
+              result.FYear != void 0;
+
             self.doInitBillEntry();
           } else {
             layer.msg(result.msg, { icon: result.icon });
@@ -353,7 +366,16 @@ var self = (vm = new Vue({
                   if (result.state == "success") {
                     layer.close(index);
                     self.query.state = "read";
-                    window.location.search = "?" + utils.obj2Url(self.query);
+                    self.query.id = result.data;
+
+                    if ($.isFunction(top.CreateTab)) {
+                      top.CreateTab(
+                        "App/ZYSoft/ZYSoft.HT/BudgetFormPage.aspx?" +
+                          utils.obj2Url(self.query),
+                        "预算表",
+                        "YS1001"
+                      );
+                    }
                   }
                   layer.msg(result.msg, { icon: result.icon });
                 },

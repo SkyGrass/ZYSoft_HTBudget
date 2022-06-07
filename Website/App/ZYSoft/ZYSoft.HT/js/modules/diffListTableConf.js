@@ -32,16 +32,24 @@ var tableConf = [
     headerSort: false,
   },
   {
+    title: "年份",
+    field: "FYear",
+    headerHozAlign: "center",
+    hozAlign: "center",
+    width: 80,
+    headerSort: false,
+  },
+  {
     title: "合同号",
     field: "FContractNo",
     headerHozAlign: "center",
     hozAlign: "center",
     width: 150,
-    headerSort: false,
+    headerSort: false
   },
   {
     title: "预算合同金额",
-    field: "FSum",
+    field: "FBudgetSum",
     headerHozAlign: "center",
     hozAlign: "right",
     width: 120,
@@ -49,7 +57,7 @@ var tableConf = [
   },
   {
     title: "预算增补合同金额",
-    field: "FAddSum",
+    field: "FBudgetAddSum",
     headerHozAlign: "center",
     hozAlign: "right",
     width: 120,
@@ -57,7 +65,7 @@ var tableConf = [
   },
   {
     title: "预算总金额",
-    field: "FTotalSum",
+    field: "FBudgetTotalSum",
     headerHozAlign: "center",
     hozAlign: "right",
     width: 120,

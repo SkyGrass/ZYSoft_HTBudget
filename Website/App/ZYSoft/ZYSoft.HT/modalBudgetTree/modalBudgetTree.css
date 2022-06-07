@@ -16,6 +16,12 @@ body {
   height: 44px;
 }
 
+.el-tree-node:focus>.el-tree-node__content {
+  color: #000 !important;
+  font-weight: bold !important;
+}
+
+
 .inp {
   margin-left: 10px;
   border: 1px solid #333;

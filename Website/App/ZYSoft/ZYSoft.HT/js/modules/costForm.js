@@ -10,6 +10,7 @@ Vue.directive("number", {
   },
 });
 
+Vue.mixin(printMixin);
 var self = (vm = new Vue({
   el: "#app",
   data() {
@@ -25,6 +26,9 @@ var self = (vm = new Vue({
         billerId: loginUserId,
         manager: "",
         custManager: "",
+        endDate: "",
+        projectType: "",
+        year: "",
 
         custName: "",
         projectName: "",
@@ -32,7 +36,7 @@ var self = (vm = new Vue({
         id: -1,
       },
       query: {},
-      list: [],
+      list: [{ FGroupCode: "", FGroupName: "增补合同", FIsSp: 1 }],
       rules: {
         accountName: [
           { required: true, message: "帐套名称不可为空!", trigger: "blur" },
@@ -59,9 +63,20 @@ var self = (vm = new Vue({
         addSum: [
           { required: true, message: "增补金额不能为空", trigger: "blur" },
         ],
+        endDate: [
+          { required: true, message: "竣工日期不能为空", trigger: "blur" },
+        ],
+        projectType: [
+          { required: true, message: "项目类型不能为空", trigger: "blur" },
+        ],
       },
       grids: {},
+      contractList: [],
       activeName: "",
+      offset: {
+        top: 0,
+        left: 0,
+      },
     };
   },
   computed: {
@@ -74,34 +89,49 @@ var self = (vm = new Vue({
         )
       );
       this.activeName = group[0];
-      return group.map(function (g) {
-        var r = self.list.filter(function (f) {
-          return f.FGroupCode == g;
+      if (self.list == void 0) {
+        return [];
+      } else
+        return group.map(function (g) {
+          var r = self.list.filter(function (f) {
+            return f.FGroupCode == g;
+          });
+          return {
+            FIsSp: r[0].FIsSp || 0,
+            FTableId: "table_" + r[0].FGroupCode,
+            FGroupCode: r[0].FGroupCode,
+            FGroupName: `${r[0].FGroupCode} ${r[0].FGroupName}`,
+            FChildren: r.map(function (m) {
+              m.FChildren = [];
+              return m;
+            }),
+          };
         });
-        return {
-          FTableId: "table_" + r[0].FGroupCode,
-          FGroupCode: r[0].FGroupCode,
-          FGroupName: `${r[0].FGroupCode} ${r[0].FGroupName}`,
-          FChildren: r.map(function (m) {
-            m.FChildren = [];
-            return m;
-          }),
-        };
-      });
     },
     summary() {
-      return this.tabs.map(function (m) {
-        return {
-          FGroupCode: m.FGroupCode,
-          FGroupName: m.FGroupName,
-          FSum: m.FChildren.map(function (m) {
-            return Number(m.FCostSum);
-          }).reduce(function (total, num) {
-            return total + num;
-          }, 0),
-        };
-      });
-    }, 
+      return this.tabs
+        .filter(function (f) {
+          return f.FIsSp == 0;
+        })
+        .map(function (m) {
+          return {
+            FGroupCode: m.FGroupCode,
+            FGroupName: m.FGroupName,
+            FSum: m.FChildren.map(function (m) {
+              return Number(m.FCostSum);
+            }).reduce(function (total, num) {
+              return total + num;
+            }, 0),
+          };
+        });
+    },
+    printObj() {
+      return {
+        FBillType: 2,
+        FAccountID: this.form.accountId,
+        FItemID: this.form.id,
+      };
+    },
   },
   watch: {
     "form.sum"(newV, oldV) {
@@ -118,7 +148,11 @@ var self = (vm = new Vue({
         url: "./modal/Dialog.aspx",
         onSuccess: function (layero, index) {
           var iframeWin = window[layero.find("iframe")[0]["name"]];
-          iframeWin.init({ layer, dialogType: type });
+          iframeWin.init({
+            layer,
+            dialogType: type,
+            accountId: self.form.accountId,
+          });
         },
         onBtnYesClick: function (index, layero) {
           var iframeWin = window[layero.find("iframe")[0]["name"]];
@@ -152,9 +186,6 @@ var self = (vm = new Vue({
         self.$refs.form.validateField("projectName");
       });
     },
-    onTabClick(tab, event) {
-      //  console.log(tab);
-    },
     showGroup(item) {
       var title = item.FItemName;
       openDialog({
@@ -163,8 +194,11 @@ var self = (vm = new Vue({
           "./modalCostTree/modalCostTree.aspx?" +
           utils.obj2Url({ v: new Date() * 1, state: self.query.state }),
         onSuccess: function (layero, index) {
+          layer.setTop(layero);
+          self.offset.top = $(layero).offset().top - 80;
+          self.offset.left = $(layero).offset().left + 40;
           var iframeWin = window[layero.find("iframe")[0]["name"]];
-          iframeWin.init({ layer, group: item });
+          iframeWin.init({ layer, group: item, parent: self });
         },
         btn: this.query.state == "read" ? [] : ["确定", "取消"],
         onBtnYesClick: function (index, layero) {
@@ -203,6 +237,25 @@ var self = (vm = new Vue({
     showGroupDetail(item) {
       this.activeName = item.FGroupCode;
     },
+    showNodeDetail(node) {
+      var title = "材料明细";
+      if (node.FItemType == "费用") {
+        title = "费用明细";
+      }
+      openDialog({
+        title: title,
+        url: "./modalCostDetail/ModalCostDetail.aspx",
+        offset: [self.offset.top, self.offset.left],
+        btn: ["确定"],
+        onSuccess: function (layero, index) {
+          var iframeWin = window[layero.find("iframe")[0]["name"]];
+          iframeWin.init({ node });
+        },
+        onBtnYesClick: function (index, layero) {
+          layer.close(index);
+        },
+      });
+    },
     doInitBill(query) {
       $.ajax({
         type: "POST",
@@ -210,7 +263,7 @@ var self = (vm = new Vue({
         async: true,
         data: {
           SelectApi: "getCostlist",
-          accountId: query.accountId,
+          accountId: this.form.accountId,
           billId: query.id,
         },
         dataType: "json",
@@ -227,6 +280,13 @@ var self = (vm = new Vue({
             self.form.billerId = result.FBillerID;
             self.form.manager = result.FManager;
             self.form.custManager = result.FCustManager;
+            self.form.year = result.FYear;
+
+            self.form.endDate =
+              result.FEndDate != null && result != void 0
+                ? new dayjs(result.FEndDate).format("YYYY-MM-DD HH:mm:ss")
+                : "";
+            self.form.projectType = result.FProjectType;
 
             self.form.custName = result.FCustName;
             self.form.projectName = result.FProjectName;
@@ -255,7 +315,7 @@ var self = (vm = new Vue({
         dataType: "json",
         success: function (result) {
           if (result.state == "success") {
-            self.list = result.data;
+            self.list = self.list.concat(result.data);
           }
           layer.close(index);
         },
@@ -265,87 +325,25 @@ var self = (vm = new Vue({
         },
       });
     },
-    doGenCost() {
-      if (this.form.custId == "" || this.form.projectId == "") {
-        return layer.msg("请先选择客户和项目!", { icon: 5 });
-      } else {
-        layer.confirm(
-          "确定要查看预算单明细吗?",
-          { icon: 3, title: "提示" },
-          function (index) {
-            self.doInitBillEntry(index);
-          }
-        );
-      }
-    },
-    doCancelEdit() {
-      this.query.state = "read";
-    },
-    doEdit() {
-      this.query.state = "edit";
-    },
-    doSaveItem(main, forms, success) {
+    doInitContract(query) {
       $.ajax({
         type: "POST",
         url: "./BudgetHandler.ashx",
         async: true,
         data: {
-          SelectApi: "savecostItem",
-          mainStr: JSON.stringify(main),
-          formStr: JSON.stringify(forms),
+          SelectApi: "getContractlist",
+          accountId: this.form.accountId,
+          id: query.id,
         },
         dataType: "json",
         success: function (result) {
           if (result.state == "success") {
-            success && success();
+            self.contractList = result.data;
           }
-          layer.msg(result.msg, { icon: result.icon });
         },
         error: function () {
-          layer.msg("生成成本明细发生错误!", { icon: 5 });
+          layer.msg("查询增补合同发生错误!", { icon: 5 });
         },
-      });
-    },
-    doSave() {
-      this.$refs["form"].validate(function (valid) {
-        if (valid) {
-          if (math.add(self.form.sum, 0) == 0) {
-            return layer.msg("预算金额应该大于0!", { icon: 5 });
-          }
-          if (self.tabs.length <= 0) {
-            return layer.msg("请先生成预算明细再保存!", { icon: 5 });
-          }
-          layer.confirm(
-            "确定要保存实际成本单吗?",
-            { icon: 3, title: "提示" },
-            function (index) {
-              $.ajax({
-                type: "POST",
-                url: "./BudgetHandler.ashx",
-                async: true,
-                data: Object.assign(
-                  {},
-                  {
-                    SelectApi: "savecost",
-                  },
-                  self.form
-                ),
-                dataType: "json",
-                success: function (result) {
-                  if (result.state == "success") {
-                    layer.close(index);
-                  }
-                  layer.msg(result.msg, { icon: result.icon });
-                },
-                error: function () {
-                  layer.msg("生成预算明细发生错误!", { icon: 5 });
-                },
-              });
-            }
-          );
-        } else {
-          return false;
-        }
       });
     },
   },
@@ -356,6 +354,7 @@ var self = (vm = new Vue({
     }
     if (this.query.state == "read") {
       this.doInitBill(this.query);
+      this.doInitContract(this.query);
     }
   },
 }));

@@ -25,7 +25,8 @@ function init(opt) {
             accountId: group.FAccountID,
             projectId: group.FProjectID,
             clsCode: group.FItemCode,
-            typeId: 3,
+            groupCode: group.FGroupCode,
+            year: group.FYear,
           },
           dataType: "json",
           success: function (result) {
@@ -35,7 +36,7 @@ function init(opt) {
                   return f.entryId == m.FEntryID;
                 });
                 if (p.length > 0) {
-                  m.FBudgetQty = p[0].costQty;
+                  m.FBudgetQty = p[0].budgetQty;
                   m.FBudgetSum = p[0].budgetSum;
 
                   m.FCostQty = p[0].costQty;
@@ -65,9 +66,6 @@ function init(opt) {
       formatData(root, data) {
         data.forEach(function (node) {
           if (node.FParentItemID == root.FItemID) {
-            if (!Object.keys(root).includes("children")) {
-              root.children = [];
-            }
             if (node.FBudgetQty == 0) {
               node.FBudgetQty = "";
             }
@@ -81,12 +79,14 @@ function init(opt) {
               node.FCostSum = "";
             }
             if (node.FDiffQty == 0) {
-              node.FCostQty = "";
+              node.FDiffQty = "";
             }
             if (node.FDiffSum == 0) {
               node.FDiffSum = "";
             }
-
+            if (!Object.keys(root).includes("children")) {
+              root.children = [];
+            }
             root.children.push(node);
             self.formatData(node, data);
           }

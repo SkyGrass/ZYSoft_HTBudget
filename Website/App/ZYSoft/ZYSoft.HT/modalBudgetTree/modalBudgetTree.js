@@ -25,19 +25,34 @@ function init(opt) {
             accountId: group.FAccountID,
             projectId: group.FProjectID,
             clsCode: group.FItemCode,
-            typeId: 1,
+            groupCode: group.FGroupCode,
+            year: group.FYear,
           },
           dataType: "json",
           success: function (result) {
             if (result.state == "success") {
               result = result.data.map(function (m, i) {
+                if (i == 0) {
+                  if (m.FBudgetQty == 0) {
+                    m.FBudgetQty = "";
+                  }
+                  if (m.FBudgetPrice == 0) {
+                    m.FBudgetPrice = "";
+                  }
+                  if (m.FBudgetSum == 0) {
+                    m.FBudgetSum = "";
+                  }
+                  m.FIsInv = m.FItemType == "存货";
+                  m.FIsFee = m.FItemType == "费用";
+                }
                 var p = group.FChildren.filter(function (f) {
                   return f.entryId == m.FEntryID;
                 });
                 if (p.length > 0) {
-                  m.FBudgetPrice = p[0].budgetPrice; 
-                  m.FBudgetQty = p[0].budgetQty; 
-                  m.FBudgetSum = p[0].budgetSum;
+                  m.FBudgetPrice =
+                    p[0].budgetPrice == "0" ? "" : p[0].budgetPrice;
+                  m.FBudgetQty = p[0].budgetQty == "0" ? "" : p[0].budgetQty;
+                  m.FBudgetSum = p[0].budgetSum == "0" ? "" : p[0].budgetSum;
                 }
                 if (i == 0) {
                   self.defaultExpandedKeys.push(m.FItemID);
@@ -59,9 +74,6 @@ function init(opt) {
       formatData(root, data) {
         data.forEach(function (node) {
           if (node.FParentItemID == root.FItemID) {
-            if (!Object.keys(root).includes("children")) {
-              root.children = [];
-            }
             if (node.FBudgetQty == 0) {
               node.FBudgetQty = "";
             }
@@ -71,6 +83,11 @@ function init(opt) {
             if (node.FBudgetSum == 0) {
               node.FBudgetSum = "";
             }
+            if (!Object.keys(root).includes("children")) {
+              root.children = [];
+            }
+            node.FIsInv = node.FItemType == "存货";
+            node.FIsFee = node.FItemType == "费用";
             root.children.push(node);
             self.formatData(node, data);
           }
@@ -99,10 +116,12 @@ function init(opt) {
       },
       onChange(e, data, field) {
         var curNode = this.$refs.tree.getNode(data.FItemID);
+        var field1 = field == "FBudgetPrice" ? "FBudgetQty" : "FBudgetPrice";
         if (!curNode.isLeaf) {
           for (var index = 0; index < curNode.childNodes.length; index++) {
             var node = curNode.childNodes[index];
             node.data[field] = "";
+            node.data[field1] = "";
             this.onChange(e, node.data, field);
           }
         }
@@ -115,7 +134,7 @@ function init(opt) {
           for (var index = 0; index < parent.childNodes.length; index++) {
             var node = parent.childNodes[index];
             var cId = "",
-              val = "0";
+              val = "";
             if (field == "FBudgetQty") {
               cId = "qty_" + node.key;
               val = document.getElementById(cId).value;
@@ -136,10 +155,11 @@ function init(opt) {
                     14
                   );
           }
-          parent.data[field] = total;
+          parent.data[field] = total == 0 ? "" : total;
 
           setTimeout(function () {
             self.changeParentNode(parent.key, field);
+            self.calcPrice();
           }, 200);
         }
       },
@@ -176,6 +196,21 @@ function init(opt) {
         if (!curNode.isLeaf) {
           this.onChange({}, curNode.data, "FBudgetSum");
         }
+      },
+      calcPrice() {
+        var root = self.clsData[0];
+        var rootId = root["FItemID"];
+        var qty = document.getElementById("qty_" + rootId).value;
+        var sum = document.getElementById("sum_" + rootId).value;
+        var price = math.format(
+          math.divide(
+            math.bignumber(sum == "" ? "0" : sum),
+            math.bignumber(qty == "" ? "0" : qty)
+          ),
+          14
+        );
+        $("#price_" + rootId).val(Number(price).toFixed(2));
+        self.clsData[0].FBudgetPrice = Number(price).toFixed(2);
       },
     },
     mounted() {

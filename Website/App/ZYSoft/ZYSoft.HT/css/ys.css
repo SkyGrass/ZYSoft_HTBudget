@@ -19,6 +19,7 @@
  }
 
  .form-item-max .el-form-item__content {
+     display: inline-flex;
      width: 200px;
  }
 
@@ -27,7 +28,14 @@
  }
 
  .form-item-full .el-form-item__content {
+     display: inline-flex;
      width: 220px;
+ }
+
+ .form-item-all,
+ .form-item-all .el-form-item__content {
+     display: inline-flex;
+     width: 100% !important;
  }
 
  .el-card__body {
@@ -44,4 +52,8 @@
 
  input:disabled {
      background-color: #fff !important;
+ }
+
+ [v-clock] {
+     display: none;
  }

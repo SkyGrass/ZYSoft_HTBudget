@@ -1,25 +1,45 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <App id="ZYSoft.HT" name="ZYSoftBudget" appType="Production">
-  <Web>
-    <Extension Point_id="Ufida.T.EAP.Web.Page.Load">
-      <View id="BudgetFormPage.aspx"
-            path="App/ZYSoft/ZYSoft.HT/BudgetFormPage.aspx"
-            class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
-    </Extension>
-     <Extension Point_id="Ufida.T.EAP.Web.Page.Load">
-      <View id="CostFormPage.aspx"
-            path="App/ZYSoft/ZYSoft.HT/CostFormPage.aspx"
-            class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
-    </Extension>
-    <Extension Point_id="Ufida.T.EAP.Web.Page.Load">
-      <View id="YSListPage.aspx"
-            path="App/ZYSoft/ZYSoft.HT/BudgetListPage.aspx"
-            class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
-    </Extension>
-    <Extension Point_id="Ufida.T.EAP.Web.Page.Load">
-      <View id="CostListPage.aspx"
-            path="App/ZYSoft/ZYSoft.HT/CostListPage.aspx"
-            class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
-    </Extension>
-  </Web>
+	<Web>
+		<Extension Point_id="Ufida.T.EAP.Web.Page.Load">
+			<View id="BudgetFormPage.aspx"
+				  path="App/ZYSoft/ZYSoft.HT/BudgetFormPage.aspx"
+				  class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
+		</Extension>
+		<Extension Point_id="Ufida.T.EAP.Web.Page.Load">
+			<View id="CostFormPage.aspx"
+				  path="App/ZYSoft/ZYSoft.HT/CostFormPage.aspx"
+				  class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
+		</Extension>
+		<Extension Point_id="Ufida.T.EAP.Web.Page.Load">
+			<View id="BudgetListPage.aspx"
+				  path="App/ZYSoft/ZYSoft.HT/BudgetListPage.aspx"
+				  class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
+		</Extension>
+		<Extension Point_id="Ufida.T.EAP.Web.Page.Load">
+			<View id="CostListPage.aspx"
+				  path="App/ZYSoft/ZYSoft.HT/CostListPage.aspx"
+				  class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
+		</Extension>
+		<Extension Point_id="Ufida.T.EAP.Web.Page.Load">
+			<View id="DiffListPage.aspx"
+				  path="App/ZYSoft/ZYSoft.HT/DiffListPage.aspx"
+				  class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
+		</Extension>
+		<Extension Point_id="Ufida.T.EAP.Web.Page.Load">
+			<View id="ProjectProfitPage.aspx"
+				  path="App/ZYSoft/ZYSoft.HT/ProjectProfitPage.aspx"
+				  class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
+		</Extension>
+		<Extension Point_id="Ufida.T.EAP.Web.Page.Load">
+			<View id="JSListPage.aspx"
+				  path="App/ZYSoft/ZYSoft.HT/JSListPage.aspx"
+				  class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
+		</Extension>
+		<Extension Point_id="Ufida.T.EAP.Web.Page.Load">
+			<View id="JSFormPage.aspx"
+				  path="App/ZYSoft/ZYSoft.HT/JSFormPage.aspx"
+				  class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
+		</Extension>
+	</Web>
 </App>

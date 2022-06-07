@@ -1,6 +1,7 @@
 var dialog = {};
 function init(opt) {
   var group = opt.group;
+  var parent = opt.parent;
   var self = (dialog = new Vue({
     el: "#app",
     data() {
@@ -25,18 +26,32 @@ function init(opt) {
             accountId: group.FAccountID,
             projectId: group.FProjectID,
             clsCode: group.FItemCode,
-            typeId: 2,
+            groupCode: group.FGroupCode,
+            year: group.FYear,
           },
           dataType: "json",
           success: function (result) {
             if (result.state == "success") {
               result = result.data.map(function (m, i) {
+                if (i == 0) {
+                  if (m.FCostQty == 0) {
+                    m.FCostQty = "";
+                  }
+                  if (m.FCostPrice == 0) {
+                    m.FCostPrice = "";
+                  }
+                  if (m.FCostSum == 0) {
+                    m.FCostSum = "";
+                  }
+                  m.FIsInv = m.FItemType == "存货";
+                  m.FIsFee = m.FItemType == "费用";
+                }
                 var p = group.FChildren.filter(function (f) {
                   return f.entryId == m.FEntryID;
                 });
                 if (p.length > 0) {
-                  m.FCostPrice = p[0].costPrice; 
-                  m.FCostQty = p[0].costQty; 
+                  m.FCostPrice = p[0].costPrice;
+                  m.FCostQty = p[0].costQty;
                   m.FCostSum = p[0].costSum;
                 }
                 if (i == 0) {
@@ -59,9 +74,6 @@ function init(opt) {
       formatData(root, data) {
         data.forEach(function (node) {
           if (node.FParentItemID == root.FItemID) {
-            if (!Object.keys(root).includes("children")) {
-              root.children = [];
-            }
             if (node.FCostQty == 0) {
               node.FCostQty = "";
             }
@@ -71,6 +83,10 @@ function init(opt) {
             if (node.FCostSum == 0) {
               node.FCostSum = "";
             }
+            if (!Object.keys(root).includes("children")) {
+              root.children = [];
+            }
+
             root.children.push(node);
             self.formatData(node, data);
           }
@@ -176,6 +192,9 @@ function init(opt) {
         if (!curNode.isLeaf) {
           this.onChange({}, curNode.data, "FCostSum");
         }
+      },
+      checkDetail(node) {
+        parent.showNodeDetail(node);
       },
     },
     mounted() {

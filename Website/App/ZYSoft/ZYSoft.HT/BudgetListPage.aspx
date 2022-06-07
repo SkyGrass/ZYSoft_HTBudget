@@ -7,7 +7,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>预算表统计表</title>
+    <title>预算单列表</title>
     <!-- 引入样式 -->
     <link rel="stylesheet" href="./css/element-ui-index.css" />
     <link rel="stylesheet" href="./css/theme-chalk-index.css" />
@@ -16,13 +16,18 @@
     <link href="./css/ys.css" rel="stylesheet" />
     <link href="./css/noborder.css" rel="stylesheet" />
     <link href="./css/tool.css" rel="stylesheet" />
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
     <asp:Label ID="lblUserName" runat="server" Visible="false"></asp:Label>
     <asp:Label ID="lbUserId" runat="server" Visible="false"></asp:Label>
     <asp:Label ID="lbAccount" runat="server" Visible="false"></asp:Label>
-    <div id="app">
+    <div id="app" v-cloak>
         <el-container class="contain">
             <el-header id="header" style="height: inherit !important;padding:0 !important">
                 <div id="toolbarContainer" class="t-page-tb" style="position: relative; z-index: 999;">
@@ -39,6 +44,11 @@
                                 </a>
                             </li>
                             <li tabindex="2">
+                                <a href="javascript:void(0)" @click='doRefresh'>
+                                    <span class="tb-item"><span class="tb-text" title="刷新">刷新</span></span>
+                                </a>
+                            </li>
+                            <li tabindex="3">
                                 <a href="javascript:void(0)" @click='doExport'>
                                     <span class="tb-item"><span class="tb-text" title="导出">导出</span></span>
                                 </a>
@@ -50,7 +60,7 @@
             <el-main>
                 <el-row :gutter="5">
                     <el-col :span=14 :push=5 :pull=5 style='text-align:center'>
-                        <h1 id='title'>预算表统计表</h1>
+                        <h1 id='title'>预算单列表</h1>
                     </el-col>
                 </el-row>
             </el-main>
@@ -75,7 +85,6 @@
     <script src="./js/jquery.min.js"></script>
     <script src="./js/luxon.min.js"></script>
     <script src="./js/dayjs.min.js"></script>
-    <script src="./js/tableconfig.js"></script>
     <script src="./js/vue.js"></script>
     <script src="./js/element-ui-index.js"></script>
     <script src="./js/tabulator.js"></script>

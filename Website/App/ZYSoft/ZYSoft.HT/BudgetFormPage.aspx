@@ -16,13 +16,18 @@
 	<link href="./css/ys.css" rel="stylesheet" />
 	<link href="./css/noborder.css" rel="stylesheet" />
 	<link href="./css/tool.css" rel="stylesheet" />
+	<style>
+		[v-cloak] {
+			display: none;
+		}
+	</style>
 </head>
 
 <body>
 	<asp:Label ID="lblUserName" runat="server" Visible="false"></asp:Label>
 	<asp:Label ID="lbUserId" runat="server" Visible="false"></asp:Label>
 	<asp:Label ID="lbAccount" runat="server" Visible="false"></asp:Label>
-	<div id="app">
+	<div id="app" v-cloak>
 		<el-container class="contain">
 			<el-header id="header" style="height: inherit !important;padding:0 !important">
 				<div id="toolbarContainer" class="t-page-tb" style="position: relative; z-index: 999;">
@@ -43,9 +48,25 @@
 									<span class="tb-item"><span class="tb-text" title="编辑">编辑</span></span>
 								</a>
 							</li>
-							<li tabindex="1" v-if="query.state =='edit'|| query.state =='add'">
+							<li tabindex="2" v-if="query.state =='edit'|| query.state =='add'">
 								<a href="javascript:void(0)" @click='doSave'>
 									<span class="tb-item"><span class="tb-text" title="保存">保存</span></span>
+								</a>
+							</li>
+
+							<li tabindex="3" v-if="query.state =='read'">
+								<a href="javascript:void(0)" @click='doSign'>
+									<span class="tb-item"><span class="tb-text" title="设计">设计</span></span>
+								</a>
+							</li>
+							<li tabindex="4" v-if="query.state =='read'">
+								<a href="javascript:void(0)" @click='doPreView'>
+									<span class="tb-item"><span class="tb-text" title="预览">预览</span></span>
+								</a>
+							</li>
+							<li tabindex="5" v-if="query.state =='read'">
+								<a href="javascript:void(0)" @click='doPrint'>
+									<span class="tb-item"><span class="tb-text" title="打印">打印</span></span>
 								</a>
 							</li>
 						</ul>
@@ -53,28 +74,33 @@
 				</div>
 			</el-header>
 			<el-main>
-				<el-row :gutter="5">
-					<el-col :span=14 style="overflow-x:auto">
+				<el-row :gutter="10">
+					<el-col :span=16 style="overflow-x:auto">
 						<el-form ref="form" :rules="rules" :model="form" label-width="100px" size="mini" inline>
 							<table>
 								<tr>
 									<td>
 										<el-form-item label="客户" class="form-item-max" prop='custName'>
-											<el-input :disabled="query.state =='read' || query.state =='edit'" clearable style="width:100%" v-model="form.custName" readonly placeholder="请选择客户" class="noBorder">
+											<el-input :readonly="query.state =='read' || query.state =='edit'" clearable style="width:100%" v-model="form.custName" placeholder="请选择客户" class="noBorder">
 												<i class="el-icon-search" slot='suffix' @click='openCustom' v-if="query.state =='edit' || query.state =='add'"></i>
 											</el-input>
 										</el-form-item>
 									</td>
 									<td>
 										<el-form-item label="项目" class="form-item-max" prop='projectName'>
-											<el-input :disabled="query.state =='read' || query.state =='edit'" clearable style="width:100%" v-model="form.projectName" readonly placeholder="请选择项目" class="noBorder">
+											<el-input :readonly="query.state =='read' || query.state =='edit'" clearable style="width:100%" v-model="form.projectName" placeholder="请选择项目" class="noBorder">
 												<i class="el-icon-search" slot='suffix' @click='openProject' v-if="query.state =='edit' || query.state =='add'"></i>
 											</el-input>
 										</el-form-item>
 									</td>
 									<td>
+										<el-form-item label="年份" class="form-item-max" prop='year'>
+											<el-input :readonly="!canEditYear || query.state =='read'" clearable style="width:100%" v-model="form.year" placeholder="请填写年份" class="noBorder"></el-input>
+										</el-form-item>
+									</td>
+									<td>
 										<el-form-item label="合同号" class="form-item-max" prop='contractNo'>
-											<el-input :disabled="query.state =='read'" clearable style="width:100%" v-model="form.contractNo" placeholder="请填写合同号" class="noBorder"></el-input>
+											<el-input :readonly="query.state =='read'" clearable style="width:100%" v-model="form.contractNo" placeholder="请填写合同号" class="noBorder"></el-input>
 										</el-form-item>
 									</td>
 								</tr>
@@ -94,28 +120,28 @@
 											<el-input-number style="width:100%;" disabled :controls=false v-model="form.totalSum" :min=0 :precision="2" placeholder="请填写增补金额" class="noBorder"></el-input-number>
 										</el-form-item>
 									</td>
+									<td>
+										<el-form-item label="制单人" class="form-item-max" prop='billerName'>
+											<el-input :readonly="query.state =='read'" style="width:100%" v-model="form.billerName" readonly placeholder="请填写制单人" class="noBorder"></el-input>
+										</el-form-item>
+									</td>
 								</tr>
 								<tr>
 									<td>
 										<el-form-item label="项目经理" class="form-item-max" prop='manager'>
-											<el-input :disabled="query.state =='read'" clearable style="width:100%" v-model="form.manager" placeholder="请填写项目经理" class="noBorder"></el-input>
+											<el-input :readonly="query.state =='read'" clearable style="width:100%" v-model="form.manager" placeholder="请填写项目经理" class="noBorder"></el-input>
 										</el-form-item>
 									</td>
 									<td>
 										<el-form-item label="客户项目经理" class="form-item-max" prop='custManager'>
-											<el-input :disabled="query.state =='read'" clearable style="width:100%" v-model="form.custManager" placeholder="请填写客户项目经理" class="noBorder"></el-input>
-										</el-form-item>
-									</td>
-									<td>
-										<el-form-item label="制单人" class="form-item-max" prop='billerName'>
-											<el-input :disabled="query.state =='read'" style="width:100%" v-model="form.billerName" readonly placeholder="请填写制单人" class="noBorder"></el-input>
+											<el-input :readonly="query.state =='read'" clearable style="width:100%" v-model="form.custManager" placeholder="请填写客户项目经理" class="noBorder"></el-input>
 										</el-form-item>
 									</td>
 								</tr>
 							</table>
 						</el-form>
 					</el-col>
-					<el-col :span=8 v-if="summary.length>0" style="height:150px;overflow-y:scroll">
+					<el-col :span=7 v-if="summary.length>0" style="height:150px;overflow-y:scroll">
 						<table border='1' style="text-align: center">
 							<thead>
 								<tr>
@@ -199,7 +225,9 @@
 	</script>
 
 	<!-- import bus javascript -->
-	<script src="./js/modules/budgetForm.js"></script> 
+
+	<script src="./js/printMixin.js"></script>
+	<script src="./js/modules/budgetForm.js"></script>
 </body>
 
 </html>

@@ -1,5 +1,5 @@
 var dialog = {};
-function init(opt) {
+function init(opt) { 
   var self = (dialog = new Vue({
     el: "#app",
     data() {
@@ -66,7 +66,7 @@ function init(opt) {
           async: true,
           data: {
             SelectApi: method,
-            accountId: "250116",
+            accountId: opt.accountId,
           },
           dataType: "json",
           success: function (result) {

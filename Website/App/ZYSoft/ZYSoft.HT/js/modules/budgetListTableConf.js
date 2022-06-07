@@ -32,6 +32,14 @@ var tableConf = [
     headerSort: false,
   },
   {
+    title: "年份",
+    field: "FYear",
+    headerHozAlign: "center",
+    hozAlign: "center",
+    width: 80,
+    headerSort: false,
+  },
+  {
     title: "合同号",
     field: "FContractNo",
     headerHozAlign: "center",

@@ -106,12 +106,41 @@ var self = (vm = new Vue({
         );
       }
     },
+    doRefresh() {
+      self.grid.setData(
+        "./BudgetHandler.ashx",
+        Object.assign(
+          {},
+          {
+            SelectApi: "getcostlist",
+          },
+          self.form,
+          {
+            startDate: dayjs(self.form.startDate).format("YYYY-MM-DD"),
+            endDate: dayjs(self.form.endDate).format("YYYY-MM-DD"),
+          }
+        ),
+        "POST"
+      );
+    },
     doExport() {
-      this.grid.download(
-        "xlsx",
-        "实际成本统计表" + dayjs().format("YYYY-MM-DD") + ".xlsx",
-        {
-          sheetName: "MyData",
+      if (this.grid.getData().length <= 0) {
+        return layer.msg("没有可以导出的数据", {
+          zIndex: new Date() * 1,
+          icon: 5,
+        });
+      }
+      layer.confirm(
+        "确定要导出列表吗?",
+        { icon: 3, title: "提示" },
+        function (index) {
+          this.grid.download(
+            "xlsx",
+            "实际成本统计表" + dayjs().format("YYYY-MM-DD") + ".xlsx",
+            {
+              sheetName: "实际成本统计表",
+            }
+          );
         }
       );
     },

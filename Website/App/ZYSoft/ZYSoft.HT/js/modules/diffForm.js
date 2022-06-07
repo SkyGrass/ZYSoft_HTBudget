@@ -10,6 +10,7 @@ Vue.directive("number", {
   },
 });
 
+Vue.mixin(printMixin);
 var self = (vm = new Vue({
   el: "#app",
   data() {
@@ -25,6 +26,9 @@ var self = (vm = new Vue({
         billerId: loginUserId,
         manager: "",
         custManager: "",
+        endDate: "",
+        projectType: "",
+        year: "",
 
         custName: "",
         projectName: "",
@@ -58,6 +62,12 @@ var self = (vm = new Vue({
         sum: [{ required: true, message: "金额不能为空", trigger: "blur" }],
         addSum: [
           { required: true, message: "增补金额不能为空", trigger: "blur" },
+        ],
+        endDate: [
+          { required: true, message: "竣工日期不能为空", trigger: "blur" },
+        ],
+        projectType: [
+          { required: true, message: "项目类型不能为空", trigger: "blur" },
         ],
       },
       grids: {},
@@ -112,13 +122,26 @@ var self = (vm = new Vue({
         };
       });
     },
+    printObj() {
+      return {
+        FBillType: 3,
+        FAccountID: this.form.accountId,
+        FItemID: this.form.id,
+      };
+    },
   },
   watch: {
     "form.sum"(newV, oldV) {
-      this.form.totalSum = math.add(newV, this.form.addSum);
+      this.form.totalSum = math.add(
+        newV == void 0 ? "0" : newV,
+        this.form.addSum == void 0 ? "0" : this.form.addSum
+      );
     },
     "form.addSum"(newV, oldV) {
-      this.form.totalSum = math.add(newV, this.form.sum);
+      this.form.totalSum = math.add(
+        newV == void 0 ? "0" : newV,
+        this.form.sum == void 0 ? "0" : this.form.sum
+      );
     },
   },
   methods: {
@@ -128,7 +151,11 @@ var self = (vm = new Vue({
         url: "./modal/Dialog.aspx",
         onSuccess: function (layero, index) {
           var iframeWin = window[layero.find("iframe")[0]["name"]];
-          iframeWin.init({ layer, dialogType: type });
+          iframeWin.init({
+            layer,
+            dialogType: type,
+            accountId: self.form.accountId,
+          });
         },
         onBtnYesClick: function (index, layero) {
           var iframeWin = window[layero.find("iframe")[0]["name"]];
@@ -169,7 +196,7 @@ var self = (vm = new Vue({
       var title = item.FItemName;
       openDialog({
         title: title,
-        area: ["800px", "500px"],
+        area: ["70%", "500px"],
         url:
           "./modalDiffTree/ModalDiffTree.aspx?" +
           utils.obj2Url({ v: new Date() * 1, state: self.query.state }),
@@ -191,7 +218,7 @@ var self = (vm = new Vue({
         async: true,
         data: {
           SelectApi: "getdifflist",
-          accountId: query.accountId,
+          accountId: this.form.accountId,
           billId: query.id,
         },
         dataType: "json",
@@ -208,6 +235,12 @@ var self = (vm = new Vue({
             self.form.billerId = result.FBillerID;
             self.form.manager = result.FManager;
             self.form.custManager = result.FCustManager;
+            self.form.endDate =
+              result.FEndDate != null && result != void 0
+                ? new dayjs(result.FEndDate).format("YYYY-MM-DD HH:mm:ss")
+                : "";
+            self.form.projectType = result.FProjectType;
+            self.form.year = result.FYear;
 
             self.form.custName = result.FCustName;
             self.form.projectName = result.FProjectName;

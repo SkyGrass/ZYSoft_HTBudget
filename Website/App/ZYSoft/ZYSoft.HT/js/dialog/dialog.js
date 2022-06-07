@@ -3,7 +3,7 @@ var openDialog = function (options) {
     {},
     {
       type: 2,
-      area: ["800px", "500px"],
+      area: ["820px", "500px"],
       btn: ["确定", "取消"],
     },
     options
