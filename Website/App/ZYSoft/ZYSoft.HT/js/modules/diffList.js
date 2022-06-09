@@ -1,3 +1,4 @@
+var table = {};
 var self = (vm = new Vue({
   el: "#app",
   data() {
@@ -6,7 +7,7 @@ var self = (vm = new Vue({
       form: {
         startDate: curDate.add(-10, "day"),
         endDate: curDate,
-        accountId: accountId || "250116",
+        accountId: accountId,
         contractNo: "",
         manager: "",
         custManager: "",
@@ -15,8 +16,6 @@ var self = (vm = new Vue({
         projectId: "",
         custId: "",
       },
-      list: [],
-      grid: {},
       maxHeight: 0,
       offset: {
         top: 0,
@@ -24,8 +23,7 @@ var self = (vm = new Vue({
       },
     };
   },
-  computed: {
-  },
+  computed: {},
   watch: {},
   methods: {
     openBaseDataDialog(type, title, success) {
@@ -35,7 +33,11 @@ var self = (vm = new Vue({
         offset: [self.offset.top, self.offset.left],
         onSuccess: function (layero, index) {
           var iframeWin = window[layero.find("iframe")[0]["name"]];
-          iframeWin.init({ layer, dialogType: type });
+          iframeWin.init({
+            layer,
+            dialogType: type,
+            accountId: self.form.accountId,
+          });
         },
         onBtnYesClick: function (index, layero) {
           var iframeWin = window[layero.find("iframe")[0]["name"]];
@@ -78,7 +80,7 @@ var self = (vm = new Vue({
               self.form,
               r
             );
-            self.grid.setData(
+            table.setData(
               "./BudgetHandler.ashx",
               Object.assign(
                 {},
@@ -95,7 +97,7 @@ var self = (vm = new Vue({
       });
     },
     doRefresh() {
-      self.grid.setData(
+      table.setData(
         "./BudgetHandler.ashx",
         Object.assign(
           {},
@@ -111,8 +113,51 @@ var self = (vm = new Vue({
         "POST"
       );
     },
+    doDelete() {
+      if (table.getSelectedData().length <= 0) {
+        return layer.msg("尚未选择要删除的行", {
+          zIndex: new Date() * 1,
+          icon: 5,
+        });
+      }
+      var ids = table
+        .getSelectedData()
+        .map(function (row) {
+          return row.FID;
+        })
+        .join(",");
+      layer.confirm(
+        "确定要删除选中的行吗?",
+        { icon: 3, title: "提示" },
+        function (index) {
+          $.ajax({
+            type: "POST",
+            url: "./BudgetHandler.ashx",
+            async: true,
+            data: {
+              SelectApi: "deletediff",
+              ids: ids,
+            },
+            dataType: "json",
+            success: function (result) {
+              if (result.state == "success") {
+                self.doRefresh();
+              }
+              layer.msg(result.msg, {
+                icon: result.state == "success" ? 1 : 5,
+              });
+              layer.close(index);
+            },
+            error: function () {
+              layer.close(index);
+              layer.msg("删除差异单发生错误!", { icon: 5 });
+            },
+          });
+        }
+      );
+    },
     doExport() {
-      if (this.grid.getData().length <= 0) {
+      if (table.getData().length <= 0) {
         return layer.msg("没有可以导出的数据", {
           zIndex: new Date() * 1,
           icon: 5,
@@ -122,7 +167,8 @@ var self = (vm = new Vue({
         "确定要导出列表吗?",
         { icon: 3, title: "提示" },
         function (index) {
-          this.grid.download(
+          layer.close(index);
+          table.download(
             "xlsx",
             "预算成本差异统计表" + dayjs().format("YYYY-MM-DD") + ".xlsx",
             {
@@ -139,10 +185,11 @@ var self = (vm = new Vue({
         $("#toolbarContainer").height() -
         $("#title").height() +
         5;
-      this.grid = new Tabulator("#grid", {
+      table = new Tabulator("#grid", {
         locale: true,
         langs: langs,
         height: maxHeight,
+        selectable: 999,
         columnHeaderVertAlign: "bottom",
         columns: [
           {
@@ -175,8 +222,8 @@ var self = (vm = new Vue({
         },
       });
 
-      this.grid.on("tableBuilt", function () {
-        callback && callback(self.grid);
+      table.on("tableBuilt", function () {
+        callback && callback(table);
       });
     },
     onClickDetail(item) {
@@ -204,7 +251,7 @@ var self = (vm = new Vue({
   mounted() {
     this.initGrid(function () {
       window.onresize = function () {
-        self.grid.setHeight(
+        table.setHeight(
           $(window).height() -
             $("#header").height() -
             $("#toolbarContainer").height() -
@@ -213,7 +260,7 @@ var self = (vm = new Vue({
         );
       };
 
-      self.grid.setData(
+      table.setData(
         "./BudgetHandler.ashx",
         Object.assign(
           {},

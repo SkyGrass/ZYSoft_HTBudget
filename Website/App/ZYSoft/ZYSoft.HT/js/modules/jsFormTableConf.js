@@ -41,9 +41,7 @@ var tableConf = function (self) {
       headerSort: false,
       editor: self.query.state == "read" ? false : "number",
       editorParams: {
-        min: 0,
         selectContents: true,
-        verticalNavigation: "table",
       },
       cellEdited: function (cell) {
         self.reCalc(cell);
@@ -66,9 +64,7 @@ var tableConf = function (self) {
       headerSort: false,
       editor: self.query.state == "read" ? false : "number",
       editorParams: {
-        min: 0,
         selectContents: true,
-        verticalNavigation: "table",
       },
       cellEdited: function (cell) {
         self.reCalc(cell);
@@ -91,9 +87,7 @@ var tableConf = function (self) {
       headerSort: false,
       editor: self.query.state == "read" ? false : "number",
       editorParams: {
-        min: 0,
         selectContents: true,
-        verticalNavigation: "table",
       },
       cellEdited: function (cell) {
         self.reCalc(cell);

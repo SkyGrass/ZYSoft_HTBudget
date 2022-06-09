@@ -16,7 +16,7 @@ var self = (vm = new Vue({
   data() {
     return {
       form: {
-        accountId: accountId || "250116",
+        accountId: accountId,
         custId: "",
         projectId: "",
         contractNo: "",
@@ -298,7 +298,7 @@ var self = (vm = new Vue({
           }
         },
         error: function () {
-          layer.msg("生成预算明细发生错误!", { icon: 5 });
+          layer.msg("查询成本单发生错误!", { icon: 5 });
         },
       });
     },
@@ -321,7 +321,7 @@ var self = (vm = new Vue({
         },
         error: function () {
           layer.close(index);
-          layer.msg("生成预算明细发生错误!", { icon: 5 });
+          layer.msg("查询成本明细发生错误!", { icon: 5 });
         },
       });
     },

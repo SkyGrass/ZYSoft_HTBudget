@@ -1,4 +1,5 @@
-var dialog = {};
+var dialog = {},
+  table = {};
 function init(opt) {
   var self = (dialog = new Vue({
     el: "#app",
@@ -7,12 +8,11 @@ function init(opt) {
         queryForm: { keyword: "" },
         tableData: [],
         url: "",
-        grid: {},
       };
     },
     methods: {
       initGrid() {
-        this.grid = new Tabulator("#table", {
+        table = new Tabulator("#table", {
           locale: true,
           langs: {
             "zh-cn": {
@@ -49,14 +49,15 @@ function init(opt) {
       },
 
       clearFilter() {
-        this.grid.clearFilter();
+        table.clearFilter();
       },
 
       doFilter() {
-        this.grid.setFilter([
+        table.setFilter([
           [
-            { field: "code", type: "like", value: this.queryForm.keyword },
-            { field: "name", type: "like", value: this.queryForm.keyword },
+            { field: "FBillNo", type: "like", value: this.queryForm.keyword },
+            { field: "FInvCode", type: "like", value: this.queryForm.keyword },
+            { field: "FInvName", type: "like", value: this.queryForm.keyword },
           ],
         ]);
       },
@@ -69,7 +70,7 @@ function init(opt) {
 }
 
 function getSelect() {
-  var rows = dialog.grid.getSelectedData();
+  var rows = table.getSelectedData();
   if (rows != void 0 && rows.length <= 0) {
     layer.msg("尚未选择数据！", { zIndex: new Date() * 1, icon: 5 });
     return [];

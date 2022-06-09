@@ -1342,6 +1342,115 @@ public class BudgetHandler : IHttpHandler
             }
         }
 
+
+        public static string DeleteBudget(string ids)
+        {
+            try
+            {
+                string sql = string.Format(@"DELETE FROM dbo.t_ProjectBudget WHERE FID IN ({0})", ids);
+                int effectRow = ZYSoft.DB.BLL.Common.ExecuteNonQuery(sql);
+                return JsonConvert.SerializeObject(new
+                {
+                    state = effectRow > 0 ? "success" : "error",
+                    data = "",
+                    msg = effectRow > 0 ? "删除成功!" : "删除失败!",
+                });
+            }
+            catch (Exception e)
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    state = "error",
+                    data = "",
+                    msg = "删除预算单时发生异常,原因:" + e.Message
+                });
+            }
+        }
+
+        public static string DeleteCost(string ids)
+        {
+            try
+            {
+                string sql = string.Format(@"DELETE FROM dbo.t_ProjectCost WHERE FID IN ({0})", ids);
+                int effectRow = ZYSoft.DB.BLL.Common.ExecuteNonQuery(sql);
+                return JsonConvert.SerializeObject(new
+                {
+                    state = effectRow > 0 ? "success" : "error",
+                    data = "",
+                    msg = effectRow > 0 ? "删除成功!" : "删除失败!",
+                });
+            }
+            catch (Exception e)
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    state = "error",
+                    data = "",
+                    msg = "删除实际成本单时发生异常,原因:" + e.Message
+                });
+            }
+        }
+
+        public static string DeleteDiff(string ids)
+        {
+            try
+            {
+                string sql = string.Format(@"DELETE FROM dbo.t_ProjectDiff WHERE FID IN ({0})", ids);
+                int effectRow = ZYSoft.DB.BLL.Common.ExecuteNonQuery(sql);
+                return JsonConvert.SerializeObject(new
+                {
+                    state = effectRow > 0 ? "success" : "error",
+                    data = "",
+                    msg = effectRow > 0 ? "删除成功!" : "删除失败!",
+                });
+            }
+            catch (Exception e)
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    state = "error",
+                    data = "",
+                    msg = "删除实际成本与预算差异单时发生异常,原因:" + e.Message
+                });
+            }
+        }
+
+        public static string DeleteJs(string ids)
+        {
+            try
+            {
+                string checkSql = "SELECT 1 FROM dbo.t_ProjectAccount WHERE FItemID IN ({0}) AND ISNULL(FVeriferID,'-1') <> -1";
+                if (ZYSoft.DB.BLL.Common.Exist(string.Format(checkSql, ids)))
+                {
+                    return JsonConvert.SerializeObject(new
+                    {
+                        state = "error",
+                        data = "",
+                        msg = "删除结算单时发生错误,原因:存在已经审核过的单据!"
+                    });
+                }
+                List<string> sqls = new List<string>();
+                sqls.Add(string.Format(@"DELETE FROM dbo.t_ProjectAccount WHERE FItemID IN ({0})", ids));
+                sqls.Add(string.Format(@"DELETE FROM dbo.t_ProjectAccountEntry WHERE FItemID IN ({0})", ids));
+                int effectRow = ZYSoft.DB.BLL.Common.ExecuteSQLTran(sqls);
+                return JsonConvert.SerializeObject(new
+                {
+                    state = effectRow > 0 ? "success" : "error",
+                    data = "",
+                    msg = effectRow > 0 ? "删除成功!" : "删除失败!",
+                });
+            }
+            catch (Exception e)
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    state = "error",
+                    data = "",
+                    msg = "删除结算单时发生异常,原因:" + e.Message
+                });
+            }
+        }
+
         public static string GenBillNo(string prefix)
         {
             string billNo = "";
@@ -1808,6 +1917,22 @@ public class BudgetHandler : IHttpHandler
                     break;
                 case "genbillno":
                     result = DBMethod.GenBillNo("JS");
+                    break;
+                case "deletebudget":
+                    ids = context.Request.Form["ids"] ?? "";
+                    result = DBMethod.DeleteBudget(ids);
+                    break;
+                case "deletecost":
+                    ids = context.Request.Form["ids"] ?? "";
+                    result = DBMethod.DeleteCost(ids);
+                    break;
+                case "deletediff":
+                    ids = context.Request.Form["ids"] ?? "";
+                    result = DBMethod.DeleteDiff(ids);
+                    break;
+                case "deletejs":
+                    ids = context.Request.Form["ids"] ?? "";
+                    result = DBMethod.DeleteJs(ids);
                     break;
                 default:
                     result = JsonConvert.SerializeObject(new

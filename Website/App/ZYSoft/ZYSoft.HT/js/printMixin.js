@@ -38,7 +38,7 @@ var printMixin = {
         "确定要设计打印模板吗?",
         { icon: 3, title: "提示" },
         function (index) {
-          this.doSend({ FType: 1 });
+          self.doSend({ FType: 1 });
           layer.close(index);
         }
       );
@@ -48,7 +48,7 @@ var printMixin = {
         "确定要预览吗?",
         { icon: 3, title: "提示" },
         function (index) {
-          this.doSend({ FType: 2 });
+          self.doSend({ FType: 2 });
           layer.close(index);
         }
       );
@@ -58,7 +58,7 @@ var printMixin = {
         "确定要打印吗?",
         { icon: 3, title: "提示" },
         function (index) {
-          this.doSend({ FType: 3 });
+          self.doSend({ FType: 3 });
           layer.close(index);
         }
       );

@@ -1,5 +1,5 @@
 var dialog = {};
-function init(opt) { 
+function init(opt) {
   var self = (dialog = new Vue({
     el: "#app",
     data() {
@@ -96,7 +96,7 @@ function init(opt) {
           },
           index: result.key,
           columnHeaderVertAlign: "bottom",
-          height: '345px',
+          height: "345px",
           selectable: result.selectable || 1,
           columns: result.columns,
           data: [],
@@ -124,7 +124,7 @@ function init(opt) {
             {
               SelectApi: self.method2,
             },
-            { accountId: "250116", classId: id }
+            { accountId: opt.accountId, classId: id }
           ),
           "POST"
         );

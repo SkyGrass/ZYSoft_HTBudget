@@ -6,7 +6,7 @@ var self = (vm = new Vue({
       form: {
         startDate: curDate.add(-10, "day"),
         endDate: curDate,
-        accountId: accountId || "230114",
+        accountId: accountId,
         contractNo: "",
         year: "",
         custName: "",
@@ -34,7 +34,11 @@ var self = (vm = new Vue({
         offset: [self.offset.top, self.offset.left],
         onSuccess: function (layero, index) {
           var iframeWin = window[layero.find("iframe")[0]["name"]];
-          iframeWin.init({ layer, dialogType: type });
+          iframeWin.init({
+            layer,
+            dialogType: type,
+            accountId: self.form.accountId,
+          });
         },
         onBtnYesClick: function (index, layero) {
           var iframeWin = window[layero.find("iframe")[0]["name"]];

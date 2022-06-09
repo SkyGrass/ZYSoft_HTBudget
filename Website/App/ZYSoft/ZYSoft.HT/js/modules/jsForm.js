@@ -91,6 +91,12 @@ var self = (vm = new Vue({
           var iframeWin = window[layero.find("iframe")[0]["name"]];
           var rows = iframeWin.getSelect();
           if (rows.length > 0) {
+            var row = rows[0];
+            self.form.custId = row.FCustID;
+            self.form.custName = row.FCustName;
+            self.form.manager = row.FManager;
+            self.form.custManager = row.FCustManager;
+
             table
               .setData(rows)
               .then(function () {
@@ -152,6 +158,7 @@ var self = (vm = new Vue({
           name = result.name;
         self.form.projectName = name;
         self.form.projectId = id;
+        self.form.contractNo = code;
         self.$refs.form.validateField("projectName");
       });
     },
@@ -159,10 +166,7 @@ var self = (vm = new Vue({
       this.$refs["form"].validate(function (valid) {
         if (valid) {
           if (table.getData().length <= 0) {
-            return layer.msg("请先选取销货单再保存!", { icon: 5 });
-          }
-          if (math.add(self.form.sum, 0) == 0) {
-            return layer.msg("金额应该大于0!", { icon: 5 });
+            return layer.msg("没有发现表体记录!", { icon: 5 });
           }
           layer.confirm(
             "确定要保存结算单吗?",
@@ -242,6 +246,9 @@ var self = (vm = new Vue({
       table.updateColumnDefinition("FSum", { editor: false });
     },
     doEdit() {
+      if (self.canShow) {
+        return layer.msg("当前单据已审批,禁止编辑!", { icon: 5 });
+      }
       this.query.state = "edit";
       table.updateColumnDefinition("FQty", { editor: "number" });
       table.updateColumnDefinition("FPrice", { editor: "number" });
@@ -435,7 +442,6 @@ var self = (vm = new Vue({
         cell.getRow().update({ FTaxSum: taxSum.toFixed(2) });
         cell.getRow().update({ FTax: tax.toFixed(2) });
       }
-
       var total = table
         .getData()
         .map(function (row) {

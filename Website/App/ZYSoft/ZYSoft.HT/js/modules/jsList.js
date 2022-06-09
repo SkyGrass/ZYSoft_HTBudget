@@ -7,7 +7,7 @@ var self = (vm = new Vue({
       form: {
         startDate: curDate.add(-10, "day"),
         endDate: curDate,
-        accountId: accountId || "250116",
+        accountId: accountId,
         contractNo: "",
         manager: "",
         custManager: "",
@@ -35,7 +35,11 @@ var self = (vm = new Vue({
         offset: [self.offset.top, self.offset.left],
         onSuccess: function (layero, index) {
           var iframeWin = window[layero.find("iframe")[0]["name"]];
-          iframeWin.init({ layer, dialogType: type });
+          iframeWin.init({
+            layer,
+            dialogType: type,
+            accountId: self.form.accountId,
+          });
         },
         onBtnYesClick: function (index, layero) {
           var iframeWin = window[layero.find("iframe")[0]["name"]];
@@ -194,6 +198,49 @@ var self = (vm = new Vue({
         }
       );
     },
+    doDelete() {
+      if (table.getSelectedData().length <= 0) {
+        return layer.msg("尚未选择要删除的行", {
+          zIndex: new Date() * 1,
+          icon: 5,
+        });
+      }
+      var ids = table
+        .getSelectedData()
+        .map(function (row) {
+          return row.FItemID;
+        })
+        .join(",");
+      layer.confirm(
+        "确定要删除选中的行吗?",
+        { icon: 3, title: "提示" },
+        function (index) {
+          $.ajax({
+            type: "POST",
+            url: "./BudgetHandler.ashx",
+            async: true,
+            data: {
+              SelectApi: "deletejs",
+              ids: ids,
+            },
+            dataType: "json",
+            success: function (result) {
+              if (result.state == "success") {
+                self.doRefresh();
+              }
+              layer.msg(result.msg, {
+                icon: result.state == "success" ? 1 : 5,
+              });
+              layer.close(index);
+            },
+            error: function () {
+              layer.close(index);
+              layer.msg("删除结算单发生错误!", { icon: 5 });
+            },
+          });
+        }
+      );
+    },
     doExport() {
       if (table.getData().length <= 0) {
         return layer.msg("没有可以导出的数据", {
@@ -205,6 +252,7 @@ var self = (vm = new Vue({
         "确定要导出列表吗?",
         { icon: 3, title: "提示" },
         function (index) {
+          layer.close(index)
           table.download(
             "xlsx",
             "结算单统计表" + dayjs().format("YYYY-MM-DD") + ".xlsx",
