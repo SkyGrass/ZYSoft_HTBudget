@@ -144,15 +144,9 @@ function init(opt) {
             total =
               field == "FCostPrice"
                 ? "0"
-                : math.format(
-                    math.add(
-                      math.bignumber(total),
-                      math.bignumber(val == "" ? "0" : val)
-                    ),
-                    14
-                  );
+                : math.eval(total + "+" + (val == "" ? "0" : val));
           }
-          parent.data[field] = total;
+          parent.data[field] = Number(total).toFixed(2);
 
           setTimeout(function () {
             self.changeParentNode(parent.key, field);
@@ -176,14 +170,10 @@ function init(opt) {
         var price = document.getElementById(p_id).value;
         var qty = document.getElementById(q_id).value;
 
-        var sum = math.format(
-          math.multiply(
-            math.bignumber(qty == "" ? "0" : qty),
-            math.bignumber(price == "" ? "0" : price)
-          ),
-          14
+        var sum = math.eval(
+          (qty == "" ? "0" : qty) + "*"(price == "" ? "0" : price)
         );
-        document.getElementById(s_id).value = sum;
+        document.getElementById(s_id).value = Number(sum).toFixed(2);
 
         var curNode = this.$refs.tree.getNode(_id);
         if (curNode) {

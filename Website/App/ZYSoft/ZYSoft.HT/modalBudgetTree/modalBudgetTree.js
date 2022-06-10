@@ -147,15 +147,9 @@ function init(opt) {
             total =
               field == "FBudgetPrice"
                 ? "0"
-                : math.format(
-                    math.add(
-                      math.bignumber(total),
-                      math.bignumber(val == "" ? "0" : val)
-                    ),
-                    14
-                  );
+                : math.eval(total + "+" + (val == "" ? "0" : val));
           }
-          parent.data[field] = total == 0 ? "" : total;
+          parent.data[field] = total == 0 ? "" : Number(total).toFixed(2);
 
           setTimeout(function () {
             self.changeParentNode(parent.key, field);
@@ -180,18 +174,14 @@ function init(opt) {
         var price = document.getElementById(p_id).value;
         var qty = document.getElementById(q_id).value;
 
-        var sum = math.format(
-          math.multiply(
-            math.bignumber(qty == "" ? "0" : qty),
-            math.bignumber(price == "" ? "0" : price)
-          ),
-          14
+        var sum = math.eval(
+          (qty == "" ? "0" : qty) + "*" + (price == "" ? "0" : price)
         );
-        document.getElementById(s_id).value = sum;
+        document.getElementById(s_id).value = Number(sum).toFixed(2);
 
         var curNode = this.$refs.tree.getNode(_id);
         if (curNode) {
-          curNode.data["FBudgetSum"] = sum;
+          curNode.data["FBudgetSum"] = Number(sum).toFixed(2);
         }
         if (!curNode.isLeaf) {
           this.onChange({}, curNode.data, "FBudgetSum");
@@ -202,14 +192,13 @@ function init(opt) {
         var rootId = root["FItemID"];
         var qty = document.getElementById("qty_" + rootId).value;
         var sum = document.getElementById("sum_" + rootId).value;
-        var price = math.format(
-          math.divide(
-            math.bignumber(sum == "" ? "0" : sum),
-            math.bignumber(qty == "" ? "0" : qty)
-          ),
-          14
-        );
-        $("#price_" + rootId).val(Number(price).toFixed(2));
+        var price =
+          qty == ""
+            ? ""
+            : math.eval(
+                (sum == "" ? "0" : sum) + "/" + (qty == "" ? "0" : qty)
+              );
+        $("#price_" + rootId).val(qty == "" ? "" : Number(price).toFixed(2));
         self.clsData[0].FBudgetPrice = Number(price).toFixed(2);
       },
     },
@@ -221,6 +210,7 @@ function init(opt) {
 }
 
 function formatForm(rows) {
+  debugger;
   var result = [];
   rows.forEach(function (row) {
     var tmp = [row].map(function (m) {

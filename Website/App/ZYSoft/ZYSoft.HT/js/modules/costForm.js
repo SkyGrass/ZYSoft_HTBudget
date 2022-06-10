@@ -120,7 +120,7 @@ var self = (vm = new Vue({
             FSum: m.FChildren.map(function (m) {
               return Number(m.FCostSum);
             }).reduce(function (total, num) {
-              return total + num;
+              return Number(math.eval(total + "+" + num)).toFixed(2);
             }, 0),
           };
         });
@@ -184,6 +184,11 @@ var self = (vm = new Vue({
         self.form.projectName = name;
         self.form.projectId = id;
         self.$refs.form.validateField("projectName");
+      });
+    },
+    onTabClick(tab, event) {
+      document.getElementById(self.activeName).scrollIntoView({
+        behavior: "smooth",
       });
     },
     showGroup(item) {
@@ -338,7 +343,11 @@ var self = (vm = new Vue({
         dataType: "json",
         success: function (result) {
           if (result.state == "success") {
-            self.contractList = result.data;
+            self.contractList = result.data.map(function (row, index) {
+              row.FIndex = index + 1;
+              row.FDate = dayjs(row.FDate).format("YYYY-MM-DD HH:mm:ss");
+              return row;
+            });
           }
         },
         error: function () {

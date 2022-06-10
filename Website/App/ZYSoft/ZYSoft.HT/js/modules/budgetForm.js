@@ -63,7 +63,6 @@ var self = (vm = new Vue({
         ],
         year: [{ required: false, message: "年份不能为空", trigger: "blur" }],
       },
-      grids: {},
       activeName: "",
       yearSign: false,
       canEditYear: false,
@@ -102,7 +101,7 @@ var self = (vm = new Vue({
           FSum: m.FChildren.map(function (m) {
             return Number(m.FBudgetSum);
           }).reduce(function (total, num) {
-            return total + num;
+            return Number(math.eval(total + "+" + num)).toFixed(2);
           }, 0),
         };
       });
@@ -173,11 +172,14 @@ var self = (vm = new Vue({
         self.form.projectId = id;
         self.form.contractNo = code;
         self.yearSign = yearSign;
+        self.canEditYear = yearSign;
         self.$refs.form.validateField("projectName");
       });
     },
     onTabClick(tab, event) {
-      //  console.log(tab);
+      document.getElementById(self.activeName).scrollIntoView({
+        behavior: "smooth",
+      });
     },
     showGroup(item) {
       var title = item.FItemName;
@@ -282,6 +284,7 @@ var self = (vm = new Vue({
           SelectApi: "genBudgetDetail",
           accountId: this.form.accountId,
           projectId: this.form.projectId,
+          year: this.form.year,
         },
         dataType: "json",
         success: function (result) {
@@ -296,15 +299,45 @@ var self = (vm = new Vue({
         },
       });
     },
+    beforeGen(success) {
+      $.ajax({
+        type: "POST",
+        url: "./BudgetHandler.ashx",
+        async: true,
+        data: {
+          SelectApi: "check",
+          accountId: this.form.accountId,
+          projectId: this.form.projectId,
+          year: this.form.year,
+        },
+        dataType: "json",
+        success: function (result) {
+          if (result.state == "success") {
+            if (result.data == 1) {
+              layer.msg(result.msg, { icon: 5 });
+            } else {
+              success && success();
+            }
+          }
+          layer.close(index);
+        },
+        error: function () {
+          layer.close(index);
+          layer.msg("检查数据合法性发生错误!", { icon: 5 });
+        },
+      });
+    },
     doGenBudget() {
       if (this.form.custId == "" || this.form.projectId == "") {
-        return layer.msg("请先选择客户和项目!", { icon: 5 });
+        return layer.msg("请先选择客户、项目 !", { icon: 5 });
       } else {
         layer.confirm(
           "确定要生成预算单明细吗?",
           { icon: 3, title: "提示" },
           function (index) {
-            self.doInitBillEntry(index);
+            self.beforeGen(function () {
+              self.doInitBillEntry(index);
+            });
           }
         );
       }

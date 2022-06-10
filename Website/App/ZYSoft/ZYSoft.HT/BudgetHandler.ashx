@@ -708,8 +708,8 @@ public class BudgetHandler : IHttpHandler
                     FItemName,FDepth,ISNULL(FParentItemID,0)FParentItemID,FIsEndNode,ISNULL(FBudgetQty,0)FBudgetQty,ISNULL(FBudgetPrice,0)FBudgetPrice,
 		         ISNULL(FBudgetSum,0)FBudgetSum,ISNULL(FCostQty,0)FCostQty,ISNULL(FCostPrice,0)FCostPrice,
 		         ISNULL(FCostSum,0)FCostSum,ISNULL(FDiffQty,0)FDiffQty,ISNULL(FDiffPrice,0)FDiffPrice,ISNULL(FDiffSum,0)FDiffSum,
-                ISNULL(FDiffRate,'')FDiffRate FROM dbo.t_ProjectItemEntry WHERE
-                FAccountID = '{0}' AND FProjectID = '{1}' AND FParentItemID = '{2}'  AND FParentItemID = '{3}' ",
+                ISNULL(FDiffRate,'')FDiffRate,ISNULL(FYear,'')FYear FROM dbo.t_ProjectItemEntry WHERE
+                FAccountID = '{0}' AND FProjectID = '{1}' AND FParentItemID = '{2}'  AND FYear = '{3}' ",
                   accountId, projectId, itemId, year);
             DataTable dt = ZYSoft.DB.BLL.Common.ExecuteDataTable(sql);
             list.AddRange(new List<BudgetEntry>(ToList<BudgetEntry>(dt)));
@@ -728,6 +728,26 @@ public class BudgetHandler : IHttpHandler
             }
         }
 
+        public static bool BeforeSaveBudget(string accountId, string projectId, string year, ref string errMsg)
+        {
+            try
+            {
+                string sql = string.Format(@"SELECT 1 FROM dbo.t_ProjectBudget  WHERE FAccountID ='{0}' AND FProjectID = '{1}' AND FYear ='{2}'",
+                    accountId, projectId, year);
+                bool result = ZYSoft.DB.BLL.Common.Exist(sql);
+                if (result)
+                {
+                    errMsg = "当前账套下已经存在年度项目的预算单!";
+                }
+                return result;
+            }
+            catch (Exception e)
+            {
+                errMsg = e.Message;
+                return true;
+            }
+        }
+
         /// <summary>
         /// 保存预算
         /// </summary>
@@ -739,20 +759,6 @@ public class BudgetHandler : IHttpHandler
                 var form = request.Form;
                 int billId = CommMethod.SafeInt(form["id"], -1);
                 bool isAdd = false;
-                if (billId == -1)
-                {
-                    isAdd = true;
-                    //do insert
-                    if (!GenBillId("t_ProjectBudget", ref billId))
-                    {
-                        return JsonConvert.SerializeObject(new
-                        {
-                            state = "error",
-                            data = "",
-                            msg = "生成单据ID发生错误,请先检查!"
-                        });
-                    }
-                }
 
                 string accountId = form["accountId"] ?? "";
                 string custId = form["custId"] ?? "";
@@ -765,6 +771,32 @@ public class BudgetHandler : IHttpHandler
                 string billerId = form["billerId"] ?? "";
                 string manager = form["manager"] ?? "";
                 string custManager = form["custManager"] ?? "";
+
+                if (billId == -1)
+                {
+                    string errMsg = "";
+                    if (BeforeSaveBudget(accountId, projectId, year, ref errMsg))
+                    {
+                        return JsonConvert.SerializeObject(new
+                        {
+                            state = "error",
+                            data = "",
+                            msg = errMsg
+                        });
+
+                    }
+
+                    isAdd = true;
+                    if (!GenBillId("t_ProjectBudget", ref billId))
+                    {
+                        return JsonConvert.SerializeObject(new
+                        {
+                            state = "error",
+                            data = "",
+                            msg = "生成单据ID发生错误,请先检查!"
+                        });
+                    }
+                }
 
                 string sql = isAdd ? string.Format(@"INSERT INTO dbo.t_ProjectBudget ( FID, FAccountID, FCustID, FProjectID, FContractNo,
                                 FSum, FAddSum, FTotalSum, FBillerID, FCreateDate, FManager, FCustManager ,FYear) VALUES 
@@ -1347,8 +1379,23 @@ public class BudgetHandler : IHttpHandler
         {
             try
             {
-                string sql = string.Format(@"DELETE FROM dbo.t_ProjectBudget WHERE FID IN ({0})", ids);
-                int effectRow = ZYSoft.DB.BLL.Common.ExecuteNonQuery(sql);
+                List<string> sqls = new List<string>();
+                DataTable dt = ZYSoft.DB.BLL.Common.ExecuteDataTable(string.Format(@"SELECT FAccountID,FProjectID,FYear FROM dbo.t_ProjectBudget WHERE FID IN ({0})", ids));
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    sqls.Add(string.Format(@"DELETE FROM dbo.t_ProjectBudget WHERE FID IN ({0})", ids));
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        sqls.Add(string.Format(@"UPDATE dbo.t_ProjectItem SET FBudgetQty = 0,FBudgetPrice = 0,FBudgetSum = 0 
+                                WHERE FAccountID ='{0}' AND FProjectID = '{1}' AND FYear ='{2}'", CommMethod.SafeString(dr["FAccountID"], ""),
+                                CommMethod.SafeString(dr["FProjectID"], ""), CommMethod.SafeString(dr["FYear"], "")));
+
+                        sqls.Add(string.Format(@"UPDATE dbo.t_ProjectItemEntry SET FBudgetQty = 0,FBudgetPrice = 0,FBudgetSum = 0 
+                                WHERE FAccountID ='{0}' AND FProjectID = '{1}' AND FYear ='{2}'", CommMethod.SafeString(dr["FAccountID"], ""),
+                            CommMethod.SafeString(dr["FProjectID"], ""), CommMethod.SafeString(dr["FYear"], "")));
+                    }
+                }
+                int effectRow = ZYSoft.DB.BLL.Common.ExecuteSQLTran(sqls);
                 return JsonConvert.SerializeObject(new
                 {
                     state = effectRow > 0 ? "success" : "error",
@@ -1371,8 +1418,23 @@ public class BudgetHandler : IHttpHandler
         {
             try
             {
-                string sql = string.Format(@"DELETE FROM dbo.t_ProjectCost WHERE FID IN ({0})", ids);
-                int effectRow = ZYSoft.DB.BLL.Common.ExecuteNonQuery(sql);
+                List<string> sqls = new List<string>();
+                DataTable dt = ZYSoft.DB.BLL.Common.ExecuteDataTable(string.Format(@"SELECT FAccountID,FProjectID,FYear FROM dbo.t_ProjectCost WHERE FID IN ({0})", ids));
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    sqls.Add(string.Format(@"DELETE FROM dbo.t_ProjectCost WHERE FID IN ({0})", ids));
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        sqls.Add(string.Format(@"UPDATE dbo.t_ProjectItem SET FCostQty = 0,FCostPrice = 0,FCostSum = 0 
+                                WHERE FAccountID ='{0}' AND FProjectID = '{1}' AND FYear ='{2}'", CommMethod.SafeString(dr["FAccountID"], ""),
+                                CommMethod.SafeString(dr["FProjectID"], ""), CommMethod.SafeString(dr["FYear"], "")));
+
+                        sqls.Add(string.Format(@"UPDATE dbo.t_ProjectItemEntry SET FCostQty = 0,FCostPrice = 0,FCostSum = 0 
+                                WHERE FAccountID ='{0}' AND FProjectID = '{1}' AND FYear ='{2}'", CommMethod.SafeString(dr["FAccountID"], ""),
+                            CommMethod.SafeString(dr["FProjectID"], ""), CommMethod.SafeString(dr["FYear"], "")));
+                    }
+                }
+                int effectRow = ZYSoft.DB.BLL.Common.ExecuteSQLTran(sqls);
                 return JsonConvert.SerializeObject(new
                 {
                     state = effectRow > 0 ? "success" : "error",
@@ -1395,8 +1457,23 @@ public class BudgetHandler : IHttpHandler
         {
             try
             {
-                string sql = string.Format(@"DELETE FROM dbo.t_ProjectDiff WHERE FID IN ({0})", ids);
-                int effectRow = ZYSoft.DB.BLL.Common.ExecuteNonQuery(sql);
+                List<string> sqls = new List<string>();
+                DataTable dt = ZYSoft.DB.BLL.Common.ExecuteDataTable(string.Format(@"SELECT FAccountID,FProjectID,FYear FROM dbo.t_ProjectDiff WHERE FID IN ({0})", ids));
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    sqls.Add(string.Format(@"DELETE FROM dbo.t_ProjectDiff WHERE FID IN ({0})", ids));
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        sqls.Add(string.Format(@"UPDATE dbo.t_ProjectItem SET FDiffQty = 0,FDiffPrice = 0,FDiffSum = 0 
+                                WHERE FAccountID ='{0}' AND FProjectID = '{1}' AND FYear ='{2}'", CommMethod.SafeString(dr["FAccountID"], ""),
+                                CommMethod.SafeString(dr["FProjectID"], ""), CommMethod.SafeString(dr["FYear"], "")));
+
+                        sqls.Add(string.Format(@"UPDATE dbo.t_ProjectItemEntry SET FDiffQty = 0,FDiffPrice = 0,FDiffSum = 0 
+                                WHERE FAccountID ='{0}' AND FProjectID = '{1}' AND FYear ='{2}'", CommMethod.SafeString(dr["FAccountID"], ""),
+                            CommMethod.SafeString(dr["FProjectID"], ""), CommMethod.SafeString(dr["FYear"], "")));
+                    }
+                }
+                int effectRow = ZYSoft.DB.BLL.Common.ExecuteSQLTran(sqls);
                 return JsonConvert.SerializeObject(new
                 {
                     state = effectRow > 0 ? "success" : "error",
@@ -1933,6 +2010,18 @@ public class BudgetHandler : IHttpHandler
                 case "deletejs":
                     ids = context.Request.Form["ids"] ?? "";
                     result = DBMethod.DeleteJs(ids);
+                    break;
+                case "check":
+                    projectId = context.Request.Form["projectId"] ?? "";
+                    year = context.Request.Form["year"] ?? "";
+                    string errMsg = "";
+                    bool r = DBMethod.BeforeSaveBudget(accountId, projectId, year, ref errMsg);
+                    result = JsonConvert.SerializeObject(new
+                    {
+                        state = "success",
+                        data = r ? 1 : 0,
+                        msg = errMsg
+                    });
                     break;
                 default:
                     result = JsonConvert.SerializeObject(new

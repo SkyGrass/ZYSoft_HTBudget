@@ -107,17 +107,17 @@ var self = (vm = new Vue({
           FBudgetSum: m.FChildren.map(function (m) {
             return Number(m.FBudgetSum);
           }).reduce(function (total, num) {
-            return total + num;
+            return Number(math.eval(total + "+" + num)).toFixed(2);
           }, 0),
           FCostSum: m.FChildren.map(function (m) {
             return Number(m.FCostSum);
           }).reduce(function (total, num) {
-            return total + num;
+            return Number(math.eval(total + "+" + num)).toFixed(2);
           }, 0),
           FDiffSum: m.FChildren.map(function (m) {
             return Number(m.FDiffSum);
           }).reduce(function (total, num) {
-            return total + num;
+            return Number(math.eval(total + "+" + num)).toFixed(2);
           }, 0),
         };
       });

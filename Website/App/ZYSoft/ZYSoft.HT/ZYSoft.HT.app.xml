@@ -12,6 +12,16 @@
 				  class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
 		</Extension>
 		<Extension Point_id="Ufida.T.EAP.Web.Page.Load">
+			<View id="DiffFormPage.aspx"
+				  path="App/ZYSoft/ZYSoft.HT/DiffFormPage.aspx"
+				  class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
+		</Extension> 
+		<Extension Point_id="Ufida.T.EAP.Web.Page.Load">
+			<View id="JSFormPage.aspx"
+				  path="App/ZYSoft/ZYSoft.HT/JSFormPage.aspx"
+				  class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
+		</Extension>
+		<Extension Point_id="Ufida.T.EAP.Web.Page.Load">
 			<View id="BudgetListPage.aspx"
 				  path="App/ZYSoft/ZYSoft.HT/BudgetListPage.aspx"
 				  class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
@@ -34,11 +44,6 @@
 		<Extension Point_id="Ufida.T.EAP.Web.Page.Load">
 			<View id="JSListPage.aspx"
 				  path="App/ZYSoft/ZYSoft.HT/JSListPage.aspx"
-				  class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
-		</Extension>
-		<Extension Point_id="Ufida.T.EAP.Web.Page.Load">
-			<View id="JSFormPage.aspx"
-				  path="App/ZYSoft/ZYSoft.HT/JSFormPage.aspx"
 				  class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
 		</Extension>
 	</Web>

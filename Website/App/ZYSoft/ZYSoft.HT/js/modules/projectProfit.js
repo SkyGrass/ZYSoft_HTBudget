@@ -1,3 +1,4 @@
+var table = {};
 var self = (vm = new Vue({
   el: "#app",
   data() {
@@ -15,8 +16,6 @@ var self = (vm = new Vue({
         projectClsId: "",
         custId: "",
       },
-      list: [],
-      grid: {},
       maxHeight: 0,
       offset: {
         top: 0,
@@ -81,7 +80,7 @@ var self = (vm = new Vue({
               self.form,
               r
             );
-            self.grid.setData(
+            table.setData(
               "./BudgetHandler.ashx",
               Object.assign(
                 {},
@@ -98,7 +97,7 @@ var self = (vm = new Vue({
       });
     },
     doRefresh() {
-      self.grid.setData(
+      table.setData(
         "./BudgetHandler.ashx",
         Object.assign(
           {},
@@ -121,7 +120,7 @@ var self = (vm = new Vue({
       );
     },
     doExport() {
-      if (this.grid.getData().length <= 0) {
+      if (table.getData().length <= 0) {
         return layer.msg("没有可以导出的数据", {
           zIndex: new Date() * 1,
           icon: 5,
@@ -131,7 +130,7 @@ var self = (vm = new Vue({
         "确定要导出列表吗?",
         { icon: 3, title: "提示" },
         function (index) {
-          this.grid.download(
+          table.download(
             "xlsx",
             "利润统计表" + dayjs().format("YYYY-MM-DD") + ".xlsx",
             {
@@ -148,7 +147,7 @@ var self = (vm = new Vue({
         $("#toolbarContainer").height() -
         $("#title").height() +
         5;
-      this.grid = new Tabulator("#grid", {
+      table = new Tabulator("#grid", {
         locale: true,
         langs: langs,
         height: maxHeight,
@@ -173,8 +172,8 @@ var self = (vm = new Vue({
         },
       });
 
-      this.grid.on("tableBuilt", function () {
-        callback && callback(self.grid);
+      table.on("tableBuilt", function () {
+        callback && callback(table);
       });
     },
     onClickDetail(item) {
@@ -203,7 +202,7 @@ var self = (vm = new Vue({
   mounted() {
     this.initGrid(function () {
       window.onresize = function () {
-        self.grid.setHeight(
+        table.setHeight(
           $(window).height() -
             $("#header").height() -
             $("#toolbarContainer").height() -
@@ -212,7 +211,7 @@ var self = (vm = new Vue({
         );
       };
 
-      self.grid.setData(
+      table.setData(
         "./BudgetHandler.ashx",
         Object.assign(
           {},
@@ -228,5 +227,7 @@ var self = (vm = new Vue({
         "POST"
       );
     });
+
+    this.doQuery();
   },
 }));

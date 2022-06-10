@@ -1,59 +1,78 @@
-﻿ html,
- body {
-     font-family: "Microsoft Yahei";
-     font-size: 12px !important;
- }
+﻿html,
+body {
+    font-family: "Microsoft Yahei";
+    font-size: 12px !important;
+}
 
- .el-main {
-     padding: 10px;
- }
+.el-main {
+    padding: 10px;
+}
 
- .el-form-item__label {
-     font-size: 12px !important;
- }
+.el-form-item__label {
+    font-size: 12px !important;
+}
 
- .el-form-item {
-     margin-bottom: 13px !important;
-     margin-right: 1px !important;
-     display: inline-flex !important;
- }
+.el-form-item {
+    margin-bottom: 13px !important;
+    margin-right: 1px !important;
+    display: inline-flex !important;
+}
 
- .form-item-max .el-form-item__content {
-     display: inline-flex;
-     width: 200px;
- }
+.form-item-max .el-form-item__content {
+    display: inline-flex;
+    width: 140px;
+}
 
- .form-item-max .el-form-item__label {
-     padding-right: 2px;
- }
+.form-item-max1 .el-form-item__content {
+    display: inline-flex;
+    width: 360px;
+}
 
- .form-item-full .el-form-item__content {
-     display: inline-flex;
-     width: 220px;
- }
+.form-item-max .el-form-item__label {
+    padding-right: 2px;
+}
 
- .form-item-all,
- .form-item-all .el-form-item__content {
-     display: inline-flex;
-     width: 100% !important;
- }
 
- .el-card__body {
-     padding: 2px !important;
- }
+.form-item-full .el-form-item__content {
+    display: inline-flex;
+    width: 220px;
+}
 
- .tabulator {
-     background-color: #fff !important;
- }
+.form-item-all,
+.form-item-all .el-form-item__content {
+    display: inline-flex;
+    width: 100% !important;
+}
 
- .moneyright .el-input__inner {
-     text-align: right;
- }
+.el-card__body {
+    padding: 2px !important;
+}
 
- input:disabled {
-     background-color: #fff !important;
- }
+.tabulator {
+    background-color: #fff !important;
+}
 
- [v-clock] {
-     display: none;
- }
+.moneyright .el-input__inner {
+    text-align: right;
+}
+
+input:disabled {
+    background-color: #fff !important;
+}
+
+[v-clock] {
+    display: none;
+}
+
+.tabulator-row {
+    border-bottom: 1px solid #aaa;
+}
+
+.el-input.is-disabled .el-input__inner {
+    color: #333;
+}
+
+.hightRow {
+    color: #409EFF;
+    font-weight: bold;
+}
