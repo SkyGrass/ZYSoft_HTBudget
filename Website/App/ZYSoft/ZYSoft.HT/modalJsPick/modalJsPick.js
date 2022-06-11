@@ -46,6 +46,11 @@ function init(opt) {
             }
           },
         });
+
+        table.on("rowDblClick", function (e, row) {
+          var p = parent[1] == void 0 ? parent.self : parent[0].dialog;
+          p.closePickerDialog(opt.dialogType, row.getData());
+        });
       },
 
       clearFilter() {

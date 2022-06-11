@@ -2,11 +2,10 @@ var table = {};
 var self = (vm = new Vue({
   el: "#app",
   data() {
-    var curDate = new dayjs();
     return {
       form: {
-        startDate: curDate.add(-10, "day"),
-        endDate: curDate,
+        startDate: "",
+        endDate: "",
         accountId: accountId,
         contractNo: "",
         year: "",
@@ -21,17 +20,22 @@ var self = (vm = new Vue({
         top: 0,
         left: 0,
       },
+      index: -1,
     };
   },
   computed: {},
   watch: {},
   methods: {
+    closeBaseDataDialog(row) {
+      layer.close(self.index);
+    },
     openBaseDataDialog(type, title, success) {
       openDialog({
         title: title,
         url: "./modal/Dialog.aspx",
         offset: [self.offset.top, self.offset.left],
         onSuccess: function (layero, index) {
+          self.index = index;
           var iframeWin = window[layero.find("iframe")[0]["name"]];
           iframeWin.init({
             layer,
@@ -157,7 +161,10 @@ var self = (vm = new Vue({
           if (response.state == "success") {
             var t = response.data.map(function (m, i) {
               if (m.FIsTotal == 0) {
-                m.FEndDate = dayjs(m.FEndDate).format("YYYY-MM-DD HH:mm:ss");
+                m.FEndDate =
+                  m.FEndDate == "" || m.FEndDate == null
+                    ? ""
+                    : dayjs(m.FEndDate).format("YYYY-MM-DD");
               } else {
                 m.FSortIndex = "";
               }
@@ -220,8 +227,14 @@ var self = (vm = new Vue({
           },
           self.form,
           {
-            startDate: dayjs(self.form.startDate).format("YYYY-MM-DD"),
-            endDate: dayjs(self.form.endDate).format("YYYY-MM-DD"),
+            startDate:
+              self.form.startDate == ""
+                ? ""
+                : dayjs(self.form.startDate).format("YYYY-MM-DD"),
+            endDate:
+              self.form.endDate == ""
+                ? ""
+                : dayjs(self.form.endDate).format("YYYY-MM-DD"),
           }
         ),
         "POST"

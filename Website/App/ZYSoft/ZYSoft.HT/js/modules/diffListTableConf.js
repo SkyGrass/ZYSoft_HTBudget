@@ -45,7 +45,23 @@ var tableConf = [
     headerHozAlign: "center",
     hozAlign: "center",
     width: 150,
-    headerSort: false
+    headerSort: false,
+  },
+  {
+    title: "项目类型",
+    field: "FProjectType",
+    headerHozAlign: "center",
+    hozAlign: "center",
+    width: 120,
+    headerSort: false,
+  },
+  {
+    title: "竣工时间",
+    field: "FEndDate",
+    headerHozAlign: "center",
+    hozAlign: "center",
+    width: 150,
+    headerSort: false,
   },
   {
     title: "预算合同金额",
@@ -140,7 +156,7 @@ var tableConf = [
     field: "FBillerName",
     headerHozAlign: "center",
     hozAlign: "center",
-    width: 150,
+    width: 100,
     headerSort: false,
   },
 ];

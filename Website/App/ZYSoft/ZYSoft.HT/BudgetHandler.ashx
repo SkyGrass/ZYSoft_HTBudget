@@ -470,14 +470,20 @@ public class BudgetHandler : IHttpHandler
                 string projectClsId = CommMethod.SafeString(request.Form["projectClsId"], "");
                 string projectId = CommMethod.SafeString(request.Form["projectId"], "");
                 string custId = CommMethod.SafeString(request.Form["custId"], "");
-                if (!string.IsNullOrEmpty(startDate))
+                if (string.IsNullOrEmpty(startDate))
                 {
-                    sqlWhere += string.Format(@" AND t1.FEndDate >= ''{0} 00:00:00''", startDate);
+                    startDate = string.Format(@"{0}-01-01", DateTime.Now.Year);
                 }
-                if (!string.IsNullOrEmpty(endDate))
+
+                sqlWhere += string.Format(@" AND t1.FEndDate >= ''{0} 00:00:00''", startDate);
+
+                if (string.IsNullOrEmpty(endDate))
                 {
-                    sqlWhere += string.Format(@" AND t1.FEndDate <= ''{0} 23:59:59''", endDate);
+                    endDate = string.Format(@"{0}-12-31", DateTime.Now.Year);
                 }
+
+                sqlWhere += string.Format(@" AND t1.FEndDate <= ''{0} 23:59:59''", endDate);
+
                 if (!string.IsNullOrEmpty(contractNo))
                 {
                     sqlWhere += string.Format(@" AND t1.FContractNo like ''%{0}%''", contractNo);
@@ -765,6 +771,8 @@ public class BudgetHandler : IHttpHandler
                 string projectId = form["projectId"] ?? "";
                 string contractNo = form["contractNo"] ?? "";
                 string year = form["year"] ?? "";
+                string projectType = form["projectType"] ?? "";
+                string createDate = form["date"] ?? "";
                 decimal sum = CommMethod.SafeDecimal(form["sum"], 0);
                 decimal addSum = CommMethod.SafeDecimal(form["addSum"], 0);
                 decimal totalSum = sum + addSum;
@@ -799,11 +807,12 @@ public class BudgetHandler : IHttpHandler
                 }
 
                 string sql = isAdd ? string.Format(@"INSERT INTO dbo.t_ProjectBudget ( FID, FAccountID, FCustID, FProjectID, FContractNo,
-                                FSum, FAddSum, FTotalSum, FBillerID, FCreateDate, FManager, FCustManager ,FYear) VALUES 
-                                ( {0},'{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}',GETDATE(),'{9}','{10}','{11}')",
-                                    billId, accountId, custId, projectId, contractNo, sum, addSum, totalSum, billerId, manager, custManager, year)
+                                FSum, FAddSum, FTotalSum, FBillerID, FCreateDate, FManager, FCustManager ,FYear,FProjectType) VALUES 
+                                ( {0},'{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}')",
+                                    billId, accountId, custId, projectId, contractNo, sum, addSum, totalSum, billerId, createDate, manager, custManager, year, projectType)
                         : string.Format(@"UPDATE dbo.t_ProjectBudget SET  FContractNo = '{1}',FSum = '{2}',FAddSum ='{3}' ,FTotalSum = '{4}',
-                        FManager = '{5}',FCustManager = '{6}',FYear = '{7}' WHERE FID = '{0}'", billId, contractNo, sum, addSum, totalSum, manager, custManager, year);
+                        FManager = '{5}',FCustManager = '{6}',FYear = '{7}',FProjectType = '{8}',FCreateDate='{9}' WHERE FID = '{0}'", billId, contractNo, sum, addSum, totalSum,
+                        manager, custManager, year, projectType, createDate);
 
 
                 int effectRow = ZYSoft.DB.BLL.Common.ExecuteNonQuery(sql);

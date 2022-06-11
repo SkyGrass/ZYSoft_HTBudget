@@ -41,6 +41,23 @@ function init(opt) {
           self.$refs.form.validateField("projectNo");
         });
       },
+      closeDialog(dialogType, row) {
+        var result = row;
+        var id = result.id,
+          code = result.code,
+          name = result.name;
+        switch (dialogType) {
+          case "custom":
+            self.form.custName = name;
+            self.form.custId = id;
+            break;
+          case "project":
+            self.form.projectNo = name;
+            self.form.projectId = id;
+            break;
+        }
+        opt.parent.closeBaseDataDialog(dialogType, row);
+      },
       doFilter() {
         this.grid.setFilter([
           [

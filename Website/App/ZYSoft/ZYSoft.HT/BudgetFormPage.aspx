@@ -89,14 +89,14 @@
                                     </td>
                                     <td>
                                         <el-form-item label="年份" class="form-item-max" prop='year'>
-                                            <span slot='label'>年&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;份</span>
-                                            <el-input :readonly="!canEditYear || query.state =='read'" clearable style="width:100%" v-model="form.year" placeholder="请填写年份" class="noBorder"></el-input>
+                                            <span slot='label'>年&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;份</span>
+                                            <el-input readonly clearable style="width:100%" v-model="form.year" placeholder="请填写年份" class="noBorder"></el-input>
                                         </el-form-item>
                                     </td>
                                     <td>
-                                        <el-form-item label="合同号" class="form-item-max" prop='contractNo'>
-                                            <span slot='label'>合&nbsp;&nbsp;同&nbsp;&nbsp;号</span>
-                                            <el-input :readonly="query.state =='read'" clearable style="width:100%" v-model="form.contractNo" placeholder="请填写合同号" class="noBorder"></el-input>
+                                        <el-form-item label="项目经理" class="form-item-max" prop='manager'>
+                                            <span slot='label'>项&nbsp;&nbsp;目&nbsp;&nbsp;经&nbsp;&nbsp;理</span>
+                                            <el-input :readonly="query.state =='read'" clearable style="width:100%" v-model="form.manager" placeholder="请填写项目经理" class="noBorder"></el-input>
                                         </el-form-item>
                                     </td>
                                 </tr>
@@ -105,14 +105,27 @@
                                         <el-form-item label="项目" class="form-item-max1" prop='projectName'>
                                             <span slot='label'>项&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;目</span>
                                             <el-input :readonly="query.state =='read' || query.state =='edit' " clearable style="width:100%" v-model="form.projectName" placeholder="请选择项目" class="noBorder">
-                                                <i class="el-icon-search" slot='suffix' @click='openProject' "></i>
+                                                <i class="el-icon-search" slot='suffix' @click='openProject' v-if="query.state =='add'"></i>
                                             </el-input>
                                         </el-form-item>
                                     </td>
                                     <td>
                                         <el-form-item label="预算金额" class="form-item-max moneyright" prop='sum'>
-                                            <span slot='label'>预&nbsp;&nbsp;算&nbsp;&nbsp;金&nbsp;&nbsp;&nbsp;额</span>
+                                            <span slot='label'>预算金额</span>
                                             <el-input-number :disabled="query.state =='read'" style="width:100%" :controls=false v-model="form.sum" :min=0 :precision="2" placeholder="请填写增补金额" class="noBorder"></el-input-number>
+                                        </el-form-item>
+                                    </td>
+                                    <td>
+                                        <el-form-item label="客户项目经理" class="form-item-max" prop='custManager'>
+                                            <el-input :readonly="query.state =='read'" clearable style="width:100%" v-model="form.custManager" placeholder="请填写客户项目经理" class="noBorder"></el-input>
+                                        </el-form-item>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <el-form-item label="合同号" class="form-item-max1" prop='contractNo'>
+                                            <span slot='label'>合&nbsp;&nbsp;同&nbsp;&nbsp;号</span>
+                                            <el-input :readonly="query.state =='read'" clearable style="width:100%" v-model="form.contractNo" placeholder="请填写合同号" class="noBorder"></el-input>
                                         </el-form-item>
                                     </td>
                                     <td>
@@ -121,25 +134,29 @@
                                         </el-form-item>
                                     </td>
                                     <td>
-                                        <el-form-item label="总金额" class="form-item-max moneyright">
-                                            <el-input-number style="width:100%" disabled :controls=false v-model="form.totalSum" :min=0 :precision="2" placeholder="请填写增补金额" class="noBorder"></el-input-number>
+                                        <el-form-item label="制单日期" class="form-item-max" prop='date'>
+                                            <span slot='label'>制&nbsp;&nbsp;单&nbsp;&nbsp;日&nbsp;&nbsp;期</span>
+                                            <el-date-picker value-format='yyyy-MM-dd' :readonly="query.state =='read' " type="date" clearable style="width:100%" v-model="form.date" placeholder="请选择日期" class="noBorder"></el-date-picker>
                                         </el-form-item>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <el-form-item label="项目经理" class="form-item-max1" prop='manager'>
-                                            <el-input :readonly="query.state =='read'" clearable style="width:100%" v-model="form.manager" placeholder="请填写项目经理" class="noBorder"></el-input>
+                                        <el-form-item label="项目类型" class="form-item-max1" prop='projectType'>
+                                            <span slot='label'>项目类型</span>
+                                            <el-input :readonly="query.state =='read'" clearable style="width:100%" v-model="form.projectType" placeholder="请填写项目类型" class="noBorder"></el-input>
                                         </el-form-item>
                                     </td>
+
                                     <td>
-                                        <el-form-item label="客户项目经理" class="form-item-max" prop='custManager'>
-                                            <el-input :readonly="query.state =='read'" clearable style="width:100%" v-model="form.custManager" placeholder="请填写客户项目经理" class="noBorder"></el-input>
+                                        <el-form-item label="总金额" class="form-item-max moneyright">
+                                            <span slot='label'>总&nbsp;&nbsp;金&nbsp;&nbsp;额</span>
+                                            <el-input-number style="width:100%" disabled :controls=false v-model="form.totalSum" :min=0 :precision="2" placeholder="请填写增补金额" class="noBorder"></el-input-number>
                                         </el-form-item>
                                     </td>
                                     <td>
                                         <el-form-item label="制单人" class="form-item-max" prop='billerName'>
-                                            <span slot='label'>制&nbsp;&nbsp;单&nbsp;&nbsp;人</span>
+                                            <span slot='label'>制&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;单&nbsp;&nbsp;&nbsp;&nbsp;人</span>
                                             <el-input :readonly="query.state =='read'" style="width:100%" v-model="form.billerName" readonly placeholder="请填写制单人" class="noBorder"></el-input>
                                         </el-form-item>
                                     </td>

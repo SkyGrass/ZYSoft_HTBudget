@@ -21,17 +21,22 @@ var self = (vm = new Vue({
         top: 0,
         left: 0,
       },
+      index: -1,
     };
   },
   computed: {},
   watch: {},
   methods: {
+    closeBaseDataDialog(row) {
+      layer.close(self.index);
+    },
     openBaseDataDialog(type, title, success) {
       openDialog({
         title: title,
         url: "./modal/Dialog.aspx",
         offset: [self.offset.top, self.offset.left],
         onSuccess: function (layero, index) {
+          self.index = index;
           var iframeWin = window[layero.find("iframe")[0]["name"]];
           iframeWin.init({
             layer,
@@ -211,6 +216,10 @@ var self = (vm = new Vue({
           if (response.state == "success") {
             var t = response.data.map(function (m, i) {
               m.FCreateDate = dayjs(m.FCreateDate).format("YYYY-MM-DD");
+              m.FEndDate =
+                m.FEndDate == "" || m.FEndDate == null
+                  ? ""
+                  : dayjs(m.FEndDate).format("YYYY-MM-DD");
               return m;
             });
 

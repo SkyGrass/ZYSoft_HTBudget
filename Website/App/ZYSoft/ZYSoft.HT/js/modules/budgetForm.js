@@ -15,6 +15,7 @@ Vue.mixin(printMixin);
 var self = (vm = new Vue({
   el: "#app",
   data() {
+    var curDate = dayjs().format("YYYY-MM-DD");
     return {
       form: {
         accountId: accountId,
@@ -31,7 +32,10 @@ var self = (vm = new Vue({
         custName: "",
         projectName: "",
         billerName: loginName,
+        projectType: "",
+        date: curDate,
         id: -1,
+        index: -1,
       },
       query: {},
       list: [],
@@ -47,6 +51,12 @@ var self = (vm = new Vue({
         ],
         projectName: [
           { required: true, message: "项目不可为空!", trigger: "blur" },
+        ],
+        projectType: [
+          { required: true, message: "项目类型不可为空!", trigger: "blur" },
+        ],
+        date: [
+          { required: true, message: "制单日期不可为空!", trigger: "blur" },
         ],
         contractNo: [
           { required: true, message: "合同号不可为空!", trigger: "blur" },
@@ -65,7 +75,6 @@ var self = (vm = new Vue({
       },
       activeName: "",
       yearSign: false,
-      canEditYear: false,
     };
   },
   computed: {
@@ -128,11 +137,24 @@ var self = (vm = new Vue({
     },
   },
   methods: {
+    closeDialog(dialogType, row) {
+      var result = row;
+      switch (dialogType) {
+        case "custom":
+          self.openCustomDone([result]);
+          break;
+        case "project":
+          self.openProjectDone([result]);
+          break;
+      }
+      layer.close(self.index);
+    },
     openBaseDialog(type, title, success) {
       openDialog({
         title: title,
         url: "./modal/Dialog.aspx",
         onSuccess: function (layero, index) {
+          self.index = index;
           var iframeWin = window[layero.find("iframe")[0]["name"]];
           iframeWin.init({
             layer,
@@ -151,30 +173,36 @@ var self = (vm = new Vue({
       });
     },
     openCustom() {
-      this.openBaseDialog("custom", "选择客户", function (result) {
-        var result = result[0];
-        var id = result.id,
-          code = result.code,
-          name = result.name;
-        self.form.custName = name;
-        self.form.custId = id;
-        self.$refs.form.validateField("custName");
-      });
+      this.openBaseDialog("custom", "选择客户", self.openCustomDone);
+    },
+    openCustomDone(result) {
+      var result = result[0];
+      var id = result.id,
+        code = result.code,
+        name = result.name;
+      self.form.custName = name;
+      self.form.custId = id;
+      self.$refs.form.validateField("custName");
     },
     openProject() {
-      this.openBaseDialog("project", "选择项目", function (result) {
-        var result = result[0];
-        var id = result.id,
-          code = result.code,
-          name = result.name,
-          yearSign = result.YearSign == "是";
-        self.form.projectName = name;
-        self.form.projectId = id;
-        self.form.contractNo = code;
-        self.yearSign = yearSign;
-        self.canEditYear = yearSign;
-        self.$refs.form.validateField("projectName");
-      });
+      this.openBaseDialog("project", "选择项目", self.openProjectDone);
+    },
+    openProjectDone(result) {
+      var result = result[0];
+      var id = result.id,
+        code = result.code,
+        name = result.name,
+        yearSign = result.YearSign == "是",
+        year = result.Year;
+      self.form.projectName = name;
+      self.form.projectId = id;
+      self.form.contractNo = code;
+      self.yearSign = yearSign;
+      self.form.year = year;
+      if (yearSign && year == "") {
+        layer.msg("没有取到年份信息!", { icon: 5 });
+      }
+      self.$refs.form.validateField("projectName");
     },
     onTabClick(tab, event) {
       document.getElementById(self.activeName).scrollIntoView({
@@ -254,16 +282,12 @@ var self = (vm = new Vue({
             self.form.manager = result.FManager;
             self.form.custManager = result.FCustManager;
             self.form.year = result.FYear;
-
+            self.form.projectType = result.FProjectType;
+            self.form.date = result.FCreateDate;
             self.form.custName = result.FCustName;
             self.form.projectName = result.FProjectName;
             self.form.billerName = result.FBillerName;
             self.form.id = result.FID;
-
-            self.canEditYear =
-              result.FYear != "" &&
-              result.FYear != null &&
-              result.FYear != void 0;
 
             self.doInitBillEntry();
           } else {

@@ -12,6 +12,7 @@
     <link href="../css/tabulator.min.css" rel="stylesheet" />
     <link href="./rptFilter.css" rel="stylesheet" />
     <link href="../css/noborder.css" rel="stylesheet" />
+    <link href="../css/labelalign.css" rel="stylesheet" />
     <style>
         [v-cloak] {
             display: none;
@@ -24,7 +25,7 @@
         <el-row>
             <el-col :push="1" :span="20" :pull="1">
                 <el-form ref="form" :model="form" label-width="100px" size="mini" inline>
-                    <table>
+                    <table style="width: 100%;">
                         <tr>
                             <td>
                                 <el-form-item label="竣工日期(起)" class="form-item-max" prop='startDate'>
@@ -40,8 +41,6 @@
                         <tr>
                             <td>
                                 <el-form-item label="客户" class="form-item-max" prop='custName'>
-                                    <span slot='label'>客&nbsp;&nbsp;&nbsp;&nbsp;
-									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户</span>
                                     <el-input clearable @clear='onClearCust' style="width:100%" v-model="form.custName" placeholder="请选择客户" class="noBorder">
                                         <i class="el-icon-search" slot='suffix' @click='openCustom'></i>
                                     </el-input>
@@ -49,8 +48,6 @@
                             </td>
                             <td>
                                 <el-form-item label="项目" class="form-item-max" prop='projectNo'>
-								<span slot='label'>项&nbsp;&nbsp;&nbsp;&nbsp;
-									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;目</span>
                                     <el-input clearable @clear='onClearProject' style="width:100%" v-model="form.projectNo" placeholder="请选择项目" class="noBorder">
                                         <i class="el-icon-search" slot='suffix' @click='openProject'></i>
                                     </el-input>
@@ -60,15 +57,11 @@
                         <tr>
                             <td>
                                 <el-form-item label="利润年度" class="form-item-max" prop='year'>
-								<span slot='label'>利&nbsp;&nbsp;润&nbsp;
-									&nbsp;年&nbsp;&nbsp;度</span>
                                     <el-input clearable style="width:100%" v-model="form.year" placeholder="请填写利润年度" class="noBorder"></el-input>
                                 </el-form-item>
                             </td>
                             <td>
                                 <el-form-item label="合同号" class="form-item-max" prop='contractNo'>
-								<span slot='label'>合&nbsp;&nbsp;&nbsp;
-									&nbsp;同&nbsp;&nbsp;&nbsp;&nbsp;号</span>
                                     <el-input clearable style="width:100%" v-model="form.contractNo" placeholder="请填写合同号" class="noBorder"></el-input>
                                 </el-form-item>
                             </td>

@@ -1,4 +1,5 @@
-var dialog = {};
+var dialog = {},
+  table = {};
 function init(opt) {
   var self = (dialog = new Vue({
     el: "#app",
@@ -9,7 +10,6 @@ function init(opt) {
         tableData: opt.tableData,
         url: "",
         method2: "",
-        grid: {},
         clsData: [
           {
             id: "-1",
@@ -84,7 +84,7 @@ function init(opt) {
       },
 
       initGrid(result) {
-        self.grid = new Tabulator("#table", {
+        table = new Tabulator("#table", {
           locale: true,
           langs: {
             "zh-cn": {
@@ -113,11 +113,16 @@ function init(opt) {
             }
           },
         });
+
+        table.on("rowDblClick", function (e, row) {
+          var p = parent[1] == void 0 ? parent.self : parent[0].dialog;
+          p.closeDialog(opt.dialogType, row.getData());
+        });
       },
 
       handleNodeClick(data) {
         var id = data.id;
-        self.grid.setData(
+        table.setData(
           self.url,
           Object.assign(
             {},
@@ -143,11 +148,11 @@ function init(opt) {
       },
 
       clearFilter() {
-        this.grid.clearFilter();
+        table.clearFilter();
       },
 
       doFilter() {
-        this.grid.setFilter([
+        table.setFilter([
           [
             { field: "code", type: "like", value: this.queryForm.keyword },
             { field: "name", type: "like", value: this.queryForm.keyword },
@@ -163,7 +168,7 @@ function init(opt) {
 }
 
 function getSelect() {
-  var rows = dialog.grid.getSelectedData();
+  var rows = table.getSelectedData();
   if (rows != void 0 && rows.length <= 0) {
     layer.msg("尚未选择数据！", { zIndex: new Date() * 1, icon: 5 });
     return [];

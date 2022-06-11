@@ -24,6 +24,14 @@ var tableConf = [
     headerSort: false,
   },
   {
+    title: "年份",
+    field: "FYear",
+    headerHozAlign: "center",
+    hozAlign: "center",
+    width: 80,
+    headerSort: false,
+  },
+  {
     title: "项目",
     field: "FProjectName",
     headerHozAlign: "center",
@@ -32,11 +40,11 @@ var tableConf = [
     headerSort: false,
   },
   {
-    title: "年份",
-    field: "FYear",
+    title: "项目类型",
+    field: "FProjectType",
     headerHozAlign: "center",
     hozAlign: "center",
-    width: 80,
+    width: 120,
     headerSort: false,
   },
   {

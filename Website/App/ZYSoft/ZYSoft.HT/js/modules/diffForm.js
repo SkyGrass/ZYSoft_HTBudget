@@ -236,8 +236,8 @@ var self = (vm = new Vue({
             self.form.manager = result.FManager;
             self.form.custManager = result.FCustManager;
             self.form.endDate =
-              result.FEndDate != null && result != void 0
-                ? new dayjs(result.FEndDate).format("YYYY-MM-DD HH:mm:ss")
+              result.FEndDate != null && result != void 0 && result != ""
+                ? new dayjs(result.FEndDate).format("YYYY-MM-DD")
                 : "";
             self.form.projectType = result.FProjectType;
             self.form.year = result.FYear;

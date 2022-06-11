@@ -66,6 +66,8 @@ var self = (vm = new Vue({
         ],
       },
       canShow: false,
+      index: -1,
+      index1: -1,
     };
   },
   computed: {},
@@ -80,6 +82,7 @@ var self = (vm = new Vue({
         url: "./modalJsPick/ModalJsPick.aspx",
         area: ["90%", "500px"],
         onSuccess: function (layero, index) {
+          self.index1 = index;
           var iframeWin = window[layero.find("iframe")[0]["name"]];
           iframeWin.init({
             layer,
@@ -90,38 +93,57 @@ var self = (vm = new Vue({
         onBtnYesClick: function (index, layero) {
           var iframeWin = window[layero.find("iframe")[0]["name"]];
           var rows = iframeWin.getSelect();
-          if (rows.length > 0) {
-            var row = rows[0];
-            self.form.custId = row.FCustID;
-            self.form.custName = row.FCustName;
-            self.form.manager = row.FManager;
-            self.form.custManager = row.FCustManager;
-
-            table
-              .setData(rows)
-              .then(function () {
-                var total = rows
-                  .map(function (row) {
-                    return row.FSum;
-                  })
-                  .reduce(function (total, num) {
-                    return total + num;
-                  }, 0);
-                self.form.sum = total;
-              })
-              .catch(function (error) {
-                //handle error loading data
-              });
-            layer.close(index);
-          }
+          self.pickDone(rows, index);
         },
       });
+    },
+    pickDone(rows, index) {
+      if (rows.length > 0) {
+        var row = rows[0];
+        self.form.custId = row.FCustID;
+        self.form.custName = row.FCustName;
+        self.form.manager = row.FManager;
+        self.form.custManager = row.FCustManager;
+
+        table
+          .setData(rows)
+          .then(function () {
+            var total = rows
+              .map(function (row) {
+                return row.FSum;
+              })
+              .reduce(function (total, num) {
+                return total + num;
+              }, 0);
+            self.form.sum = total;
+          })
+          .catch(function (error) {
+            //handle error loading data
+          });
+        layer.close(index);
+      }
+    },
+    closePickerDialog(dialogType, row) {
+      self.pickDone([row], self.index1);
+    },
+    closeDialog(dialogType, row) {
+      var result = row;
+      switch (dialogType) {
+        case "custom":
+          self.openCustomDone([result]);
+          break;
+        case "project":
+          self.openProjectDone([result]);
+          break;
+      }
+      layer.close(self.index);
     },
     openBaseDialog(type, title, success) {
       openDialog({
         title: title,
         url: "./modal/Dialog.aspx",
         onSuccess: function (layero, index) {
+          self.index = index;
           var iframeWin = window[layero.find("iframe")[0]["name"]];
           iframeWin.init({
             layer,
@@ -140,27 +162,29 @@ var self = (vm = new Vue({
       });
     },
     openCustom() {
-      this.openBaseDialog("custom", "选择客户", function (result) {
-        var result = result[0];
-        var id = result.id,
-          code = result.code,
-          name = result.name;
-        self.form.custName = name;
-        self.form.custId = id;
-        self.$refs.form.validateField("custName");
-      });
+      this.openBaseDialog("custom", "选择客户", this.openCustomDone);
+    },
+    openCustomDone(result) {
+      var result = result[0];
+      var id = result.id,
+        code = result.code,
+        name = result.name;
+      self.form.custName = name;
+      self.form.custId = id;
+      self.$refs.form.validateField("custName");
     },
     openProject() {
-      this.openBaseDialog("project", "选择项目", function (result) {
-        var result = result[0];
-        var id = result.id,
-          code = result.code,
-          name = result.name;
-        self.form.projectName = name;
-        self.form.projectId = id;
-        self.form.contractNo = code;
-        self.$refs.form.validateField("projectName");
-      });
+      this.openBaseDialog("project", "选择项目", this.openProjectDone);
+    },
+    openProjectDone(result) {
+      var result = result[0];
+      var id = result.id,
+        code = result.code,
+        name = result.name;
+      self.form.projectName = name;
+      self.form.projectId = id;
+      self.form.contractNo = code;
+      self.$refs.form.validateField("projectName");
     },
     doSave() {
       this.$refs["form"].validate(function (valid) {

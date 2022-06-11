@@ -45,7 +45,7 @@ function init(opt) {
               self.list = result.data.map(function (m, i) {
                 m.rid = i + 1;
                 m.voucherdate = new dayjs(m.voucherdate).format(
-                  "YYYY-MM-DD HH:mm:ss"
+                  "YYYY-MM-DD"
                 );
                 return m;
               });

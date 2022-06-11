@@ -11,7 +11,7 @@ var openDialog = function (options) {
   layui.use("layer", function () {
     var layer = (window.layer = layui.layer);
 
-    layer.open({
+    var d = layer.open({
       type: options.type,
       title: options.title,
       closeBtn: options.closeBtn,

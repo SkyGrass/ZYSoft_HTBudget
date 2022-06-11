@@ -10,7 +10,7 @@ var printMixin = {
       };
 
       ws.onopen = function () {
-        layer.msg("打印服务已打开");
+        console.info("打印服务已打开");
       };
 
       ws.onerror = function (reason) {

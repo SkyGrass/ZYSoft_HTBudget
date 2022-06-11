@@ -1,0 +1,13 @@
+ .el-form-item label:after {
+     content: " ";
+     display: inline-block;
+     width: 100%;
+ }
+
+ .el-form-item__label {
+     text-align: justify
+ }
+
+ .el-form-item.is-required .el-form-item__label:before {
+     content: none !important;
+ }

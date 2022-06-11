@@ -23,17 +23,22 @@ var self = (vm = new Vue({
         top: 0,
         left: 0,
       },
+      index: -1,
     };
   },
   computed: {},
   watch: {},
   methods: {
+    closeBaseDataDialog(row) {
+      layer.close(self.index);
+    },
     openBaseDataDialog(type, title, success) {
       openDialog({
         title: title,
         url: "./modal/Dialog.aspx",
         offset: [self.offset.top, self.offset.left],
         onSuccess: function (layero, index) {
+          self.index = index;
           var iframeWin = window[layero.find("iframe")[0]["name"]];
           iframeWin.init({
             layer,
@@ -252,7 +257,7 @@ var self = (vm = new Vue({
         "确定要导出列表吗?",
         { icon: 3, title: "提示" },
         function (index) {
-          layer.close(index)
+          layer.close(index);
           table.download(
             "xlsx",
             "结算单统计表" + dayjs().format("YYYY-MM-DD") + ".xlsx",
