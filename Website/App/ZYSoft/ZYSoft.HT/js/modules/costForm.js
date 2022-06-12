@@ -11,6 +11,7 @@ Vue.directive("number", {
 });
 
 Vue.mixin(printMixin);
+var s = { cost: 0 };
 var self = (vm = new Vue({
   el: "#app",
   data() {
@@ -29,7 +30,7 @@ var self = (vm = new Vue({
         endDate: "",
         projectType: "",
         year: "",
-
+        cost: 0,
         custName: "",
         projectName: "",
         billerName: loginName,
@@ -70,7 +71,6 @@ var self = (vm = new Vue({
           { required: true, message: "项目类型不能为空", trigger: "blur" },
         ],
       },
-      grids: {},
       contractList: [],
       activeName: "",
       offset: {
@@ -115,6 +115,7 @@ var self = (vm = new Vue({
         })
         .map(function (m) {
           return {
+            FIsTotal: 0,
             FGroupCode: m.FGroupCode,
             FGroupName: m.FGroupName,
             FSum: m.FChildren.map(function (m) {
@@ -123,7 +124,15 @@ var self = (vm = new Vue({
               return Number(math.eval(total + "+" + num)).toFixed(2);
             }, 0),
           };
-        });
+        })
+        .concat([
+          {
+            FIsTotal: 1,
+            FGroupCode: "合计",
+            FGroupName: "",
+            FSum: (self.form || s).cost,
+          },
+        ]);
     },
     printObj() {
       return {
@@ -292,6 +301,8 @@ var self = (vm = new Vue({
                 ? new dayjs(result.FEndDate).format("YYYY-MM-DD HH:mm:ss")
                 : "";
             self.form.projectType = result.FProjectType;
+
+            self.form.cost = result.FCost;
 
             self.form.custName = result.FCustName;
             self.form.projectName = result.FProjectName;

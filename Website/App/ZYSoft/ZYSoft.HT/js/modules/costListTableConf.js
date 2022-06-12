@@ -64,6 +64,14 @@ var tableConf = [
     headerSort: false,
   },
   {
+    title: "成本金额",
+    field: "FCost",
+    headerHozAlign: "center",
+    hozAlign: "right",
+    width: 120,
+    headerSort: false,
+  },
+  {
     title: "合同金额",
     field: "FSum",
     headerHozAlign: "center",

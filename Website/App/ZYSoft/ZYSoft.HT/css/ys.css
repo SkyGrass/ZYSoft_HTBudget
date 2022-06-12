@@ -10,6 +10,7 @@ body {
 
 .el-form-item__label {
     font-size: 12px !important;
+    color: #333;
 }
 
 .el-form-item {
@@ -66,6 +67,11 @@ input:disabled {
 
 .tabulator-row {
     border-bottom: 1px solid #aaa;
+}
+
+.tabulator-row .tabulator-cell{
+    white-space: normal;
+    word-break: break-all;
 }
 
 .el-input.is-disabled .el-input__inner {

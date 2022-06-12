@@ -6,7 +6,7 @@ var self = (vm = new Vue({
       form: {
         startDate: "",
         endDate: "",
-        accountId: accountId,
+        accountId: '250116',
         contractNo: "",
         year: "",
         custName: "",
@@ -240,7 +240,5 @@ var self = (vm = new Vue({
         "POST"
       );
     });
-
-    this.doQuery();
   },
 }));

@@ -3,10 +3,11 @@ var tableConf = {
     return [
       {
         title: "序号",
-        field: "FSortIndex",
+        formatter: "rownum",
         headerHozAlign: "center",
         hozAlign: "center",
-        width: 50,
+        width: 30,
+        download: false,
         headerSort: false,
       },
       {
@@ -106,10 +107,11 @@ var tableConf = {
     return [
       {
         title: "序号",
-        field: "FSortIndex",
+        formatter: "rownum",
         headerHozAlign: "center",
         hozAlign: "center",
-        width: 50,
+        width: 30,
+        download: false,
         headerSort: false,
       },
       {

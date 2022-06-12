@@ -470,20 +470,15 @@ public class BudgetHandler : IHttpHandler
                 string projectClsId = CommMethod.SafeString(request.Form["projectClsId"], "");
                 string projectId = CommMethod.SafeString(request.Form["projectId"], "");
                 string custId = CommMethod.SafeString(request.Form["custId"], "");
-                if (string.IsNullOrEmpty(startDate))
+                if (!string.IsNullOrEmpty(startDate))
                 {
-                    startDate = string.Format(@"{0}-01-01", DateTime.Now.Year);
+                    sqlWhere += string.Format(@" AND t1.FEndDate >= ''{0} 00:00:00''", startDate);
                 }
 
-                sqlWhere += string.Format(@" AND t1.FEndDate >= ''{0} 00:00:00''", startDate);
-
-                if (string.IsNullOrEmpty(endDate))
+                if (!string.IsNullOrEmpty(endDate))
                 {
-                    endDate = string.Format(@"{0}-12-31", DateTime.Now.Year);
+                    sqlWhere += string.Format(@" AND t1.FEndDate <= ''{0} 23:59:59''", endDate);
                 }
-
-                sqlWhere += string.Format(@" AND t1.FEndDate <= ''{0} 23:59:59''", endDate);
-
                 if (!string.IsNullOrEmpty(contractNo))
                 {
                     sqlWhere += string.Format(@" AND t1.FContractNo like ''%{0}%''", contractNo);
