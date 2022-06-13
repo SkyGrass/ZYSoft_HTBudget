@@ -1,5 +1,109 @@
-var tableConf = {
+﻿var tableConf = {
   250116: function (self) {
+    return [
+      {
+        title: "序号",
+        formatter: "rownum",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 30,
+        download: false,
+        headerSort: false,
+      },
+      {
+        title: "客户编码",
+        field: "FCustCode",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 180,
+        headerSort: false,
+      },
+      {
+        title: "客户名称",
+        field: "FCustName",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 200,
+        headerSort: false,
+      },
+      {
+        title: "利润年度",
+        field: "FYear",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 180,
+        headerSort: false,
+      },
+      {
+        title: "竣工时间",
+        field: "FEndDate",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 150,
+        headerSort: false,
+      },
+      {
+        title: "合同类别",
+        field: "FContractType",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 150,
+        headerSort: false,
+      },
+      {
+        title: "合同号",
+        field: "FContractNo",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 150,
+        headerSort: false,
+        cellClick: function (e, cell) {
+          self.onClickDetail(cell.getRow().getData());
+        },
+      },
+      {
+        title: "主合同净收入",
+        field: "FSum",
+        headerHozAlign: "center",
+        hozAlign: "right",
+        width: 120,
+        headerSort: false,
+      },
+      {
+        title: "从属、增补合同合计",
+        field: "FAddSum",
+        headerHozAlign: "center",
+        hozAlign: "right",
+        width: 120,
+        headerSort: false,
+      },
+      {
+        title: "合同净收入",
+        field: "FTotalSum",
+        headerHozAlign: "center",
+        hozAlign: "right",
+        width: 120,
+        headerSort: false,
+      },
+      {
+        title: "净成本",
+        field: "FCost",
+        headerHozAlign: "center",
+        hozAlign: "right",
+        width: 120,
+        headerSort: false,
+      },
+      {
+        title: "净利润",
+        field: "FProfit",
+        headerHozAlign: "center",
+        hozAlign: "right",
+        width: 120,
+        headerSort: false,
+      },
+    ];
+  },
+  998: function (self) {
     return [
       {
         title: "序号",
