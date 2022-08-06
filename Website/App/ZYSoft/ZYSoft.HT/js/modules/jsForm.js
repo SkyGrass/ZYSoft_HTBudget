@@ -138,10 +138,11 @@ var self = (vm = new Vue({
       }
       layer.close(self.index);
     },
-    openBaseDialog(type, title, success) {
+    openBaseDialog(type, title, success, filter) {
+
       openDialog({
         title: title,
-        url: "./modal/Dialog.aspx",
+        url: "./modal/Dialog.aspx?filter=" + filter,
         onSuccess: function (layero, index) {
           self.index = index;
           var iframeWin = window[layero.find("iframe")[0]["name"]];
@@ -162,7 +163,12 @@ var self = (vm = new Vue({
       });
     },
     openCustom() {
-      this.openBaseDialog("custom", "选择客户", this.openCustomDone);
+      this.openBaseDialog(
+        "custom",
+        "选择客户",
+        this.openCustomDone,
+        this.form.custName
+      );
     },
     openCustomDone(result) {
       var result = result[0];
@@ -174,7 +180,7 @@ var self = (vm = new Vue({
       self.$refs.form.validateField("custName");
     },
     openProject() {
-      this.openBaseDialog("project", "选择项目", this.openProjectDone);
+      this.openBaseDialog("project", "选择项目", this.openProjectDone, this.form.projectName);
     },
     openProjectDone(result) {
       var result = result[0];
@@ -244,7 +250,7 @@ var self = (vm = new Vue({
                     if ($.isFunction(top.CreateTab)) {
                       top.CreateTab(
                         "App/ZYSoft/ZYSoft.HT/JSFormPage.aspx?" +
-                          utils.obj2Url(self.query),
+                        utils.obj2Url(self.query),
                         "结算单",
                         "YS1004"
                       );
@@ -552,10 +558,10 @@ var self = (vm = new Vue({
       window.onresize = function () {
         table.setHeight(
           $(window).height() -
-            $("#header").height() -
-            $("#toolbarContainer").height() -
-            $(".form").height() -
-            3
+          $("#header").height() -
+          $("#toolbarContainer").height() -
+          $(".form").height() -
+          3
         );
       };
     });

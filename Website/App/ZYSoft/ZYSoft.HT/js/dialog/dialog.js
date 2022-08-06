@@ -3,11 +3,11 @@ var openDialog = function (options) {
     {},
     {
       type: 2,
-      area: ["820px", "500px"],
+      area: ["820px", "600px"],
       btn: ["确定", "取消"],
     },
     options
-  );
+  ); 
   layui.use("layer", function () {
     var layer = (window.layer = layui.layer);
 

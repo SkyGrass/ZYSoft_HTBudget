@@ -379,6 +379,8 @@ public class BudgetHandler : IHttpHandler
                 int pageSize = CommMethod.SafeInt(request.Form["pageSize"], 20);
                 string startDate = CommMethod.SafeString(request.Form["startDate"], "");
                 string endDate = CommMethod.SafeString(request.Form["endDate"], "");
+                string year = CommMethod.SafeString(request.Form["year"], "");
+                string contractDate = CommMethod.SafeString(request.Form["contractDate"], "");
                 string contractNo = CommMethod.SafeString(request.Form["contractNo"], "");
                 string manager = CommMethod.SafeString(request.Form["manager"], "");
                 string custManager = CommMethod.SafeString(request.Form["custManager"], "");
@@ -416,6 +418,21 @@ public class BudgetHandler : IHttpHandler
                 if (!string.IsNullOrEmpty(billId))
                 {
                     sqlWhere += string.Format(@" AND t.FID = ''{0}''", billId);
+                }
+                if (!string.IsNullOrEmpty(year))
+                {
+                    string sw = "";
+                    string[] ys = (year.Split(','));
+                    foreach (string y in ys)
+                    {
+                        sw += string.Format(@" t.FYear = ''{0}'' OR", y); ;
+                    }
+                    sw = sw.TrimEnd('O', 'R');
+                    sqlWhere += string.Format(@" AND ({0})", sw);
+                }
+                if (!string.IsNullOrEmpty(contractDate))
+                {
+                    sqlWhere += string.Format(@" AND t.FContractDate = ''{0}''", contractDate);
                 }
 
                 string sql = string.Format(@" EXEC dbo.P_GetCostRecord @FAccountID = '{0}', -- varchar(20)

@@ -15,7 +15,7 @@
         field: "FCustCode",
         headerHozAlign: "center",
         hozAlign: "center",
-        width: 180,
+        width: 80,
         headerSort: false,
       },
       {
@@ -31,7 +31,7 @@
         field: "FYear",
         headerHozAlign: "center",
         hozAlign: "center",
-        width: 180,
+        width: 80,
         headerSort: false,
       },
       {
@@ -39,7 +39,7 @@
         field: "FEndDate",
         headerHozAlign: "center",
         hozAlign: "center",
-        width: 150,
+        width: 120,
         headerSort: false,
       },
       {
@@ -74,7 +74,7 @@
         field: "FAddSum",
         headerHozAlign: "center",
         hozAlign: "right",
-        width: 120,
+        width: 160,
         headerSort: false,
       },
       {

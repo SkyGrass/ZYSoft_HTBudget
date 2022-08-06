@@ -37,7 +37,7 @@ var self = (vm = new Vue({
         id: -1,
       },
       query: {},
-      list: [{ FGroupCode: "", FGroupName: "增补合同", FIsSp: 1 }],
+      list: [{ FGroupCode: "", FGroupName: "从属合同、增补合同", FIsSp: 1 }],
       rules: {
         accountName: [
           { required: true, message: "帐套名称不可为空!", trigger: "blur" },
@@ -151,10 +151,10 @@ var self = (vm = new Vue({
     },
   },
   methods: {
-    openBaseDialog(type, title, success) {
+    openBaseDialog(type, title, success, filter) {
       openDialog({
         title: title,
-        url: "./modal/Dialog.aspx",
+        url: "./modal/Dialog.aspx?filter=" + filter,
         onSuccess: function (layero, index) {
           var iframeWin = window[layero.find("iframe")[0]["name"]];
           iframeWin.init({
@@ -174,26 +174,36 @@ var self = (vm = new Vue({
       });
     },
     openCustom() {
-      this.openBaseDialog("custom", "选择客户", function (result) {
-        var result = result[0];
-        var id = result.id,
-          code = result.code,
-          name = result.name;
-        self.form.custName = name;
-        self.form.custId = id;
-        self.$refs.form.validateField("custName");
-      });
+      this.openBaseDialog(
+        "custom",
+        "选择客户",
+        function (result) {
+          var result = result[0];
+          var id = result.id,
+            code = result.code,
+            name = result.name;
+          self.form.custName = name;
+          self.form.custId = id;
+          self.$refs.form.validateField("custName");
+        },
+        this.form.custName
+      );
     },
     openProject() {
-      this.openBaseDialog("project", "选择项目", function (result) {
-        var result = result[0];
-        var id = result.id,
-          code = result.code,
-          name = result.name;
-        self.form.projectName = name;
-        self.form.projectId = id;
-        self.$refs.form.validateField("projectName");
-      });
+      this.openBaseDialog(
+        "project",
+        "选择项目",
+        function (result) {
+          var result = result[0];
+          var id = result.id,
+            code = result.code,
+            name = result.name;
+          self.form.projectName = name;
+          self.form.projectId = id;
+          self.$refs.form.validateField("projectName");
+        },
+        this.form.projectName
+      );
     },
     onTabClick(tab, event) {
       document.getElementById(self.activeName).scrollIntoView({
@@ -298,7 +308,7 @@ var self = (vm = new Vue({
 
             self.form.endDate =
               result.FEndDate != null && result != void 0
-                ? new dayjs(result.FEndDate).format("YYYY-MM-DD HH:mm:ss")
+                ? new dayjs(result.FEndDate).format("YYYY-MM-DD")
                 : "";
             self.form.projectType = result.FProjectType;
 
@@ -356,7 +366,7 @@ var self = (vm = new Vue({
           if (result.state == "success") {
             self.contractList = result.data.map(function (row, index) {
               row.FIndex = index + 1;
-              row.FDate = dayjs(row.FDate).format("YYYY-MM-DD HH:mm:ss");
+              row.FDate = dayjs(row.FDate).format("YYYY-MM-DD");
               return row;
             });
           }
@@ -375,6 +385,15 @@ var self = (vm = new Vue({
     if (this.query.state == "read") {
       this.doInitBill(this.query);
       this.doInitContract(this.query);
+    }
+
+    var dom = document.querySelector('label[for="manager"] span');
+    if (dom != void 0) {
+      if (this.form.accountId == "230114") {
+        dom.innerText = "苏腾项目经理";
+      } else if (this.form.accountId == "250116") {
+        dom.innerText = "华腾项目经理";
+      }
     }
   },
 }));

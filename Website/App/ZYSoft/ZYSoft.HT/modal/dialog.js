@@ -26,7 +26,7 @@ function init(opt) {
       };
     },
     methods: {
-      initConfig() {
+      initConfig(success) {
         $.ajax({
           type: "POST",
           url: "../BudgetHandler.ashx",
@@ -49,6 +49,8 @@ function init(opt) {
               });
               self.initCls(result.method1);
               self.initGrid(result);
+
+              success && success();
             } else {
               layer.msg(result.msg, { icon: 5 });
             }
@@ -84,6 +86,7 @@ function init(opt) {
       },
 
       initGrid(result) {
+        console.log(result);
         table = new Tabulator("#table", {
           locale: true,
           langs: {
@@ -104,9 +107,13 @@ function init(opt) {
           ajaxConfig: "POST",
           ajaxResponse: function (url, params, response) {
             if (response.state == "success") {
-              return response.data.map(function (m, i) {
-                return m;
-              });
+              return response.data
+                .filter(function (f) {
+                  return f.name.indexOf(self.queryForm.keyword) > -1;
+                })
+                .map(function (m, i) {
+                  return m;
+                });
             } else {
               layer.msg("没有查询到数据", { icon: 5 });
               return [];
@@ -162,7 +169,18 @@ function init(opt) {
     },
     watch: {},
     mounted() {
-      this.initConfig();
+      var _ = this;
+      this.initConfig(function () {
+        var query = utils.url2Obj(location.search);
+        if (query != undefined) {
+          if (query.filter != undefined) {
+            _.queryForm.keyword = decodeURIComponent(query.filter);
+            setTimeout(function () {
+              _.handleNodeClick({ id: 0 });
+            }, 500);
+          }
+        }
+      });
     },
   }));
 }

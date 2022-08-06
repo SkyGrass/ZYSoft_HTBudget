@@ -4,9 +4,10 @@ var self = (vm = new Vue({
   data() {
     var curDate = new dayjs();
     return {
+      from: "cost",
       form: {
-        startDate: curDate.add(-10, "day"),
-        endDate: curDate,
+        startDate: curDate.startOf("year"),
+        endDate: curDate.endOf("year"),
         accountId: accountId,
         contractNo: "",
         manager: "",
@@ -30,10 +31,10 @@ var self = (vm = new Vue({
     closeBaseDataDialog(row) {
       layer.close(self.index);
     },
-    openBaseDataDialog(type, title, success) {
+    openBaseDataDialog(type, title, success, filter) {
       openDialog({
         title: title,
-        url: "./modal/Dialog.aspx",
+        url: "./modal/Dialog.aspx?filter=" + filter,
         offset: [self.offset.top, self.offset.left],
         onSuccess: function (layero, index) {
           self.index = index;
@@ -105,10 +106,10 @@ var self = (vm = new Vue({
       if ($.isFunction(top.CreateTab)) {
         top.CreateTab(
           "App/ZYSoft/ZYSoft.HT/CostFormPage.aspx?" +
-            utils.obj2Url({
-              state: "add",
-              v: new Date() * 1,
-            }),
+          utils.obj2Url({
+            state: "add",
+            v: new Date() * 1,
+          }),
           "成本表",
           "YS100201"
         );
@@ -203,6 +204,14 @@ var self = (vm = new Vue({
         $("#toolbarContainer").height() -
         $("#title").height() +
         5;
+      var postion = tableConf.findIndex(function (f) {
+        return f.field == "FManager";
+      });
+      if (this.form.accountId == "230114") {
+        tableConf[postion].title = "苏腾项目经理";
+      } else if (this.form.accountId == "250116") {
+        tableConf[postion].title = "华腾项目经理";
+      }
       table = new Tabulator("#grid", {
         locale: true,
         langs: langs,
@@ -229,6 +238,12 @@ var self = (vm = new Vue({
           if (response.state == "success") {
             var t = response.data.map(function (m, i) {
               m.FCreateDate = dayjs(m.FCreateDate).format("YYYY-MM-DD");
+
+              m.FContractDate =
+                m.FContractDate == "" || m.FContractDate == null
+                  ? ""
+                  : dayjs(m.FContractDate).format("YYYY-MM-DD");
+
               m.FEndDate =
                 m.FEndDate == "" || m.FEndDate == null
                   ? ""
@@ -255,13 +270,13 @@ var self = (vm = new Vue({
       if ($.isFunction(top.CreateTab)) {
         top.CreateTab(
           "App/ZYSoft/ZYSoft.HT/CostFormPage.aspx?" +
-            utils.obj2Url({
-              accountId: FAccountID,
-              projectId: FProjectID,
-              id: FID,
-              state: "read",
-              v: new Date() * 1,
-            }),
+          utils.obj2Url({
+            accountId: FAccountID,
+            projectId: FProjectID,
+            id: FID,
+            state: "read",
+            v: new Date() * 1,
+          }),
           "成本表",
           "YS100201"
         );
@@ -273,10 +288,10 @@ var self = (vm = new Vue({
       window.onresize = function () {
         table.setHeight(
           $(window).height() -
-            $("#header").height() -
-            $("#toolbarContainer").height() -
-            $("#title").height() +
-            5
+          $("#header").height() -
+          $("#toolbarContainer").height() -
+          $("#title").height() +
+          5
         );
       };
       table.setData(

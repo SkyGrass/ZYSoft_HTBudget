@@ -5,8 +5,8 @@ var self = (vm = new Vue({
     var curDate = new dayjs();
     return {
       form: {
-        startDate: curDate.add(-10, "day"),
-        endDate: curDate,
+        startDate: curDate.startOf("year"),
+        endDate: curDate.endOf("year"),
         accountId: accountId,
         contractNo: "",
         manager: "",
@@ -32,10 +32,10 @@ var self = (vm = new Vue({
     closeBaseDataDialog(row) {
       layer.close(self.index);
     },
-    openBaseDataDialog(type, title, success) {
+    openBaseDataDialog(type, title, success, filter) {
       openDialog({
         title: title,
-        url: "./modal/Dialog.aspx",
+        url: "./modal/Dialog.aspx?filter=" + filter,
         offset: [self.offset.top, self.offset.left],
         onSuccess: function (layero, index) {
           self.index = index;

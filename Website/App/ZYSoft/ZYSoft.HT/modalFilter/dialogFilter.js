@@ -16,31 +16,58 @@ function init(opt) {
 
           custName: "",
           projectNo: "",
+
+          year: "",
+          contractDate: "",
         },
       };
     },
+    computed: {
+      fromcost() {
+        return opt.parent.from == "cost";
+      },
+      managerName() {
+        if (opt.parent.form.accountId == "230114") {
+          return "苏腾项目经理";
+        } else if (opt.parent.form.accountId == "250116") {
+          return "华腾项目经理";
+        } else {
+          return '项目经理'
+        }
+      }
+    },
     methods: {
       openCustom() {
-        opt.parent.openBaseDataDialog("custom", "选择客户", function (result) {
-          result = result[0];
-          var id = result.id,
-            code = result.code,
-            name = result.name;
-          self.form.custName = name;
-          self.form.custId = id;
-          self.$refs.form.validateField("custName");
-        });
+        opt.parent.openBaseDataDialog(
+          "custom",
+          "选择客户",
+          function (result) {
+            result = result[0];
+            var id = result.id,
+              code = result.code,
+              name = result.name;
+            self.form.custName = name;
+            self.form.custId = id;
+            self.$refs.form.validateField("custName");
+          },
+          this.form.custName
+        );
       },
       openProject() {
-        opt.parent.openBaseDataDialog("project", "选择项目", function (result) {
-          result = result[0];
-          var id = result.id,
-            code = result.code,
-            name = result.name;
-          self.form.projectNo = name;
-          self.form.projectId = id;
-          self.$refs.form.validateField("projectNo");
-        });
+        opt.parent.openBaseDataDialog(
+          "project",
+          "选择项目",
+          function (result) {
+            result = result[0];
+            var id = result.id,
+              code = result.code,
+              name = result.name;
+            self.form.projectNo = name;
+            self.form.projectId = id;
+            self.$refs.form.validateField("projectNo");
+          },
+          this.form.projectNo
+        );
       },
       closeDialog(dialogType, row) {
         var result = row;

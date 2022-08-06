@@ -1,4 +1,4 @@
-var tableConf = [
+﻿var tableConf = [
   {
     formatter: "rownum",
     headerHozAlign: "center",
@@ -12,7 +12,7 @@ var tableConf = [
     field: "FCreateDate",
     headerHozAlign: "center",
     hozAlign: "center",
-    width: 150,
+    width: 100,
     headerSort: false,
   },
   {
@@ -24,7 +24,7 @@ var tableConf = [
     headerSort: false,
   },
   {
-    title: "年份",
+    title: "利润年度",
     field: "FYear",
     headerHozAlign: "center",
     hozAlign: "center",
@@ -55,24 +55,24 @@ var tableConf = [
     width: 150,
     headerSort: false,
   },
+  // {
+  //   title: "主合同净收入",
+  //   field: "FSum",
+  //   headerHozAlign: "center",
+  //   hozAlign: "right",
+  //   width: 120,
+  //   headerSort: false,
+  // },
+  // {
+  //   title: "增补合同金额",
+  //   field: "FAddSum",
+  //   headerHozAlign: "center",
+  //   hozAlign: "right",
+  //   width: 120,
+  //   headerSort: false,
+  // },
   {
-    title: "合同金额",
-    field: "FSum",
-    headerHozAlign: "center",
-    hozAlign: "right",
-    width: 120,
-    headerSort: false,
-  },
-  {
-    title: "增补合同金额",
-    field: "FAddSum",
-    headerHozAlign: "center",
-    hozAlign: "right",
-    width: 120,
-    headerSort: false,
-  },
-  {
-    title: "总金额",
+    title: "预算金额",
     field: "FTotalSum",
     headerHozAlign: "center",
     hozAlign: "right",
@@ -100,7 +100,7 @@ var tableConf = [
     field: "FBillerName",
     headerHozAlign: "center",
     hozAlign: "center",
-    width: 150,
+    width: 100,
     headerSort: false,
   },
 ];

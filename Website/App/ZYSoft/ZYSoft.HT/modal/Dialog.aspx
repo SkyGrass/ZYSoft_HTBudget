@@ -54,7 +54,7 @@
     <script src="../js/element-ui-index.js"></script>
     <script src="../js/layui/layui.js"></script>
     <script src="../js/tabulator.js"></script>
-
+    <script src="../js/utils.js"></script>
     <!-- import bus javascript -->
     <script src="./dialog.js"></script>
 </body>

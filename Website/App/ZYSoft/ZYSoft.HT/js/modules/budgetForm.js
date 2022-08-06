@@ -11,7 +11,6 @@ Vue.directive("number", {
 });
 
 Vue.mixin(printMixin);
-
 var self = (vm = new Vue({
   el: "#app",
   data() {
@@ -67,11 +66,11 @@ var self = (vm = new Vue({
         custManager: [
           { required: true, message: "客户项目经理不可为空!", trigger: "blur" },
         ],
-        sum: [{ required: true, message: "金额不能为空", trigger: "blur" }],
-        addSum: [
-          { required: true, message: "增补金额不能为空", trigger: "blur" },
-        ],
-        year: [{ required: false, message: "年份不能为空", trigger: "blur" }],
+        // sum: [{ required: true, message: "金额不能为空", trigger: "blur" }],
+        // addSum: [
+        //   { required: true, message: "增补金额不能为空", trigger: "blur" },
+        // ],
+        // year: [{ required: false, message: "年份不能为空", trigger: "blur" }],
       },
       activeName: "",
       yearSign: false,
@@ -92,6 +91,7 @@ var self = (vm = new Vue({
           return f.FGroupCode == g;
         });
         return {
+          FIsSp: r[0].FIsSp || 0,
           FTableId: "table_" + r[0].FGroupCode,
           FGroupCode: r[0].FGroupCode,
           FGroupName: `${r[0].FGroupCode} ${r[0].FGroupName}`,
@@ -103,17 +103,37 @@ var self = (vm = new Vue({
       });
     },
     summary() {
-      return this.tabs.map(function (m) {
-        return {
-          FGroupCode: m.FGroupCode,
-          FGroupName: m.FGroupName,
-          FSum: m.FChildren.map(function (m) {
-            return Number(m.FBudgetSum);
-          }).reduce(function (total, num) {
-            return Number(math.eval(total + "+" + num)).toFixed(2);
-          }, 0),
-        };
-      });
+      var t = this.tabs
+        .filter(function (f) {
+          return f.FIsSp == 0;
+        })
+        .map(function (m) {
+          return {
+            FIsTotal: 0,
+            FGroupCode: m.FGroupCode,
+            FGroupName: m.FGroupName,
+            FSum: m.FChildren.map(function (m) {
+              return Number(m.FBudgetSum);
+            }).reduce(function (total, num) {
+              return Number(math.eval(total + "+" + num)).toFixed(2);
+            }, 0),
+          };
+        });
+      var total = t
+        .map(function (f) {
+          return f.FSum;
+        })
+        .reduce(function (total, num) {
+          return Number(math.eval(total + "+" + num)).toFixed(2);
+        }, 0);
+      return t.concat([
+        {
+          FIsTotal: 1,
+          FGroupCode: "合计",
+          FGroupName: "",
+          FSum: total,
+        },
+      ]);
     },
     printObj() {
       return {
@@ -149,10 +169,10 @@ var self = (vm = new Vue({
       }
       layer.close(self.index);
     },
-    openBaseDialog(type, title, success) {
+    openBaseDialog(type, title, success, filter) {
       openDialog({
         title: title,
-        url: "./modal/Dialog.aspx",
+        url: "./modal/Dialog.aspx?filter=" + filter,
         onSuccess: function (layero, index) {
           self.index = index;
           var iframeWin = window[layero.find("iframe")[0]["name"]];
@@ -173,7 +193,12 @@ var self = (vm = new Vue({
       });
     },
     openCustom() {
-      this.openBaseDialog("custom", "选择客户", self.openCustomDone);
+      this.openBaseDialog(
+        "custom",
+        "选择客户",
+        self.openCustomDone,
+        this.form.custName
+      );
     },
     openCustomDone(result) {
       var result = result[0];
@@ -185,7 +210,12 @@ var self = (vm = new Vue({
       self.$refs.form.validateField("custName");
     },
     openProject() {
-      this.openBaseDialog("project", "选择项目", self.openProjectDone);
+      this.openBaseDialog(
+        "project",
+        "选择项目",
+        self.openProjectDone,
+        this.form.projectName
+      );
     },
     openProjectDone(result) {
       var result = result[0];
@@ -200,7 +230,7 @@ var self = (vm = new Vue({
       self.yearSign = yearSign;
       self.form.year = year;
       if (yearSign && year == "") {
-        layer.msg("没有取到年份信息!", { icon: 5 });
+        layer.msg("没有取到利润年度信息!", { icon: 5 });
       }
       self.$refs.form.validateField("projectName");
     },
@@ -283,6 +313,9 @@ var self = (vm = new Vue({
             self.form.custManager = result.FCustManager;
             self.form.year = result.FYear;
             self.form.projectType = result.FProjectType;
+
+            // self.form.budget = result.FSum;
+
             self.form.date = result.FCreateDate;
             self.form.custName = result.FCustName;
             self.form.projectName = result.FProjectName;
@@ -397,9 +430,9 @@ var self = (vm = new Vue({
     doSave() {
       this.$refs["form"].validate(function (valid) {
         if (valid) {
-          if (math.add(self.form.sum, 0) == 0) {
-            return layer.msg("预算金额应该大于0!", { icon: 5 });
-          }
+          // if (math.add(self.form.sum, 0) == 0) {
+          //   return layer.msg("预算金额应该大于0!", { icon: 5 });
+          // }
           if (self.tabs.length <= 0) {
             return layer.msg("请先生成预算明细再保存!", { icon: 5 });
           }
@@ -428,7 +461,7 @@ var self = (vm = new Vue({
                     if ($.isFunction(top.CreateTab)) {
                       top.CreateTab(
                         "App/ZYSoft/ZYSoft.HT/BudgetFormPage.aspx?" +
-                          utils.obj2Url(self.query),
+                        utils.obj2Url(self.query),
                         "预算表",
                         "YS1001"
                       );
@@ -455,6 +488,15 @@ var self = (vm = new Vue({
     }
     if (this.query.state == "read") {
       this.doInitBill(this.query);
+    }
+
+    var dom = document.querySelector('label[for="manager"] span');
+    if (dom != void 0) {
+      if (this.form.accountId == "230114") {
+        dom.innerText = "苏腾项目经理";
+      } else if (this.form.accountId == "250116") {
+        dom.innerText = "华腾项目经理";
+      }
     }
   },
 }));

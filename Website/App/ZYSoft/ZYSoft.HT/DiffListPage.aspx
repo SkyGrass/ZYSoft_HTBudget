@@ -43,11 +43,11 @@
 									<span class="tb-item"><span class="tb-text" title="刷新">刷新</span></span>
 								</a>
 							</li>
-							<li tabindex="2">
+							<!--<li tabindex="2">
 								<a href="javascript:void(0)" @click='doDelete'>
 									<span class="tb-item"><span class="tb-text" title="删除">删除</span></span>
 								</a>
-							</li>
+							</li>-->
 							<li tabindex="3">
 								<a href="javascript:void(0)" @click='doExport'>
 									<span class="tb-item"><span class="tb-text" title="导出">导出</span></span>

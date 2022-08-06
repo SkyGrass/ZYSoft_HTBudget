@@ -23,26 +23,36 @@ function init(opt) {
     },
     methods: {
       openCustom() {
-        opt.parent.openBaseDataDialog("custom", "选择客户", function (result) {
-          result = result[0];
-          var id = result.id,
-            code = result.code,
-            name = result.name;
-          self.form.custName = name;
-          self.form.custId = id;
-          self.$refs.form.validateField("custName");
-        });
+        opt.parent.openBaseDataDialog(
+          "custom",
+          "选择客户",
+          function (result) {
+            result = result[0];
+            var id = result.id,
+              code = result.code,
+              name = result.name;
+            self.form.custName = name;
+            self.form.custId = id;
+            self.$refs.form.validateField("custName");
+          },
+          this.form.custName
+        );
       },
       openProject() {
-        opt.parent.openBaseDataDialog("project", "选择项目", function (result) {
-          result = result[0];
-          var id = result.id,
-            code = result.code,
-            name = result.name;
-          self.form.projectNo = name;
-          self.form.projectId = id;
-          self.$refs.form.validateField("projectNo");
-        });
+        opt.parent.openBaseDataDialog(
+          "project",
+          "选择项目",
+          function (result) {
+            result = result[0];
+            var id = result.id,
+              code = result.code,
+              name = result.name;
+            self.form.projectNo = name;
+            self.form.projectId = id;
+            self.$refs.form.validateField("projectNo");
+          },
+          this.form.projectNo
+        );
       },
       onClearCust() {
         this.form.custId = "";

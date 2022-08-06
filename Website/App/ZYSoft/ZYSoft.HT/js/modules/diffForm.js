@@ -21,6 +21,8 @@ var self = (vm = new Vue({
         projectId: "",
         contractNo: "",
         sum: 0,
+        sum: 0,
+        budgetSum: 0,
         addSum: 0,
         totalSum: 0,
         billerId: loginUserId,
@@ -63,9 +65,9 @@ var self = (vm = new Vue({
         addSum: [
           { required: true, message: "增补金额不能为空", trigger: "blur" },
         ],
-        endDate: [
-          { required: true, message: "竣工日期不能为空", trigger: "blur" },
-        ],
+        // endDate: [
+        //   { required: true, message: "竣工日期不能为空", trigger: "blur" },
+        // ],
         projectType: [
           { required: true, message: "项目类型不能为空", trigger: "blur" },
         ],
@@ -100,27 +102,40 @@ var self = (vm = new Vue({
       });
     },
     summary() {
-      return this.tabs.map(function (m) {
-        return {
-          FGroupCode: m.FGroupCode,
-          FGroupName: m.FGroupName,
-          FBudgetSum: m.FChildren.map(function (m) {
-            return Number(m.FBudgetSum);
-          }).reduce(function (total, num) {
-            return Number(math.eval(total + "+" + num)).toFixed(2);
-          }, 0),
-          FCostSum: m.FChildren.map(function (m) {
-            return Number(m.FCostSum);
-          }).reduce(function (total, num) {
-            return Number(math.eval(total + "+" + num)).toFixed(2);
-          }, 0),
-          FDiffSum: m.FChildren.map(function (m) {
-            return Number(m.FDiffSum);
-          }).reduce(function (total, num) {
-            return Number(math.eval(total + "+" + num)).toFixed(2);
-          }, 0),
-        };
-      });
+      return this.tabs
+        .map(function (m) {
+          return {
+            FGroupCode: m.FGroupCode,
+            FGroupName: m.FGroupName,
+            FBudgetSum: m.FChildren.map(function (m) {
+              return Number(m.FBudgetSum);
+            }).reduce(function (total, num) {
+              return Number(math.eval(total + "+" + num)).toFixed(2);
+            }, 0),
+            FCostSum: m.FChildren.map(function (m) {
+              return Number(m.FCostSum);
+            }).reduce(function (total, num) {
+              return Number(math.eval(total + "+" + num)).toFixed(2);
+            }, 0),
+            FDiffSum: m.FChildren.map(function (m) {
+              return Number(m.FDiffSum);
+            }).reduce(function (total, num) {
+              return Number(math.eval(total + "+" + num)).toFixed(2);
+            }, 0),
+          };
+        })
+        .map(function (m) {
+          if (m.FBudgetSum == 0) {
+            m.FDiffRate = "0";
+            return m;
+          } else {
+            m.FDiffRate =
+              Number(
+                math.eval("(" + m.FDiffSum + "/" + m.FBudgetSum + ")*" + 100)
+              ).toFixed(2) + "%";
+            return m;
+          }
+        });
     },
     printObj() {
       return {
@@ -145,10 +160,10 @@ var self = (vm = new Vue({
     },
   },
   methods: {
-    openBaseDialog(type, title, success) {
+    openBaseDialog(type, title, success, filter) {
       openDialog({
         title: title,
-        url: "./modal/Dialog.aspx",
+        url: "./modal/Dialog.aspx?filter=" + filter,
         onSuccess: function (layero, index) {
           var iframeWin = window[layero.find("iframe")[0]["name"]];
           iframeWin.init({
@@ -168,26 +183,36 @@ var self = (vm = new Vue({
       });
     },
     openCustom() {
-      this.openBaseDialog("custom", "选择客户", function (result) {
-        var result = result[0];
-        var id = result.id,
-          code = result.code,
-          name = result.name;
-        self.form.custName = name;
-        self.form.custId = id;
-        self.$refs.form.validateField("custName");
-      });
+      this.openBaseDialog(
+        "custom",
+        "选择客户",
+        function (result) {
+          var result = result[0];
+          var id = result.id,
+            code = result.code,
+            name = result.name;
+          self.form.custName = name;
+          self.form.custId = id;
+          self.$refs.form.validateField("custName");
+        },
+        this.form.custName
+      );
     },
     openProject() {
-      this.openBaseDialog("project", "选择项目", function (result) {
-        var result = result[0];
-        var id = result.id,
-          code = result.code,
-          name = result.name;
-        self.form.projectName = name;
-        self.form.projectId = id;
-        self.$refs.form.validateField("projectName");
-      });
+      this.openBaseDialog(
+        "project",
+        "选择项目",
+        function (result) {
+          var result = result[0];
+          var id = result.id,
+            code = result.code,
+            name = result.name;
+          self.form.projectName = name;
+          self.form.projectId = id;
+          self.$refs.form.validateField("projectName");
+        },
+        this.form.projectName
+      );
     },
     onTabClick(tab, event) {
       //  console.log(tab);
@@ -205,7 +230,7 @@ var self = (vm = new Vue({
           iframeWin.init({ layer, group: item });
         },
         btn: this.query.state == "read" ? [] : ["确定", "取消"],
-        onBtnYesClick: function (index, layero) {},
+        onBtnYesClick: function (index, layero) { },
       });
     },
     showGroupDetail(item) {
@@ -229,8 +254,10 @@ var self = (vm = new Vue({
             self.form.custId = result.FCustID;
             self.form.projectId = result.FProjectID;
             self.form.contractNo = result.FContractNo;
-            self.form.sum = result.FDiffSum;
-            self.form.addSum = result.FDiffAddSum;
+            // self.form.sum = result.FDiffSum;
+            // self.form.addSum = result.FDiffAddSum;
+            self.form.sum1 = result.FSum;
+            self.form.budgetSum = result.FBudgetSum;
             self.form.totalSum = result.FDiffTotalSum;
             self.form.billerId = result.FBillerID;
             self.form.manager = result.FManager;
@@ -287,6 +314,15 @@ var self = (vm = new Vue({
     }
     if (this.query.state == "read") {
       this.doInitBill(this.query);
+    }
+
+    var dom = document.querySelector('label[for="manager"] span');
+    if (dom != void 0) {
+      if (this.form.accountId == "230114") {
+        dom.innerText = "苏腾项目经理";
+      } else if (this.form.accountId == "250116") {
+        dom.innerText = "华腾项目经理";
+      }
     }
   },
 }));

@@ -5,8 +5,8 @@ var self = (vm = new Vue({
     var curDate = new dayjs();
     return {
       form: {
-        startDate: curDate.add(-10, "day"),
-        endDate: curDate,
+        startDate: curDate.startOf("year"),
+        endDate: curDate.endOf("year"),
         accountId: accountId,
         contractNo: "",
         manager: "",
@@ -30,10 +30,10 @@ var self = (vm = new Vue({
     closeBaseDataDialog(row) {
       layer.close(self.index);
     },
-    openBaseDataDialog(type, title, success) {
+    openBaseDataDialog(type, title, success, filter) {
       openDialog({
         title: title,
-        url: "./modal/Dialog.aspx",
+        url: "./modal/Dialog.aspx?filter=" + filter,
         offset: [self.offset.top, self.offset.left],
         onSuccess: function (layero, index) {
           self.index = index;
@@ -105,10 +105,10 @@ var self = (vm = new Vue({
       if ($.isFunction(top.CreateTab)) {
         top.CreateTab(
           "App/ZYSoft/ZYSoft.HT/BudgetFormPage.aspx?" +
-            utils.obj2Url({
-              state: "add",
-              v: new Date() * 1,
-            }),
+          utils.obj2Url({
+            state: "add",
+            v: new Date() * 1,
+          }),
           "预算表",
           "YS1001"
         );
@@ -205,6 +205,14 @@ var self = (vm = new Vue({
         $("#toolbarContainer").height() -
         $("#title").height() +
         5;
+      var postion = tableConf.findIndex(function (f) {
+        return f.field == "FManager";
+      });
+      if (this.form.accountId == "230114") {
+        tableConf[postion].title = "苏腾项目经理";
+      } else if (this.form.accountId == "250116") {
+        tableConf[postion].title = "华腾项目经理";
+      }
       table = new Tabulator("#grid", {
         locale: true,
         langs: langs,
@@ -253,13 +261,13 @@ var self = (vm = new Vue({
       if ($.isFunction(top.CreateTab)) {
         top.CreateTab(
           "App/ZYSoft/ZYSoft.HT/BudgetFormPage.aspx?" +
-            utils.obj2Url({
-              accountId: FAccountID,
-              projectId: FProjectID,
-              id: FID,
-              state: "read",
-              v: new Date() * 1,
-            }),
+          utils.obj2Url({
+            accountId: FAccountID,
+            projectId: FProjectID,
+            id: FID,
+            state: "read",
+            v: new Date() * 1,
+          }),
           "预算表",
           "YS1001"
         );
@@ -271,10 +279,10 @@ var self = (vm = new Vue({
       window.onresize = function () {
         table.setHeight(
           $(window).height() -
-            $("#header").height() -
-            $("#toolbarContainer").height() -
-            $("#title").height() +
-            5
+          $("#header").height() -
+          $("#toolbarContainer").height() -
+          $("#title").height() +
+          5
         );
       };
 
