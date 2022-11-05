@@ -35,7 +35,7 @@ namespace Chanjet.ZYSoft.HT.UIP
             UserInfo userInfo = HttpContext.Current.Session["UserInfo"] as UserInfo;
             lblUserName.Text += userInfo.PersonName;
             lbUserId.Text += userInfo.UserID;
-            lbAccount.Text += userInfo.AccountID;
+            lbAccount.Text += userInfo.AccountID; 
         }
     }
 }

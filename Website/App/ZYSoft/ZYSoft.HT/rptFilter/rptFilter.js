@@ -15,8 +15,21 @@ function init(opt) {
           custName: "",
           projectNo: "",
           projectClsName: "",
+          manager: "",
+          custManager: "",
         },
       };
+    },
+    computed: {
+      managerName() {
+        if (opt.parent.form.accountId == "230114") {
+          return "苏腾项目经理";
+        } else if (opt.parent.form.accountId == "250116") {
+          return "华腾项目经理";
+        } else {
+          return '项目经理'
+        }
+      }
     },
     methods: {
       openCustom() {

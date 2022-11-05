@@ -1,4 +1,5 @@
 var table = {};
+//accountId = '250116'
 var self = (vm = new Vue({
   el: "#app",
   data() {
@@ -110,9 +111,9 @@ var self = (vm = new Vue({
             SelectApi: "getdifflist",
           },
           self.form,
-          {
-            startDate: dayjs(self.form.startDate).format("YYYY-MM-DD"),
-            endDate: dayjs(self.form.endDate).format("YYYY-MM-DD"),
+           {
+            startDate: self.form.startDate == ""? "": dayjs(self.form.startDate).format("YYYY-MM-DD"),
+            endDate: self.form.endDate == ""? "": dayjs(self.form.endDate).format("YYYY-MM-DD"),
           }
         ),
         "POST"
@@ -228,6 +229,10 @@ var self = (vm = new Vue({
                 m.FEndDate == "" || m.FEndDate == null
                   ? ""
                   : dayjs(m.FEndDate).format("YYYY-MM-DD");
+
+              m.FBudgetSum = numeral(m.FBudgetSum).format('0,0.00')
+              m.FCostSum = numeral(m.FCostSum).format('0,0.00')
+              m.FDiffSum = numeral(m.FDiffSum).format('0,0.00')
               return m;
             });
 

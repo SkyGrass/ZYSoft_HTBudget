@@ -1,4 +1,5 @@
 var table = {};
+//accountId = '250116'
 var self = (vm = new Vue({
   el: "#app",
   data() {
@@ -125,8 +126,8 @@ var self = (vm = new Vue({
           },
           self.form,
           {
-            startDate: dayjs(self.form.startDate).format("YYYY-MM-DD"),
-            endDate: dayjs(self.form.endDate).format("YYYY-MM-DD"),
+            startDate: self.form.startDate == ""? "": dayjs(self.form.startDate).format("YYYY-MM-DD"),
+            endDate: self.form.endDate == ""? "": dayjs(self.form.endDate).format("YYYY-MM-DD"),
           }
         ),
         "POST"
@@ -248,6 +249,12 @@ var self = (vm = new Vue({
                 m.FEndDate == "" || m.FEndDate == null
                   ? ""
                   : dayjs(m.FEndDate).format("YYYY-MM-DD");
+
+
+              m.FCost = numeral(m.FCost).format('0,0.00')
+              m.FSum = numeral(m.FSum).format('0,0.00')
+              m.FAddSum = numeral(m.FAddSum).format('0,0.00')
+              m.FTotalSum = numeral(m.FTotalSum).format('0,0.00')
               return m;
             });
 

@@ -124,8 +124,8 @@ var self = (vm = new Vue({
           },
           self.form,
           {
-            startDate: dayjs(self.form.startDate).format("YYYY-MM-DD"),
-            endDate: dayjs(self.form.endDate).format("YYYY-MM-DD"),
+            startDate: self.form.startDate == ""? "": dayjs(self.form.startDate).format("YYYY-MM-DD"),
+            endDate: self.form.endDate == ""? "": dayjs(self.form.endDate).format("YYYY-MM-DD"),
           }
         ),
         "POST"

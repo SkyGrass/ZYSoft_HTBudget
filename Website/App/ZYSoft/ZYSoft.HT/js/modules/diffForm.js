@@ -9,7 +9,7 @@ Vue.directive("number", {
     };
   },
 });
-
+//accountId = '250116'
 Vue.mixin(printMixin);
 var self = (vm = new Vue({
   el: "#app",
@@ -21,7 +21,7 @@ var self = (vm = new Vue({
         projectId: "",
         contractNo: "",
         sum: 0,
-        sum: 0,
+        sum1: 0,
         budgetSum: 0,
         addSum: 0,
         totalSum: 0,
@@ -91,6 +91,7 @@ var self = (vm = new Vue({
           return f.FGroupCode == g;
         });
         return {
+          FIsSp: r[0].FIsSp || 0,
           FTableId: "table_" + r[0].FGroupCode,
           FGroupCode: r[0].FGroupCode,
           FGroupName: `${r[0].FGroupCode} ${r[0].FGroupName}`,
@@ -102,9 +103,12 @@ var self = (vm = new Vue({
       });
     },
     summary() {
-      return this.tabs
+      var t1 = this.tabs.filter(function (f) {
+        return f.FIsSp == 0;
+      })
         .map(function (m) {
           return {
+            FIsTotal: 0,
             FGroupCode: m.FGroupCode,
             FGroupName: m.FGroupName,
             FBudgetSum: m.FChildren.map(function (m) {
@@ -136,6 +140,27 @@ var self = (vm = new Vue({
             return m;
           }
         });
+      var s1 = t1.map(function (f) { return f.FBudgetSum }).reduce(function (total, num) {
+        return Number(math.eval(total + "+" + num)).toFixed(2);
+      }, 0);
+      var s2 = t1.map(function (f) { return f.FCostSum }).reduce(function (total, num) {
+        return Number(math.eval(total + "+" + num)).toFixed(2);
+      }, 0);
+      var s3 = t1.map(function (f) { return f.FDiffSum }).reduce(function (total, num) {
+        return Number(math.eval(total + "+" + num)).toFixed(2);
+      }, 0);
+      var t2 = [{
+        FIsTotal: 1,
+        FGroupCode: '合计',
+        FGroupName: '合计',
+        FBudgetSum: s1,
+        FCostSum: s2,
+        FDiffSum: s3,
+        FDiffRate: s1 == 0 ? "0" : Number(
+          math.eval("(" + s3 + "/" + s1 + ")*" + 100)
+        ).toFixed(2) + "%"
+      }]
+      return t1.concat(t2)
     },
     printObj() {
       return {
@@ -256,9 +281,9 @@ var self = (vm = new Vue({
             self.form.contractNo = result.FContractNo;
             // self.form.sum = result.FDiffSum;
             // self.form.addSum = result.FDiffAddSum;
-            self.form.sum1 = result.FSum;
+            self.form.sum1 = result.FCostSum;// result.FSum;
             self.form.budgetSum = result.FBudgetSum;
-            self.form.totalSum = result.FDiffTotalSum;
+            self.form.totalSum = result.FDiffSum;
             self.form.billerId = result.FBillerID;
             self.form.manager = result.FManager;
             self.form.custManager = result.FCustManager;

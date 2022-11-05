@@ -3,11 +3,27 @@
     return [
       {
         title: "序号",
-        formatter: "rownum",
+        field: "FRowNo",
         headerHozAlign: "center",
         hozAlign: "center",
         width: 30,
         download: false,
+        headerSort: false,
+      },
+      {
+        title: "合同签订日期",
+        field: "FContractDate",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 120,
+        headerSort: false,
+      },
+      {
+        title: "取值日期",
+        field: "FCreateDate",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 120,
         headerSort: false,
       },
       {
@@ -60,6 +76,22 @@
         cellClick: function (e, cell) {
           self.onClickDetail(cell.getRow().getData());
         },
+      },
+      {
+        title: "主合同名称",
+        field: "FProject",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 200,
+        headerSort: false,
+      },
+      {
+        title: "主合同项目类型",
+        field: "FProjectType",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 200,
+        headerSort: false,
       },
       {
         title: "主合同净收入",
@@ -101,13 +133,28 @@
         width: 120,
         headerSort: false,
       },
+      {
+        title: "项目经理",
+        field: "FManager",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 120,
+        headerSort: false,
+      }, {
+        title: "客户项目经理",
+        field: "FCustManager",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 120,
+        headerSort: false,
+      }
     ];
   },
   998: function (self) {
     return [
       {
         title: "序号",
-        formatter: "rownum",
+        formatter: "FRowNo",
         headerHozAlign: "center",
         hozAlign: "center",
         width: 30,
@@ -166,6 +213,22 @@
         },
       },
       {
+        title: "主合同名称",
+        field: "FProject",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 200,
+        headerSort: false,
+      },
+      {
+        title: "主合同项目类型",
+        field: "FProjectType",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 200,
+        headerSort: false,
+      },
+      {
         title: "主合同净收入",
         field: "FSum",
         headerHozAlign: "center",
@@ -205,17 +268,48 @@
         width: 120,
         headerSort: false,
       },
+      {
+        title: "项目经理",
+        field: "FManager",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 120,
+        headerSort: false,
+      }, {
+        title: "客户项目经理",
+        field: "FCustManager",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 120,
+        headerSort: false,
+      }
     ];
   },
   230114: function (self) {
     return [
       {
         title: "序号",
-        formatter: "rownum",
+        formatter: "FRowNo",
         headerHozAlign: "center",
         hozAlign: "center",
         width: 30,
         download: false,
+        headerSort: false,
+      },
+      {
+        title: "合同签订日期",
+        field: "FContractDate",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 120,
+        headerSort: false,
+      },
+      {
+        title: "取值日期",
+        field: "FCreateDate",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 120,
         headerSort: false,
       },
       {
@@ -278,6 +372,22 @@
         },
       },
       {
+        title: "主合同名称",
+        field: "FProject",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 200,
+        headerSort: false,
+      },
+      {
+        title: "主合同项目类型",
+        field: "FProjectType",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 200,
+        headerSort: false,
+      },
+      {
         title: "主合同净收入",
         field: "FSum",
         headerHozAlign: "center",
@@ -317,6 +427,21 @@
         width: 120,
         headerSort: false,
       },
+      {
+        title: "项目经理",
+        field: "FManager",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 120,
+        headerSort: false,
+      }, {
+        title: "客户项目经理",
+        field: "FCustManager",
+        headerHozAlign: "center",
+        hozAlign: "center",
+        width: 120,
+        headerSort: false,
+      }
     ];
   },
 };

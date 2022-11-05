@@ -1,4 +1,5 @@
 var table = {};
+//accountId = '250116'
 var self = (vm = new Vue({
     el: "#app",
     data() {
@@ -6,7 +7,7 @@ var self = (vm = new Vue({
             form: {
                 startDate: "",
                 endDate: "",
-                accountId: "",
+                accountId: accountId,
                 contractNo: "",
                 year: "",
                 custName: "",
@@ -34,7 +35,7 @@ var self = (vm = new Vue({
                 title: title,
                 url: "./modal/Dialog.aspx?filter=" + filter,
                 offset: [self.offset.top, self.offset.left],
-                onSuccess: function(layero, index) {
+                onSuccess: function (layero, index) {
                     self.index = index;
                     var iframeWin = window[layero.find("iframe")[0]["name"]];
                     iframeWin.init({
@@ -43,7 +44,7 @@ var self = (vm = new Vue({
                         accountId: self.form.accountId,
                     });
                 },
-                onBtnYesClick: function(index, layero) {
+                onBtnYesClick: function (index, layero) {
                     var iframeWin = window[layero.find("iframe")[0]["name"]];
                     var row = iframeWin.getSelect();
                     if (row.length <= 0) {
@@ -60,14 +61,14 @@ var self = (vm = new Vue({
         doQuery() {
             openDialog({
                 url: "./rptFilter/RptFilter.aspx",
-                onSuccess: function(layero, index) {
+                onSuccess: function (layero, index) {
                     layer.setTop(layero);
                     self.offset.top = $(layero).offset().top - 80;
                     self.offset.left = $(layero).offset().left + 40;
                     var iframeWin = window[layero.find("iframe")[0]["name"]];
                     iframeWin.init({ layer, parent: self });
                 },
-                onBtnYesClick: function(index, layero) {
+                onBtnYesClick: function (index, layero) {
                     var iframeWin = window[layero.find("iframe")[0]["name"]];
                     var row = iframeWin.getSelect();
                     if (row.length <= 0) {
@@ -77,16 +78,16 @@ var self = (vm = new Vue({
                     } else {
                         var r = row[0];
                         r = Object.assign({}, {
-                                SelectApi: "getprojectprofit",
-                            },
+                            SelectApi: "getprojectprofit",
+                        },
                             self.form,
                             r
                         );
                         table.setData(
                             "./BudgetHandler.ashx",
                             Object.assign({}, {
-                                    SelectApi: "getprojectprofit",
-                                },
+                                SelectApi: "getprojectprofit",
+                            },
                                 r
                             ),
                             "POST"
@@ -100,14 +101,14 @@ var self = (vm = new Vue({
             table.setData(
                 "./BudgetHandler.ashx",
                 Object.assign({}, {
-                        SelectApi: "getprojectprofit",
-                    },
+                    SelectApi: "getprojectprofit",
+                },
                     self.form, {
-                        startDate: self.form.startDate == "" ?
-                            "" : dayjs(self.form.startDate).format("YYYY-MM-DD"),
-                        endDate: self.form.endDate == "" ?
-                            "" : dayjs(self.form.endDate).format("YYYY-MM-DD"),
-                    }
+                    startDate: self.form.startDate == "" ?
+                        "" : dayjs(self.form.startDate).format("YYYY-MM-DD"),
+                    endDate: self.form.endDate == "" ?
+                        "" : dayjs(self.form.endDate).format("YYYY-MM-DD"),
+                }
                 ),
                 "POST"
             );
@@ -121,15 +122,15 @@ var self = (vm = new Vue({
             }
             layer.confirm(
                 "确定要导出列表吗?", { icon: 3, title: "提示" },
-                function(index) {
-					setTimeout(function () {
-						layer.close(index);
-					}, 2000);
+                function (index) {
+                    setTimeout(function () {
+                        layer.close(index);
+                    }, 2000);
                     table.download(
                         "xlsx",
-                        "利润统计表" + dayjs().format("YYYY-MM-DD") + ".xlsx", {
-                            sheetName: "利润统计表",
-                        }
+                        "项目利润总表" + dayjs().format("YYYY-MM-DD") + ".xlsx", {
+                        sheetName: "项目利润总表",
+                    }
                     );
                 }
             );
@@ -141,24 +142,45 @@ var self = (vm = new Vue({
                 $("#toolbarContainer").height() -
                 $("#title").height() +
                 5;
+
+            var t = tableConf[this.form.accountId](this)
+            var postion = t.findIndex(function (f) {
+                return f.field == "FManager";
+            });
+            if (this.form.accountId == "230114") {
+                t[postion].title = "苏腾项目经理";
+            } else if (this.form.accountId == "250116") {
+                t[postion].title = "华腾项目经理";
+            }
             table = new Tabulator("#grid", {
-				rowHeight:40,
+                rowHeight: 40,
                 locale: true,
                 langs: langs,
                 height: maxHeight,
                 columnHeaderVertAlign: "bottom",
-                columns: tableConf[this.form.accountId](this),
-                ajaxResponse: function(url, params, response) {
+                columns: t,
+                ajaxResponse: function (url, params, response) {
                     if (response.state == "success") {
-                        var t = response.data.map(function(m, i) {
+                        var t = response.data.map(function (m, i) {
                             if (m.FIsTotal == 0) {
+                                m.FCreateDate = dayjs(m.FCreateDate).format("YYYY-MM-DD");
+                                m.FContractDate =
+                                    m.FContractDate == "" || m.FContractDate == null
+                                        ? ""
+                                        : dayjs(m.FContractDate).format("YYYY-MM-DD");
                                 m.FEndDate =
                                     m.FEndDate == "" || m.FEndDate == null ?
-                                    "" :
-                                    dayjs(m.FEndDate).format("YYYY-MM-DD");
+                                        "" :
+                                        dayjs(m.FEndDate).format("YYYY-MM-DD");
                             } else {
                                 m.FSortIndex = "";
                             }
+
+                            m.FSum = numeral(m.FSum).format('0,0.00')
+                            m.FAddSum = numeral(m.FAddSum).format('0,0.00')
+                            m.FTotalSum = numeral(m.FTotalSum).format('0,0.00')
+                            m.FCost = numeral(m.FCost).format('0,0.00')
+                            m.FProfit = numeral(m.FProfit).format('0,0.00')
                             return m;
                         });
                         return t;
@@ -169,15 +191,15 @@ var self = (vm = new Vue({
                 },
             });
 
-            table.on("renderComplete", function() {
+            table.on("renderComplete", function () {
                 self.renderRow();
             });
 
-            table.on("scrollVertical", function() {
+            table.on("scrollVertical", function () {
                 self.renderRow();
             });
 
-            table.on("tableBuilt", function() {
+            table.on("tableBuilt", function () {
                 callback && callback(table);
             });
         },
@@ -205,22 +227,26 @@ var self = (vm = new Vue({
         },
         renderRow() {
             var ps1 = $("#grid .tabulator-cell:contains('小计')").parent();
-            for (let i = 0; i < ps1.length; i++) {
+            for (var i = 0; i < ps1.length; i++) {
                 $(ps1[i]).css("backgroundColor", "cornflowerblue");
                 $(ps1[i]).css("color", "#fff");
                 $(ps1[i]).css("fontWeight", "bold");
             }
             var ps2 = $("#grid .tabulator-cell:contains('合计')").parent();
-            for (let j = 0; j < ps2.length; j++) {
+            for (var j = 0; j < ps2.length; j++) {
                 $(ps2[j]).css("backgroundColor", "cornflowerblue");
                 $(ps2[j]).css("color", "#fff");
                 $(ps2[j]).css("fontWeight", "bold");
             }
+            var ps3 = $("#grid .tabulator-cell[tabulator-field='FContractNo']")
+            for (var x = 0; x < ps3.length; x++) {
+                $(ps3[x]).css("text-decoration", "underline");
+            }
         },
     },
     mounted() {
-        this.initGrid(function() {
-            window.onresize = function() {
+        this.initGrid(function () {
+            window.onresize = function () {
                 table.setHeight(
                     $(window).height() -
                     $("#header").height() -
@@ -233,14 +259,14 @@ var self = (vm = new Vue({
             table.setData(
                 "./BudgetHandler.ashx",
                 Object.assign({}, {
-                        SelectApi: "getprojectprofit",
-                    },
+                    SelectApi: "getprojectprofit",
+                },
                     self.form, {
-                        startDate: self.form.startDate == "" ?
-                            "" : dayjs(self.form.startDate).format("YYYY-MM-DD"),
-                        endDate: self.form.endDate == "" ?
-                            "" : dayjs(self.form.endDate).format("YYYY-MM-DD"),
-                    }
+                    startDate: self.form.startDate == "" ?
+                        "" : dayjs(self.form.startDate).format("YYYY-MM-DD"),
+                    endDate: self.form.endDate == "" ?
+                        "" : dayjs(self.form.endDate).format("YYYY-MM-DD"),
+                }
                 ),
                 "POST"
             );

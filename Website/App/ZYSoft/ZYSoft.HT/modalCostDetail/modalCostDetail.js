@@ -12,7 +12,7 @@ function init(opt) {
           { label: "单据日期", field: "voucherdate" },
           { label: "材料编码", field: "InvCode" },
           { label: "材料名称", field: "InvName" },
-          { label: "规格型号", field: "invStd" },
+          { label: "规格型号", field: "InvStd" },
           { label: "单价", field: "price" },
           { label: "数量", field: "quantity" },
           { label: "金额", field: "amount" },
@@ -49,6 +49,21 @@ function init(opt) {
                 );
                 return m;
               });
+
+              var sum = self.list.map(function (f) { return f.amount }).reduce(function (total, num) {
+                return Number(math.eval(total + "+" + num)).toFixed(2);
+              }, 0);
+              if (self.list.length > 0) {
+                var sumRow = JSON.parse(JSON.stringify(self.list[0]));
+                for (var key in sumRow) {
+                  if (key != 'amount') {
+                    sumRow[key] = ''
+                  } else {
+                    sumRow[key] = sum;
+                  }
+                }
+                self.list.push(sumRow)
+              }
             } else {
               layer.msg(result.msg, { icon: 5 });
             }

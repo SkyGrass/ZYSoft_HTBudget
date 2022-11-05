@@ -9,7 +9,7 @@ Vue.directive("number", {
     };
   },
 });
-
+//accountId = '250116'
 Vue.mixin(printMixin);
 var self = (vm = new Vue({
   el: "#app",
@@ -63,9 +63,9 @@ var self = (vm = new Vue({
         manager: [
           { required: true, message: "项目经理不可为空!", trigger: "blur" },
         ],
-        custManager: [
-          { required: true, message: "客户项目经理不可为空!", trigger: "blur" },
-        ],
+        //custManager: [
+        //  { required: true, message: "客户项目经理不可为空!", trigger: "blur" },
+        //],
         // sum: [{ required: true, message: "金额不能为空", trigger: "blur" }],
         // addSum: [
         //   { required: true, message: "增补金额不能为空", trigger: "blur" },
@@ -74,6 +74,7 @@ var self = (vm = new Vue({
       },
       activeName: "",
       yearSign: false,
+      projectTypes: []
     };
   },
   computed: {
@@ -449,7 +450,10 @@ var self = (vm = new Vue({
                   {
                     SelectApi: "savebudget",
                   },
-                  self.form
+                  self.form,
+                  {
+                    sum: self.form.totalSum
+                  }
                 ),
                 dataType: "json",
                 success: function (result) {
@@ -480,6 +484,29 @@ var self = (vm = new Vue({
         }
       });
     },
+    queryProjectTypes() {
+      $.ajax({
+        type: "POST",
+        url: "./BudgetHandler.ashx",
+        async: true,
+        data: {
+          SelectApi: "getprojecttypes",
+          accountId: accountId
+        },
+        dataType: "json",
+        success: function (result) {
+          if (result.state == "success") {
+            self.projectTypes = result.data
+          }
+          if (result.msg != ''){
+            layer.msg(result.msg, { icon: result.icon });
+          }
+        },
+        error: function () {
+          layer.msg("未能查询到项目类型!", { icon: 5 });
+        },
+      });
+    }
   },
   mounted() {
     this.query = utils.url2Obj(window.location.search);
@@ -498,5 +525,7 @@ var self = (vm = new Vue({
         dom.innerText = "华腾项目经理";
       }
     }
+
+    this.queryProjectTypes();
   },
 }));

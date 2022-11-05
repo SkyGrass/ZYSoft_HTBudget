@@ -282,6 +282,32 @@ public class BudgetHandler : IHttpHandler
             }
         }
 
+        public static string GetProjectTyps(string accountId)
+        {
+            var list = new List<dynamic>();
+            try
+            {
+                string sql = string.Format(@"EXEC dbo.P_Get_ProjectType @FAccountID = '{0}'", accountId);
+                DataTable dt = ZYSoft.DB.BLL.Common.ExecuteDataTable(sql);
+                return JsonConvert.SerializeObject(new
+                {
+                    state = dt.Rows.Count > 0 ? "success" : "error",
+                    data = dt,
+                    msg = ""
+                });
+            }
+            catch (Exception ex)
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    state = "error",
+                    data = new List<string>(),
+                    msg = ex.Message
+                });
+            }
+        }
+
+
         public static string GetBudgetList(string accountId, HttpRequest request)
         {
             try
@@ -486,7 +512,10 @@ public class BudgetHandler : IHttpHandler
                 string contractNo = CommMethod.SafeString(request.Form["contractNo"], "");
                 string projectClsId = CommMethod.SafeString(request.Form["projectClsId"], "");
                 string projectId = CommMethod.SafeString(request.Form["projectId"], "");
+                string projectNo = CommMethod.SafeString(request.Form["projectNo"], "");
                 string custId = CommMethod.SafeString(request.Form["custId"], "");
+                string manager = CommMethod.SafeString(request.Form["manager"], "");
+                string custManager = CommMethod.SafeString(request.Form["custManager"], "");
                 if (!string.IsNullOrEmpty(startDate))
                 {
                     sqlWhere += string.Format(@" AND t1.FEndDate >= ''{0} 00:00:00''", startDate);
@@ -498,7 +527,15 @@ public class BudgetHandler : IHttpHandler
                 }
                 if (!string.IsNullOrEmpty(contractNo))
                 {
-                    sqlWhere += string.Format(@" AND t1.FContractNo like ''%{0}%''", contractNo);
+                    string sw = "";
+                    string[] cns = (contractNo.Split(','));
+                    foreach (string c in cns)
+                    {
+                        sw += string.Format(@" t1.FContractNo like ''%{0}%'' OR", c); ;
+                    }
+                    sw = sw.TrimEnd('O', 'R');
+                    sqlWhere += string.Format(@" AND ({0})", sw);
+                    //sqlWhere += string.Format(@" AND t1.FContractNo like ''%{0}%''", contractNo);
                 }
                 if (!string.IsNullOrEmpty(projectClsId))
                 {
@@ -508,13 +545,54 @@ public class BudgetHandler : IHttpHandler
                 {
                     sqlWhere += string.Format(@" AND t1.FProjectId =''{0}''", projectId);
                 }
+                else
+                {
+                    if (!string.IsNullOrEmpty(projectNo))
+                    {
+                        sqlWhere += string.Format(@" AND t3.Name LIKE ''%{0}%''", projectNo);
+                    }
+                }
+
                 if (!string.IsNullOrEmpty(custId))
                 {
                     sqlWhere += string.Format(@" AND t1.FCustId = ''{0}''", custId);
                 }
+                if (!string.IsNullOrEmpty(manager))
+                {
+                    string sw = "";
+                    string[] ms = (manager.Split(','));
+                    foreach (string m in ms)
+                    {
+                        sw += string.Format(@" t1.FManager like ''%{0}%'' OR", m); ;
+                    }
+                    sw = sw.TrimEnd('O', 'R');
+                    sqlWhere += string.Format(@" AND ({0})", sw);
+                    //sqlWhere += string.Format(@" AND t.FManager like ''%{0}%''", manager);
+                }
+                if (!string.IsNullOrEmpty(custManager))
+                {
+                    string sw = "";
+                    string[] cms = (custManager.Split(','));
+                    foreach (string cm in cms)
+                    {
+                        sw += string.Format(@" t1.FCustManager like ''%{0}%'' OR", cm); ;
+                    }
+                    sw = sw.TrimEnd('O', 'R');
+                    sqlWhere += string.Format(@" AND ({0})", sw);
+                    //sqlWhere += string.Format(@" AND t.FCustManager like  ''%{0}%''", custManager);
+                }
                 if (!string.IsNullOrEmpty(year))
                 {
-                    sqlWhere += string.Format(@" AND t3.priuserdefnvc1 = ''{0}''", year);
+                    string sw = "";
+                    string[] ys = (year.Split(','));
+                    foreach (string y in ys)
+                    {
+                        sw += string.Format(@" t3.priuserdefnvc1 = ''{0}'' OR", y); ;
+                    }
+                    sw = sw.TrimEnd('O', 'R');
+                    sqlWhere += string.Format(@" AND ({0})", sw);
+
+                    //sqlWhere += string.Format(@" AND t3.priuserdefnvc1 = ''{0}''", year);
                 }
 
                 string sql = string.Format(@" EXEC dbo.P_Total_ProjectProfit 
@@ -2031,6 +2109,9 @@ public class BudgetHandler : IHttpHandler
                 case "deletejs":
                     ids = context.Request.Form["ids"] ?? "";
                     result = DBMethod.DeleteJs(ids);
+                    break;
+                case "getprojecttypes":
+                    result = DBMethod.GetProjectTyps(accountId);
                     break;
                 case "check":
                     projectId = context.Request.Form["projectId"] ?? "";

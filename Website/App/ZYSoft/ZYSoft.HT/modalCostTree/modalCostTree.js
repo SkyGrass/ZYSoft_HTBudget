@@ -32,7 +32,7 @@ function init(opt) {
           dataType: "json",
           success: function (result) {
             if (result.state == "success") {
-              result = result.data.map(function (m, i) {
+              result = result.data.filter(function (f) { return f.FCostSum != 0 }).map(function (m, i) {
                 if (i == 0) {
                   if (m.FCostQty == 0) {
                     m.FCostQty = "";

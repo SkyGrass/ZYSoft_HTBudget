@@ -83,6 +83,7 @@
     <script src="./js/element-ui-index.js"></script>
     <script src="./js/tabulator.js"></script>
     <script src="./js/math/math.min.js"></script>
+    <script src="./js/numeral/numeral.min.js"></script>
     <script src="./js/layui/layui.js"></script>
     <script src="./js/dialog/dialog.js"></script>
     <script src="./js/utils.js"></script>

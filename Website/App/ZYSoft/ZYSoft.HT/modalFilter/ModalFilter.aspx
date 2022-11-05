@@ -28,15 +28,16 @@
                         <table style="width: 100%;">
                             <tr>
                                 <td>
-                                    <el-form-item label="开始日期" class="form-item-max" prop='startDate'
-                                        label-width="70px">
+                                    <el-form-item label="开始日期" class="form-item-max" prop='startDate' label-width="70px"
+                                        style="margin-bottom: 0px !important;">
                                         <el-date-picker type="date" clearable style="width:100%"
                                             v-model="form.startDate" placeholder="请选择开始日期" class="noBorder">
                                         </el-date-picker>
                                     </el-form-item>
                                 </td>
                                 <td>
-                                    <el-form-item label="结束日期" class="form-item-max" prop='endDate'>
+                                    <el-form-item label="结束日期" class="form-item-max" prop='endDate'
+                                        style="margin-bottom: 0px !important;">
                                         <el-date-picker type="date" clearable style="width:100%" v-model="form.endDate"
                                             placeholder="请选择结束日期" class="noBorder"></el-date-picker>
                                     </el-form-item>
@@ -44,7 +45,8 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <el-form-item label="客户" class="form-item-max" prop='custName' label-width="70px">
+                                    <el-form-item label="客户" class="form-item-max" prop='custName' label-width="70px"
+                                        style="margin-bottom: 0px !important;">
                                         <el-input clearable @clear='onClearCust' style="width:100%"
                                             v-model="form.custName" placeholder="请选择客户" class="noBorder">
                                             <i class="el-icon-search" slot='suffix' @click='openCustom'></i>
@@ -52,7 +54,8 @@
                                     </el-form-item>
                                 </td>
                                 <td>
-                                    <el-form-item label="项目" class="form-item-max" prop='projectNo'>
+                                    <el-form-item label="项目" class="form-item-max" prop='projectNo'
+                                        style="margin-bottom: 0px !important;">
                                         <el-input clearable @clear='onClearProject' style="width:100%"
                                             v-model="form.projectNo" placeholder="请选择项目" class="noBorder">
                                             <i class="el-icon-search" slot='suffix' @click='openProject'></i>
@@ -62,14 +65,15 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <el-form-item label="合同号" class="form-item-max" prop='contractNo'
-                                        label-width="70px">
+                                    <el-form-item label="合同号" class="form-item-max" prop='contractNo' label-width="70px"
+                                        style="margin-bottom: 0px !important;">
                                         <el-input clearable style="width:100%" v-model="form.contractNo"
                                             placeholder="请填写合同号" class="noBorder"></el-input>
                                     </el-form-item>
                                 </td>
                                 <td v-if='fromcost'>
-                                    <el-form-item label="利润年度" class="form-item-max" prop='year' label-width="70px">
+                                    <el-form-item label="利润年度" class="form-item-max" prop='year' label-width="70px"
+                                        style="margin-bottom: 0px !important;">
                                         <el-input clearable style="width:100%" v-model="form.year" placeholder="请填写利润年度"
                                             class="noBorder"></el-input>
                                     </el-form-item>
@@ -78,13 +82,14 @@
                             <tr>
                                 <td>
                                     <el-form-item :label="managerName" class="form-item-max" prop='manager'
-                                        label-width="70px">
+                                        label-width="70px" style="margin-bottom: 0px !important;">
                                         <el-input clearable style="width:100%" v-model="form.manager"
                                             placeholder="请填写项目经理" class="noBorder"></el-input>
                                     </el-form-item>
                                 </td>
                                 <td>
-                                    <el-form-item label="客户项目经理" class="form-item-max" prop='custManager'>
+                                    <el-form-item label="客户项目经理" class="form-item-max" prop='custManager'
+                                        style="margin-bottom: 0px !important;">
                                         <el-input clearable style="width:100%" v-model="form.custManager"
                                             placeholder="请填写客户项目经理" class="noBorder"></el-input>
                                     </el-form-item>
@@ -93,7 +98,7 @@
                             <tr v-if='fromcost'>
                                 <td>
                                     <el-form-item label="合同日期" class="form-item-max" prop='contractDate'
-                                        label-width="70px">
+                                        label-width="70px" style="margin-bottom: 0px !important;">
                                         <el-input clearable style="width:100%" v-model="form.contractDate"
                                             placeholder="请填写合同日期" class="noBorder"></el-input>
                                     </el-form-item>

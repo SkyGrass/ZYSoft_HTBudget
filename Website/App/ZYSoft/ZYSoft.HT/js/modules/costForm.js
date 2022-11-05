@@ -9,7 +9,7 @@ Vue.directive("number", {
     };
   },
 });
-
+//accountId = '250116'
 Vue.mixin(printMixin);
 var s = { cost: 0 };
 var self = (vm = new Vue({
@@ -30,7 +30,8 @@ var self = (vm = new Vue({
         endDate: "",
         projectType: "",
         year: "",
-        cost: 0,
+            cost: 0,
+            profit:0,
         custName: "",
         projectName: "",
         billerName: loginName,
@@ -313,6 +314,8 @@ var self = (vm = new Vue({
             self.form.projectType = result.FProjectType;
 
             self.form.cost = result.FCost;
+
+              self.form.profit = result.FProfit;
 
             self.form.custName = result.FCustName;
             self.form.projectName = result.FProjectName;

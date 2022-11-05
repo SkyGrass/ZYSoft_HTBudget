@@ -112,7 +112,7 @@
     headerSort: false,
   },
   {
-    title: "差异合同金额",
+    title: "预算与实际成本差额",
     field: "FDiffSum",
     headerHozAlign: "center",
     hozAlign: "right",
@@ -127,14 +127,14 @@
   //   width: 120,
   //   headerSort: false,
   // },
-  {
-    title: "预算与实际成本差额",
-    field: "FSum",
-    headerHozAlign: "center",
-    hozAlign: "right",
-    width: 160,
-    headerSort: false,
-  },
+  // {
+  //   title: "预算与实际成本差额",
+  //   field: "FSum",
+  //   headerHozAlign: "center",
+  //   hozAlign: "right",
+  //   width: 160,
+  //   headerSort: false,
+  // },
   {
     title: "项目经理",
     field: "FManager",

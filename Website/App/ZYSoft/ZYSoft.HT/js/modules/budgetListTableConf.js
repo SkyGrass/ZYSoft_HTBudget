@@ -23,14 +23,14 @@
     width: 180,
     headerSort: false,
   },
-  {
-    title: "利润年度",
-    field: "FYear",
-    headerHozAlign: "center",
-    hozAlign: "center",
-    width: 80,
-    headerSort: false,
-  },
+  // {
+  //   title: "利润年度",
+  //   field: "FYear",
+  //   headerHozAlign: "center",
+  //   hozAlign: "center",
+  //   width: 80,
+  //   headerSort: false,
+  // },
   {
     title: "项目",
     field: "FProjectName",

@@ -18,4 +18,8 @@ var utils = {
     });
     return obj;
   },
+  format: function (num) { 
+    var reg = /\d{1,3}(?=(\d{3})+$)/g;
+    return (num + ' ').replace(reg, '$&,')
+  }
 };
