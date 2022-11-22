@@ -1,0 +1,13 @@
+body {
+  margin: 0px !important;
+}
+
+.tabulator-tableholder {
+  background-color: #fff;
+}
+
+.left {
+  padding: 10px;
+  height: 288px;
+  overflow-y: scroll;
+}

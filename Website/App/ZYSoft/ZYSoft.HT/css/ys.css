@@ -69,7 +69,7 @@ input:disabled {
     border-bottom: 1px solid #aaa;
 }
 
-.tabulator-row .tabulator-cell{
+.tabulator-row .tabulator-cell {
     white-space: normal;
     word-break: break-all;
 }
@@ -81,4 +81,8 @@ input:disabled {
 .hightRow {
     color: #409EFF;
     font-weight: bold;
+}
+
+.el-input__inner {
+    padding: 0 10px;
 }

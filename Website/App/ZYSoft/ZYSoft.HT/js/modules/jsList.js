@@ -8,13 +8,6 @@ var self = (vm = new Vue({
         startDate: curDate.startOf("year"),
         endDate: curDate.endOf("year"),
         accountId: accountId,
-        contractNo: "",
-        manager: "",
-        custManager: "",
-        custName: "",
-        projectNo: "",
-        projectType: "",
-        projectId: "",
         custId: "",
       },
       list: [],
@@ -43,7 +36,7 @@ var self = (vm = new Vue({
           iframeWin.init({
             layer,
             dialogType: type,
-            accountId: self.form.accountId,
+            accountId: accountId,
           });
         },
         onBtnYesClick: function (index, layero) {
@@ -64,10 +57,10 @@ var self = (vm = new Vue({
       if ($.isFunction(top.CreateTab)) {
         top.CreateTab(
           "App/ZYSoft/ZYSoft.HT/JSFormPage.aspx?" +
-            utils.obj2Url({
-              state: "add",
-              v: new Date() * 1,
-            }),
+          utils.obj2Url({
+            state: "add",
+            v: new Date() * 1,
+          }),
           "结算单",
           "YS1004"
         );
@@ -75,7 +68,7 @@ var self = (vm = new Vue({
     },
     doQuery() {
       openDialog({
-        url: "./modalFilter/ModalFilter.aspx",
+        url: "./modalJSFilter/ModalJSFilter.aspx",
         onSuccess: function (layero, index) {
           layer.setTop(layero);
           self.offset.top = $(layero).offset().top - 80;
@@ -125,9 +118,9 @@ var self = (vm = new Vue({
             SelectApi: "getjslist",
           },
           self.form,
-		  {
-            startDate: self.form.startDate == ""? "": dayjs(self.form.startDate).format("YYYY-MM-DD"),
-            endDate: self.form.endDate == ""? "": dayjs(self.form.endDate).format("YYYY-MM-DD"),
+          {
+            startDate: self.form.startDate == "" ? "" : dayjs(self.form.startDate).format("YYYY-MM-DD"),
+            endDate: self.form.endDate == "" ? "" : dayjs(self.form.endDate).format("YYYY-MM-DD"),
           }
         ),
         "POST"
@@ -141,33 +134,36 @@ var self = (vm = new Vue({
       });
       if (loginUserId == "")
         return layer.msg("没有获取到当前账套登录信息!", { icon: 5 });
-      layer.confirm(
-        "确定要批量审批选中记录吗?",
-        { icon: 3, title: "提示" },
-        function (index) {
-          $.ajax({
-            type: "POST",
-            url: "./BudgetHandler.ashx",
-            async: true,
-            data: {
-              SelectApi: "verfiy",
-              ids: ids.join(","),
-              billerId: loginUserId,
-              flag: 0,
-            },
-            dataType: "json",
-            success: function (result) {
-              if (result.state == "success") {
-                self.doRefresh();
-                layer.msg(result.msg, { icon: 1 });
-                layer.close(index);
-              } else {
-                layer.msg(result.msg, { icon: 5 });
-              }
-            },
-          });
-        }
-      );
+      if (this.beforeVerify(table.getSelectedData())) {
+        layer.confirm(
+          "确定要批量审批选中记录吗?",
+          { icon: 3, title: "提示" },
+          function (index) {
+            $.ajax({
+              type: "POST",
+              url: "./BudgetHandler.ashx",
+              async: true,
+              data: {
+                SelectApi: "verfiy",
+                ids: ids.join(","),
+                billerId: loginUserId,
+                accountId: accountId,
+                flag: 0,
+              },
+              dataType: "json",
+              success: function (result) {
+                if (result.state == "success") {
+                  self.doRefresh();
+                  layer.msg(result.msg, { icon: 1 });
+                  layer.close(index);
+                } else {
+                  layer.msg(result.msg, { icon: 5 });
+                }
+              },
+            });
+          }
+        );
+      }
     },
     doUnVerify() {
       if (table.getSelectedData().length <= 0)
@@ -187,6 +183,7 @@ var self = (vm = new Vue({
               SelectApi: "verfiy",
               ids: ids.join(","),
               billerId: loginUserId,
+              accountId: accountId,
               flag: 1,
             },
             dataType: "json",
@@ -321,22 +318,48 @@ var self = (vm = new Vue({
         callback && callback(table);
       });
     },
+    beforeVerify(rows) {
+      var result = false;
+      try {
+        if (window.TAjax) {
+          var results = [];
+          rows.forEach(function (row) {
+            var billId = row.FItemID;
+            var billNo = row.FBillNo;
+            var check = TAjax.GetVchAttCount('ZYSoftProjectAccount', billId + '')
+            if (check.value <= 0) {
+              results.push("发现单号" + billNo + "尚未上传附件!")
+            }
+          })
+
+          if (results.length > 0) {
+            layer.msg(results.join("\r\n"), { icon: 5 });
+          }
+          return results.length <= 0
+        } else {
+          layer.msg("请在T+环境操作单据!", { icon: 5 });
+        }
+      } catch (error) {
+        layer.msg("请在T+环境操作单据!", { icon: 5 });
+      }
+      return result
+    },
     onClickDetail(item) {
       var FAccountID = item.FAccountID,
-        FProjectID = item.FProjectID,
+        FCustID = item.FCustID,
         FItemID = item.FItemID;
       if ($.isFunction(top.CreateTab)) {
         top.CreateTab(
           "App/ZYSoft/ZYSoft.HT/JSFormPage.aspx?" +
-            utils.obj2Url({
-              accountId: FAccountID,
-              projectId: FProjectID,
-              id: FItemID,
-              state: "read",
-              v: new Date() * 1,
-            }),
+          utils.obj2Url({
+            accountId: FAccountID,
+            custId: FCustID,
+            id: FItemID,
+            state: "read",
+            v: new Date() * 1,
+          }),
           "结算单",
-          "YS1004"
+          "JS1004"
         );
       }
     },
@@ -346,10 +369,10 @@ var self = (vm = new Vue({
       window.onresize = function () {
         table.setHeight(
           $(window).height() -
-            $("#header").height() -
-            $("#toolbarContainer").height() -
-            $("#title").height() +
-            5
+          $("#header").height() -
+          $("#toolbarContainer").height() -
+          $("#title").height() +
+          5
         );
       };
 

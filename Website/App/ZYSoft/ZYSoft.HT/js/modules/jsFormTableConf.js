@@ -1,12 +1,52 @@
 var tableConf = function (self) {
   return [
     {
+      title: "序号",
       formatter: "rownum",
       headerHozAlign: "center",
       hozAlign: "center",
       width: 30,
       download: false,
       headerSort: false,
+    },
+    {
+      title: "项目名称",
+      field: "FProjectName",
+      headerHozAlign: "center",
+      hozAlign: "center",
+      width: 180,
+      headerSort: false,
+    },
+    {
+      title: "项目编码",
+      field: "FProjectCode",
+      headerHozAlign: "center",
+      hozAlign: "center",
+      width: 180,
+      headerSort: false,
+    },
+    {
+      title: "销货单金额",
+      field: "FSourceSum",
+      headerHozAlign: "center",
+      hozAlign: "right",
+      width: 150,
+      headerSort: false, bottomCalc: "sum", bottomCalcParams: { precision: 2 },
+    },
+    {
+      title: "结算金额",
+      field: "FAccountSum",
+      headerHozAlign: "center",
+      hozAlign: "right",
+      width: 150,
+      headerSort: false, bottomCalc: "sum", bottomCalcParams: { precision: 2 },
+      editor: self.query.state == "read" ? false : "number",
+      editorParams: {
+        selectContents: true,
+      },
+      cellEdited: function (cell) {
+        self.reCalc(cell);
+      },
     },
     {
       title: "销货单号",
@@ -17,104 +57,11 @@ var tableConf = function (self) {
       headerSort: false,
     },
     {
-      title: "编码",
-      field: "FInvCode",
+      title: "销售订单号",
+      field: "FSOBillNo",
       headerHozAlign: "center",
       hozAlign: "center",
-      width: 80,
-      headerSort: false,
-    },
-    {
-      title: "名称",
-      field: "FInvName",
-      headerHozAlign: "center",
-      hozAlign: "center",
-      width: 120,
-      headerSort: false,
-    },
-    {
-      title: "单价",
-      field: "FPrice",
-      headerHozAlign: "center",
-      hozAlign: "right",
       width: 150,
-      headerSort: false,
-      editor: self.query.state == "read" ? false : "number",
-      editorParams: {
-        selectContents: true,
-      },
-      cellEdited: function (cell) {
-        self.reCalc(cell);
-      },
-    },
-    {
-      title: "含税单价",
-      field: "FTaxPrice",
-      headerHozAlign: "center",
-      hozAlign: "right",
-      width: 150,
-      headerSort: false,
-    },
-    {
-      title: "数量",
-      field: "FQty",
-      headerHozAlign: "center",
-      hozAlign: "right",
-      width: 60,
-      headerSort: false,
-      editor: self.query.state == "read" ? false : "number",
-      editorParams: {
-        selectContents: true,
-      },
-      cellEdited: function (cell) {
-        self.reCalc(cell);
-      },
-    },
-    {
-      title: "单位",
-      field: "FUnitName",
-      headerHozAlign: "center",
-      hozAlign: "center",
-      width: 60,
-      headerSort: false,
-    },
-    {
-      title: "金额",
-      field: "FSum",
-      headerHozAlign: "center",
-      hozAlign: "right",
-      width: 150,
-      headerSort: false,
-      editor: self.query.state == "read" ? false : "number",
-      editorParams: {
-        selectContents: true,
-      },
-      cellEdited: function (cell) {
-        self.reCalc(cell);
-      },
-    },
-    {
-      title: "含税金额",
-      field: "FTaxSum",
-      headerHozAlign: "center",
-      hozAlign: "right",
-      width: 150,
-      headerSort: false,
-    },
-    {
-      title: "税额",
-      field: "FTax",
-      headerHozAlign: "center",
-      hozAlign: "right",
-      width: 150,
-      headerSort: false,
-    },
-    {
-      title: "税率",
-      field: "FTaxRate",
-      headerHozAlign: "center",
-      hozAlign: "right",
-      width: 100,
       headerSort: false,
     },
     {

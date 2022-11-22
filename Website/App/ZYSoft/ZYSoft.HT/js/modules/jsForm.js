@@ -9,7 +9,6 @@ Vue.directive("number", {
     };
   },
 });
-
 Vue.mixin(printMixin);
 var table = {};
 var self = (vm = new Vue({
@@ -20,20 +19,17 @@ var self = (vm = new Vue({
       form: {
         accountId: accountId,
         custId: "",
-        projectId: "",
-        contractNo: "",
-        sum: 0,
-        billerId: loginUserId,
-        manager: "",
-        custManager: "",
-        date: curDate,
-        projectType: "",
         custName: "",
-        projectName: "",
-        billerName: loginName,
+        sum: 0,
         memo: "",
         billNo: "",
+        date: curDate,
         id: "-1",
+        billerId: loginUserId,
+        billerName: loginName,
+        veriferId: '',
+        veriferName: '',
+        veriferDate: ""
       },
       query: {},
       rules: {
@@ -47,47 +43,38 @@ var self = (vm = new Vue({
         custName: [
           { required: true, message: "客户不可为空!", trigger: "blur" },
         ],
-        projectName: [
-          { required: true, message: "项目不可为空!", trigger: "blur" },
-        ],
-        contractNo: [
-          { required: true, message: "合同号不可为空!", trigger: "blur" },
-        ],
-        manager: [
-          { required: true, message: "项目经理不可为空!", trigger: "blur" },
-        ],
-        custManager: [
-          { required: true, message: "客户项目经理不可为空!", trigger: "blur" },
-        ],
         sum: [{ required: true, message: "金额不能为空", trigger: "blur" }],
-        date: [{ required: true, message: "日期不能为空", trigger: "blur" }],
-        projectType: [
-          { required: true, message: "项目类型不能为空", trigger: "blur" },
-        ],
+        date: [{ required: true, message: "日期不能为空", trigger: "blur" }]
       },
       canShow: false,
       index: -1,
       index1: -1,
+      forbidden: false
     };
   },
   computed: {},
-  watch: {},
+  watch: {
+    "form.custName": function (newV, oldV) {
+      if (newV == "") {
+        this.form.custId = ""
+      }
+    }
+  },
   methods: {
     doPick() {
-      if (self.form.projectId == "") {
-        return layer.msg("请先选择项目", { icon: 5 });
-      }
       openDialog({
         title: "选择销货单",
         url: "./modalJsPick/ModalJsPick.aspx",
-        area: ["90%", "500px"],
+        area: ["90%", "570px"],
         onSuccess: function (layero, index) {
           self.index1 = index;
           var iframeWin = window[layero.find("iframe")[0]["name"]];
           iframeWin.init({
             layer,
             accountId: self.form.accountId,
-            projectId: self.form.projectId,
+            custId: self.form.custId,
+            custName: self.form.custName,
+            openDialog: openDialog
           });
         },
         onBtnYesClick: function (index, layero) {
@@ -99,18 +86,26 @@ var self = (vm = new Vue({
     },
     pickDone(rows, index) {
       if (rows.length > 0) {
-        var row = rows[0];
-        self.form.custId = row.FCustID;
-        self.form.custName = row.FCustName;
-        self.form.manager = row.FManager;
-        self.form.custManager = row.FCustManager;
-
+        var oldRows = table.getData();
+        var custId = rows[0].FCustID;
+        var custName = rows[0].FCustName;
+        self.form.custId = custId;
+        self.form.custName = custName;
+        rows.forEach(function (r) {
+          var isExist = oldRows.filter(function (old) {
+            return r.FProjectCode == old.FProjectCode
+          });
+          if (isExist.length <= 0) {
+            oldRows.push(r)
+          }
+        });
+        this.forbidden = true;
         table
-          .setData(rows)
+          .setData(oldRows)
           .then(function () {
             var total = rows
               .map(function (row) {
-                return row.FSum;
+                return row.FAccountSum;
               })
               .reduce(function (total, num) {
                 return total + num;
@@ -139,7 +134,6 @@ var self = (vm = new Vue({
       layer.close(self.index);
     },
     openBaseDialog(type, title, success, filter) {
-
       openDialog({
         title: title,
         url: "./modal/Dialog.aspx?filter=" + filter,
@@ -147,7 +141,7 @@ var self = (vm = new Vue({
           self.index = index;
           var iframeWin = window[layero.find("iframe")[0]["name"]];
           iframeWin.init({
-            layer,
+            layer: window.parent.layer,
             dialogType: type,
             accountId: self.form.accountId,
           });
@@ -179,24 +173,20 @@ var self = (vm = new Vue({
       self.form.custId = id;
       self.$refs.form.validateField("custName");
     },
-    openProject() {
-      this.openBaseDialog("project", "选择项目", this.openProjectDone, this.form.projectName);
-    },
-    openProjectDone(result) {
-      var result = result[0];
-      var id = result.id,
-        code = result.code,
-        name = result.name;
-      self.form.projectName = name;
-      self.form.projectId = id;
-      self.form.contractNo = code;
-      self.$refs.form.validateField("projectName");
-    },
     doSave() {
+      var _d = table.getData().map(function (r) { return r.FAccountSum });
+      this.form.sum = _d.reduce(function (total, num) {
+        return total + num;
+      }, 0);
       this.$refs["form"].validate(function (valid) {
         if (valid) {
           if (table.getData().length <= 0) {
             return layer.msg("没有发现表体记录!", { icon: 5 });
+          }
+          if (table.getData().filter(function (r) {
+            return math.add(r.FAccountSum, 0) == 0;
+          }).length > 0) {
+            return layer.msg("发现金额为0的表体记录!", { icon: 5 });
           }
           layer.confirm(
             "确定要保存结算单吗?",
@@ -220,14 +210,9 @@ var self = (vm = new Vue({
                           FBillNo: row.billNo,
                           FDate: row.date,
                           FCustID: row.custId,
-                          FProjectID: row.projectId,
-                          FContractNo: row.contractNo,
-                          FManager: row.manager,
-                          FCustManager: row.custManager,
                           FMemo: row.memo,
-                          FSum: row.sum,
+                          FAccountSum: 0,
                           FBillerID: row.billerId,
-                          FProjectType: row.projectType,
                         };
                       })[0]
                     ),
@@ -252,7 +237,7 @@ var self = (vm = new Vue({
                         "App/ZYSoft/ZYSoft.HT/JSFormPage.aspx?" +
                         utils.obj2Url(self.query),
                         "结算单",
-                        "YS1004"
+                        "JS1004"
                       );
                     }
                   }
@@ -271,18 +256,14 @@ var self = (vm = new Vue({
     },
     doCancelEdit() {
       this.query.state = "read";
-      table.updateColumnDefinition("FQty", { editor: false });
-      table.updateColumnDefinition("FPrice", { editor: false });
-      table.updateColumnDefinition("FSum", { editor: false });
+      table.updateColumnDefinition("FAccountSum", { editor: false });
     },
     doEdit() {
       if (self.canShow) {
         return layer.msg("当前单据已审批,禁止编辑!", { icon: 5 });
       }
       this.query.state = "edit";
-      table.updateColumnDefinition("FQty", { editor: "number" });
-      table.updateColumnDefinition("FPrice", { editor: "number" });
-      table.updateColumnDefinition("FSum", { editor: "number" });
+      table.updateColumnDefinition("FAccountSum", { editor: "number" });
     },
     doInitBillNo() {
       $.ajax({
@@ -317,19 +298,19 @@ var self = (vm = new Vue({
             result = result.data[0];
             self.form.accountId = result.FAccountID;
             self.form.custId = result.FCustID;
-            self.form.projectId = result.FProjectID;
-            self.form.contractNo = result.FContractNo;
-            self.form.sum = result.FSum;
+            self.form.sum = result.FAccountSum;
+
+            self.form.veriferId = result.FVeriferID;
+            self.form.veriferName = result.FVeriferName;
+            if (result.FVerifyDate != '' && result.FVerifyDate != null) {
+              self.form.veriferDate = dayjs(result.FVerifyDate).format('YYYY-MM-DD HH:mm:ss');
+            }
 
             self.form.billerId = result.FBillerID;
-            self.form.manager = result.FManager;
-            self.form.custManager = result.FCustManager;
             self.form.date = result.FDate;
-            self.form.projectType = result.FProjectType;
             self.form.billNo = result.FBillNo;
             self.form.memo = result.FMemo;
             self.form.custName = result.FCustName;
-            self.form.projectName = result.FProjectName;
             self.form.billerName = result.FBillerName;
             self.form.id = result.FItemID;
             self.canShow = result.FVeriferID != "" && result.FVeriferID != null;
@@ -350,6 +331,7 @@ var self = (vm = new Vue({
         async: true,
         data: {
           SelectApi: "getjsdetail",
+          accountId: this.form.accountId,
           billId: billId,
         },
         dataType: "json",
@@ -383,7 +365,7 @@ var self = (vm = new Vue({
         locale: true,
         langs: langs,
         height: maxHeight,
-        index: "EntryID",
+        index: "FID",
         columnHeaderVertAlign: "bottom",
         columns: tableConf(this).concat([
           {
@@ -423,95 +405,61 @@ var self = (vm = new Vue({
       table.on("tableBuilt", function () {
         callback && callback(table);
       });
+
+      table.on("rowDeleted", function (row) {
+        self.forbidden = table.getData().length > 0
+      });
     },
-    reCalc(cell) {
-      var value = cell.getValue();
-      var oldValue = cell.getOldValue();
-      if (value == oldValue) return;
-      var field = cell.getField();
-      var taxRate = cell.getRow().getCell("FTaxRate").getValue();
-      var sum = 0,
-        taxSum = 0,
-        price = 0,
-        taxPrice = 0,
-        qty = 0,
-        tax = 0;
-      if (field == "FQty") {
-        qty = value;
-        price = Number(cell.getRow().getCell("FPrice").getValue());
-        taxPrice = Number(cell.getRow().getCell("FTaxPrice").getValue());
-        sum = math.eval(price + "*" + value);
-        tax = math.eval(sum + "*" + taxRate);
-        taxSum = math.eval(taxPrice + "*" + value);
-        cell.getRow().update({ FSum: sum.toFixed(2) });
-        cell.getRow().update({ FTaxSum: taxSum.toFixed(2) });
-        cell.getRow().update({ FTax: tax.toFixed(2) });
-      } else if (field == "FPrice") {
-        price = value;
-        qty = Number(cell.getRow().getCell("FQty").getValue()).toFixed(2);
-        taxPrice = math.eval(value + "*" + "(1+" + taxRate + ")");
-        sum = math.eval(qty + "*" + value);
-        taxSum = math.eval(qty + "*" + taxPrice);
-        tax = math.eval(sum + "*" + taxRate);
-
-        cell.getRow().update({ FTaxPrice: taxPrice.toFixed(2) });
-        cell.getRow().update({ FSum: sum.toFixed(2) });
-        cell.getRow().update({ FTaxSum: taxSum.toFixed(2) });
-        cell.getRow().update({ FTax: tax.toFixed(2) });
-      } else if (field == "FSum") {
-        sum = value;
-        qty = cell.getRow().getCell("FQty").getValue();
-        price = math.eval(sum + "/" + qty);
-        taxPrice = math.eval(price + "*" + "(1+" + taxRate + ")");
-        taxSum = math.eval(taxPrice + "*" + qty);
-        tax = math.eval(sum + "*" + taxRate);
-
-        cell.getRow().update({ FSum: sum.toFixed(2) });
-        cell.getRow().update({ FPrice: price.toFixed(2) });
-        cell.getRow().update({ FTaxPrice: taxPrice.toFixed(2) });
-        cell.getRow().update({ FTaxSum: taxSum.toFixed(2) });
-        cell.getRow().update({ FTax: tax.toFixed(2) });
+    beforeVerify() {
+      result = false;
+      try {
+        if (window.TAjax) {
+          const check = window.TAjax.GetVchAttCount('ZYSoftProjectAccount', this.form.id + '')
+          if (check.value <= 0) {
+            layer.msg("请先上传附件!", { icon: 5 });
+          }
+          return check.value > 0
+        } else {
+          layer.msg("请在T+环境操作单据!", { icon: 5 });
+        }
+      } catch (error) {
+        layer.msg("操作出现异常!", { icon: 5 });
       }
-      var total = table
-        .getData()
-        .map(function (row) {
-          return row.FSum;
-        })
-        .reduce(function (total, num) {
-          return Number(total) + Number(num);
-        }, 0);
-      self.form.sum = total;
+      return result
     },
     doVerify() {
       if (loginUserId == "")
         return layer.msg("没有获取到当前账套登录信息!", { icon: 5 });
-      layer.confirm(
-        "确定要审批单据吗?",
-        { icon: 3, title: "提示" },
-        function (index) {
-          $.ajax({
-            type: "POST",
-            url: "./BudgetHandler.ashx",
-            async: true,
-            data: {
-              SelectApi: "verfiy",
-              ids: self.form.id,
-              billerId: loginUserId,
-              flag: 0,
-            },
-            dataType: "json",
-            success: function (result) {
-              if (result.state == "success") {
-                self.doInitBill({ id: self.form.id });
-                layer.msg(result.msg, { icon: 1 });
-                layer.close(index);
-              } else {
-                layer.msg(result.msg, { icon: 5 });
-              }
-            },
-          });
-        }
-      );
+      if (this.beforeVerify()) {
+        layer.confirm(
+          "确定要审批单据吗?",
+          { icon: 3, title: "提示" },
+          function (index) {
+            $.ajax({
+              type: "POST",
+              url: "./BudgetHandler.ashx",
+              async: true,
+              data: {
+                SelectApi: "verfiy",
+                ids: self.form.id,
+                billerId: loginUserId,
+                accountId: self.form.accountId,
+                flag: 0,
+              },
+              dataType: "json",
+              success: function (result) {
+                if (result.state == "success") {
+                  self.doInitBill({ id: self.form.id });
+                  layer.msg(result.msg, { icon: 1 });
+                  layer.close(index);
+                } else {
+                  layer.msg(result.msg, { icon: 5 });
+                }
+              },
+            });
+          }
+        );
+      }
     },
     doUnVerify() {
       if (loginUserId == "")
@@ -528,6 +476,7 @@ var self = (vm = new Vue({
               SelectApi: "verfiy",
               ids: self.form.id,
               billerId: loginUserId,
+              accountId: self.form.accountId,
               flag: 1,
             },
             dataType: "json",
@@ -544,6 +493,37 @@ var self = (vm = new Vue({
         }
       );
     },
+    doAttachments() {
+      var url = window.parent.$T.Request.CombineUrl("/tplus/" + "CommonPage/VoucherExt/Attachments.aspx", {
+        associateid: this.form.id,
+        TemplateName: 'ZYSoftProjectAccount',
+        mId: 'SA999',
+        sysId: 'SA',
+        AccessState: 'Edit'
+      });
+      window.parent.showModalDialog(url, self, "dialogWidth:600px;dialogHeight:300px;help:no;status:no", function (ret) { })
+    },
+    reCalc(cell) {
+      var result = table.getCalcResults();
+      if (result.bottom.FAccountSum == void 0) {
+        var _d = table.getData().map(function (r) { return r.FAccountSum });
+        this.form.sum = _d.reduce(function (total, num) {
+          return total + num;
+        }, 0);
+      } else {
+        this.form.sum = result.bottom.FAccountSum
+      }
+
+      try {
+        var index = cell.getRow().getNextRow().getIndex();
+        if (index) {
+          cell.getRow().getNextRow().getCell('FAccountSum').edit(true)
+        }
+      } catch (e) {
+        var cell = table.getRows()[0].getCell('FAccountSum');
+        cell.edit(true)
+      }
+    }
   },
   mounted() {
     this.query = utils.url2Obj(window.location.search);

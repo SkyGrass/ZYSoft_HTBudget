@@ -108,6 +108,8 @@
     <script src="./js/utils.js"></script>
     <script src="./js/xlsx/xlsx.js"></script>
 
+
+    <script src="./js/env.js"></script>
     <!-- import bus javascript -->
     <script src="./js/modules/jsListTableConf.js"></script>
     <script src="./js/modules/jsList.js"></script>
