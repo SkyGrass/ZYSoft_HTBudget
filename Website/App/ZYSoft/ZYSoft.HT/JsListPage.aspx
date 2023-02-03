@@ -33,11 +33,11 @@
                 <div id="toolbarContainer" class="t-page-tb" style="position: relative; z-index: 999;">
                     <div id="toolbarContainer-ct" class="tb-bg">
                         <ul id="toolbarContainer-gp" class="tb-group tb-first-class">
-                            <li tabindex="0">
+                            <!-- <li tabindex="0">
                                 <a href="javascript:void(0)" @click='doAdd'>
                                     <span class="tb-item"><span class="tb-text" title="新增">新增</span></span>
                                 </a>
-                            </li>
+                            </li> -->
                             <li tabindex="0">
                                 <a href="javascript:void(0)" @click='doQuery'>
                                     <span class="tb-item"><span class="tb-text" title="查询">查询</span></span>

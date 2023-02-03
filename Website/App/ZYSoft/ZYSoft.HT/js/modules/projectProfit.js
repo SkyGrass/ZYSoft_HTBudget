@@ -220,7 +220,7 @@ var self = (vm = new Vue({
                             v: new Date() * 1,
                         }),
                         "成本表",
-                        "YS100201"
+                        "Budget" + FID
                     );
                 }
             }

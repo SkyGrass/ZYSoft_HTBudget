@@ -78,6 +78,11 @@
     hozAlign: "right",
     width: 120,
     headerSort: false,
+    formatterParams: {
+      decimal: ".",
+      thousand: ",",
+      precision: 2,
+    },
   },
   {
     title: "项目经理",

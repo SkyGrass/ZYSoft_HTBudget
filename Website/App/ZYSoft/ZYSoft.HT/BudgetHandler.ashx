@@ -1175,6 +1175,8 @@ public class BudgetHandler : IHttpHandler
                 string endDate = CommMethod.SafeString(request.Form["endDate"], "");
                 string custId = CommMethod.SafeString(request.Form["custId"], "");
                 string billId = CommMethod.SafeString(request.Form["billId"], "");
+                string billStatus = CommMethod.SafeString(request.Form["billStatus"], "");
+                string billerName = CommMethod.SafeString(request.Form["billerName"], "");
                 if (!string.IsNullOrEmpty(startDate))
                 {
                     sqlWhere += string.Format(@" AND t.FDate >= ''{0} 00:00:00''", startDate);
@@ -1190,6 +1192,14 @@ public class BudgetHandler : IHttpHandler
                 if (!string.IsNullOrEmpty(billId))
                 {
                     sqlWhere += string.Format(@" AND t.FItemID = ''{0}''", billId);
+                }
+                if (!string.IsNullOrEmpty(billerName))
+                {
+                    sqlWhere += string.Format(@" AND t.FBillerName like ''%{0}%''", billerName);
+                }
+                if (!string.IsNullOrEmpty(billStatus))
+                {
+                    sqlWhere += string.Format(@" AND t.FStatus = ''{0}''", billStatus);
                 }
 
                 string sql = string.Format(@" EXEC dbo.P_GetJSRecord @FAccountID = '{0}', -- varchar(20)

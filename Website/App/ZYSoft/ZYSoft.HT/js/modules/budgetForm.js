@@ -467,7 +467,7 @@ var self = (vm = new Vue({
                         "App/ZYSoft/ZYSoft.HT/BudgetFormPage.aspx?" +
                         utils.obj2Url(self.query),
                         "预算表",
-                        "YS1001"
+                        "YS" + result.data
                       );
                     }
                   }
@@ -498,7 +498,7 @@ var self = (vm = new Vue({
           if (result.state == "success") {
             self.projectTypes = result.data
           }
-          if (result.msg != ''){
+          if (result.msg != '') {
             layer.msg(result.msg, { icon: result.icon });
           }
         },

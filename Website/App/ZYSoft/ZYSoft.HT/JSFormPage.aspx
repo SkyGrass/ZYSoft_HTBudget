@@ -33,38 +33,43 @@
 					<div id="toolbarContainer" class="t-page-tb" style="position: relative; z-index: 999;">
 						<div id="toolbarContainer-ct" class="tb-bg">
 							<ul id="toolbarContainer-gp" class="tb-group tb-first-class">
-								<li tabindex="0" v-if="query.state =='add'">
+								<li tabindex="0">
+									<a href="javascript:void(0)" @click='doAdd'>
+										<span class="tb-item"><span class="tb-text" title="新增">新增</span></span>
+									</a>
+								</li>
+								<li tabindex="1" v-if="query.state =='add'">
 									<a href="javascript:void(0)" @click='doPick'>
 										<span class="tb-item"><span class="tb-text" title="选择销货单">选择销货单</span></span>
 									</a>
 								</li>
-								<li tabindex="1" v-if="query.state =='edit'">
+								<li tabindex="1=2" v-if="query.state =='edit'">
 									<a href="javascript:void(0)" @click='doCancelEdit'>
 										<span class="tb-item"><span class="tb-text" title="取消编辑">取消编辑</span></span>
 									</a>
 								</li>
-								<li tabindex="1" v-if="query.state =='read'">
+								<li tabindex="2" v-if="query.state =='read'">
 									<a href="javascript:void(0)" @click='doEdit'>
 										<span class="tb-item"><span class="tb-text" title="编辑">编辑</span></span>
 									</a>
 								</li>
-								<li tabindex="2" v-if="query.state =='edit'|| query.state =='add'">
+								<li tabindex="3" v-if="query.state =='edit'|| query.state =='add'">
 									<a href="javascript:void(0)" @click='doSave'>
 										<span class="tb-item"><span class="tb-text" title="保存">保存</span></span>
 									</a>
 								</li>
 
-								<li tabindex="3" v-if="(query.state =='read' || query.state =='edit') && !canShow">
+								<li tabindex="4" v-if="(query.state =='read' || query.state =='edit') && !canShow">
 									<a href="javascript:void(0)" @click='doVerify'>
 										<span class="tb-item"><span class="tb-text" title="审批">审批</span></span>
 									</a>
 								</li>
-								<li tabindex="3" v-if='canShow'>
+								<li tabindex="5" v-if='canShow'>
 									<a href="javascript:void(0)" @click='doUnVerify'>
 										<span class="tb-item"><span class="tb-text" title="反审批">反审批</span></span>
 									</a>
 								</li>
-								<li tabindex="4" v-if="query.state !='add'">
+								<li tabindex="6" v-if="query.state !='add'">
 									<a href="javascript:void(0)" @click='doAttachments'>
 										<span class="tb-item"><span class="tb-text" title="附件">附件</span></span>
 									</a>
@@ -103,8 +108,8 @@
 							<el-col :span="5">
 								<el-form-item label="结算金额" class="form-item-max moneyright">
 									<span slot='label'>结算金额</span>
-									<el-input-number style="width:100%;" disabled :controls=false v-model="form.sum"
-										:precision="2" placeholder="请填写增补金额" class="noBorder"></el-input-number>
+									<el-input style="width:100%;" disabled v-model="form.sum"
+										:precision="2" placeholder="请填写结算金额" class="noBorder"></el-input>
 								</el-form-item>
 							</el-col>
 						</el-row>
@@ -165,6 +170,7 @@
 		<script src="./js/element-ui-index.js"></script>
 		<script src="./js/tabulator.js"></script>
 		<script src="./js/math/math.min.js"></script>
+		<script src="./js/numeral/numeral.min.js"></script>
 		<script src="./js/dialog/dialog.js"></script>
 		<script src="./js/layui/layui.js"></script>
 		<script src="./js/utils.js"></script>

@@ -8,7 +8,11 @@ function init(opt) {
           startDate: "",
           endDate: "",
           custId: "",
+          custName: "",
+          billerName: "",
+          billStatus: ""
         },
+        billStatusList: [{ value: "0", label: "未审批" }, { value: "1", label: "已审批" }]
       };
     },
     computed: {
@@ -25,12 +29,10 @@ function init(opt) {
               name = result.name;
             self.form.custName = name;
             self.form.custId = id;
-            self.$refs.form.validateField("custName");
           },
           this.form.custName || ""
         );
       },
-
       closeDialog(dialogType, row) {
         var result = row;
         var id = result.id,
@@ -47,14 +49,6 @@ function init(opt) {
             break;
         }
         opt.parent.closeBaseDataDialog(dialogType, row);
-      },
-      doFilter() {
-        this.grid.setFilter([
-          [
-            { field: "code", type: "like", value: this.queryForm.keyword },
-            { field: "name", type: "like", value: this.queryForm.keyword },
-          ],
-        ]);
       },
       onClearCust() {
         this.form.custId = "";

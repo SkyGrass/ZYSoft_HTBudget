@@ -111,9 +111,9 @@ var self = (vm = new Vue({
             SelectApi: "getdifflist",
           },
           self.form,
-           {
-            startDate: self.form.startDate == ""? "": dayjs(self.form.startDate).format("YYYY-MM-DD"),
-            endDate: self.form.endDate == ""? "": dayjs(self.form.endDate).format("YYYY-MM-DD"),
+          {
+            startDate: self.form.startDate == "" ? "" : dayjs(self.form.startDate).format("YYYY-MM-DD"),
+            endDate: self.form.endDate == "" ? "" : dayjs(self.form.endDate).format("YYYY-MM-DD"),
           }
         ),
         "POST"
@@ -265,7 +265,7 @@ var self = (vm = new Vue({
             v: new Date() * 1,
           }),
           "预算成本差异表",
-          "YS100301"
+          "DIFF" + FID
         );
       }
     },

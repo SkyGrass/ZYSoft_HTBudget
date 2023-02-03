@@ -8,7 +8,7 @@ var tableConf = [
     headerSort: false,
   },
   {
-    title: "日期",
+    title: "单据日期",
     field: "FDate",
     headerHozAlign: "center",
     hozAlign: "center",

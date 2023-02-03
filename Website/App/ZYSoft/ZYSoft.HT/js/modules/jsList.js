@@ -1,4 +1,5 @@
 var table = {};
+//accountId = "250116"
 var self = (vm = new Vue({
   el: "#app",
   data() {
@@ -9,6 +10,9 @@ var self = (vm = new Vue({
         endDate: curDate.endOf("year"),
         accountId: accountId,
         custId: "",
+        custName: "",
+        billerName: "",
+        billStatus: ""
       },
       list: [],
       maxHeight: 0,
@@ -62,7 +66,7 @@ var self = (vm = new Vue({
             v: new Date() * 1,
           }),
           "结算单",
-          "YS1004"
+          "JS" + new Date() * 1
         );
       }
     },
@@ -359,7 +363,7 @@ var self = (vm = new Vue({
             v: new Date() * 1,
           }),
           "结算单",
-          "JS1004"
+          "JS" + FItemID
         );
       }
     },

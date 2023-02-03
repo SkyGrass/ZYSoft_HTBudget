@@ -36,7 +36,7 @@
                                     </el-form-item>
                                 </td>
                                 <td>
-                                    <el-form-item label="结束日期" class="form-item-max" prop='endDate'
+                                    <el-form-item label="结束日期" class="form-item-max" prop='endDate' label-width="70px"
                                         style="margin-bottom: 0px !important;">
                                         <el-date-picker type="date" clearable style="width:100%" v-model="form.endDate"
                                             placeholder="请选择结束日期" class="noBorder"></el-date-picker>
@@ -53,7 +53,26 @@
                                         </el-input>
                                     </el-form-item>
                                 </td>
-
+                                <td>
+                                    <el-form-item label="制单人" class="form-item-max" prop='billerName' label-width="70px"
+                                        style="margin-bottom: 0px !important;">
+                                        <el-input clearable style="width:100%" v-model="form.billerName"
+                                            placeholder="请输入制单人" class="noBorder">
+                                        </el-input>
+                                    </el-form-item>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <el-form-item label="单据状态" class="form-item-max" prop='billStatus'
+                                        label-width="70px" style="margin-bottom: 0px !important;">
+                                        <el-select v-model="form.billStatus" placeholder="请选择" class="noBorder" clearable>
+                                            <el-option v-for="item in billStatusList" :key="item.value"
+                                                :label="item.label" :value="item.value">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </td>
                             </tr>
                         </table>
                     </el-form>

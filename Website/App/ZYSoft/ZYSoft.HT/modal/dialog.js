@@ -86,7 +86,6 @@ function init(opt) {
       },
 
       initGrid(result) {
-        console.log(result);
         table = new Tabulator("#table", {
           locale: true,
           langs: {

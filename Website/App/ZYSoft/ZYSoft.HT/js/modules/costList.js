@@ -112,7 +112,7 @@ var self = (vm = new Vue({
             v: new Date() * 1,
           }),
           "成本表",
-          "YS100201"
+          "Budget" + new Date() * 1
         );
       }
     },
@@ -126,8 +126,8 @@ var self = (vm = new Vue({
           },
           self.form,
           {
-            startDate: self.form.startDate == ""? "": dayjs(self.form.startDate).format("YYYY-MM-DD"),
-            endDate: self.form.endDate == ""? "": dayjs(self.form.endDate).format("YYYY-MM-DD"),
+            startDate: self.form.startDate == "" ? "" : dayjs(self.form.startDate).format("YYYY-MM-DD"),
+            endDate: self.form.endDate == "" ? "" : dayjs(self.form.endDate).format("YYYY-MM-DD"),
           }
         ),
         "POST"
@@ -285,7 +285,7 @@ var self = (vm = new Vue({
             v: new Date() * 1,
           }),
           "成本表",
-          "YS100201"
+          "Budget" + FID
         );
       }
     },

@@ -11,6 +11,7 @@ Vue.directive("number", {
 });
 Vue.mixin(printMixin);
 var table = {};
+//accountId = 250116
 var self = (vm = new Vue({
   el: "#app",
   data() {
@@ -61,6 +62,37 @@ var self = (vm = new Vue({
     }
   },
   methods: {
+    doAdd() {
+      if ($.isFunction(top.CreateTab)) {
+        if (this.query.state == "edit") {
+          layer.confirm(
+            "确定要放弃编辑新增单据吗?",
+            { icon: 3, title: "提示" },
+            function (index) {
+              top.CreateTab(
+                "App/ZYSoft/ZYSoft.HT/JSFormPage.aspx?" +
+                utils.obj2Url({
+                  state: "add",
+                  v: new Date() * 1,
+                }),
+                "结算单",
+                "JS" + new Date() * 1
+              );
+            });
+        } else {
+          top.CreateTab(
+            "App/ZYSoft/ZYSoft.HT/JSFormPage.aspx?" +
+            utils.obj2Url({
+              state: "add",
+              v: new Date() * 1,
+            }),
+            "结算单",
+            "JS" + new Date() * 1
+          );
+        }
+
+      }
+    },
     doPick() {
       openDialog({
         title: "选择销货单",
@@ -92,12 +124,12 @@ var self = (vm = new Vue({
         self.form.custId = custId;
         self.form.custName = custName;
         rows.forEach(function (r) {
-          var isExist = oldRows.filter(function (old) {
-            return r.FProjectCode == old.FProjectCode
-          });
-          if (isExist.length <= 0) {
-            oldRows.push(r)
-          }
+          // var isExist = oldRows.filter(function (old) {
+          //   return r.FProjectCode == old.FProjectCode
+          // });
+          // if (isExist.length <= 0) {
+          oldRows.push(r)
+          // }
         });
         this.forbidden = true;
         table
@@ -237,7 +269,7 @@ var self = (vm = new Vue({
                         "App/ZYSoft/ZYSoft.HT/JSFormPage.aspx?" +
                         utils.obj2Url(self.query),
                         "结算单",
-                        "JS1004"
+                        "JS" + result.data
                       );
                     }
                   }
@@ -298,7 +330,7 @@ var self = (vm = new Vue({
             result = result.data[0];
             self.form.accountId = result.FAccountID;
             self.form.custId = result.FCustID;
-            self.form.sum = result.FAccountSum;
+            self.form.sum = numeral(result.FTotalAccountSum).format('0,0.00');;
 
             self.form.veriferId = result.FVeriferID;
             self.form.veriferName = result.FVeriferName;
