@@ -46,5 +46,10 @@
 				  path="App/ZYSoft/ZYSoft.HT/JSListPage.aspx"
 				  class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
 		</Extension>
+    <Extension Point_id="Ufida.T.EAP.Web.Page.Load">
+      <View id="YearProjectProfitPage.aspx"
+				  path="App/ZYSoft/ZYSoft.HT/YearProjectProfitPage.aspx"
+				  class="Chanjet.ZYSoft.HT.UIP.HTPage"   ></View>
+    </Extension>
 	</Web>
 </App>

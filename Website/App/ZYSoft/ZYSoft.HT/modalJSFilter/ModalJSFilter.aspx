@@ -64,9 +64,28 @@
                             </tr>
                             <tr>
                                 <td>
+                                    <el-form-item label="项目编码" class="form-item-max" prop='projectCode'
+                                        label-width="70px" style="margin-bottom: 0px !important;">
+                                        <el-input clearable style="width:100%" v-model="form.projectCode"
+                                            placeholder="请输入项目编码" class="noBorder">
+                                        </el-input>
+                                    </el-form-item>
+                                </td>
+                                <td>
+                                    <el-form-item label="项目名称" class="form-item-max" prop='projectName'
+                                        label-width="70px" style="margin-bottom: 0px !important;">
+                                        <el-input clearable style="width:100%" v-model="form.projectName"
+                                            placeholder="请输入项目名称" class="noBorder">
+                                        </el-input>
+                                    </el-form-item>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
                                     <el-form-item label="单据状态" class="form-item-max" prop='billStatus'
                                         label-width="70px" style="margin-bottom: 0px !important;">
-                                        <el-select v-model="form.billStatus" placeholder="请选择" class="noBorder" clearable>
+                                        <el-select v-model="form.billStatus" placeholder="请选择" class="noBorder"
+                                            clearable>
                                             <el-option v-for="item in billStatusList" :key="item.value"
                                                 :label="item.label" :value="item.value">
                                             </el-option>

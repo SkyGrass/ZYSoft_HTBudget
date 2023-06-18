@@ -9,7 +9,7 @@ var self = (vm = new Vue({
       form: {
         startDate: curDate.startOf("year"),
         endDate: curDate.endOf("year"),
-        accountId: accountId,
+        accountId: accountId || localStorage.getItem('t_accountId'),
         contractNo: "",
         manager: "",
         custManager: "",

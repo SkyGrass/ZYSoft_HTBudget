@@ -1,6 +1,6 @@
 {
   "port": 26430,
-  "path": "./",
+  "path": "./WebSite/",
   "clr": "v4.0",
   "protocol": "http"
 }

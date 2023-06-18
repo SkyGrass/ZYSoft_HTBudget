@@ -81,7 +81,7 @@
 				<el-main class="form">
 					<el-form ref="form" :rules="rules" :model="form" label-width="100px" size="mini" inline>
 						<el-row :gutter="10">
-							<el-col :span="6">
+							<el-col :span="4">
 								<el-form-item label="单据日期" class="form-item-max" prop='date'>
 									<span slot='label'>单据日期</span>
 									<el-date-picker value-format='yyyy-MM-dd' :readonly="query.state =='read' "
@@ -89,7 +89,7 @@
 										class="noBorder"></el-date-picker>
 								</el-form-item>
 							</el-col>
-							<el-col :span="6">
+							<el-col :span="4">
 								<el-form-item label="单据编号" prop='billNo' class="form-item-full">
 									<el-input readonly clearable style="width:100%" v-model="form.billNo"
 										placeholder="请填写单据编号" class="noBorder" />
@@ -105,11 +105,18 @@
 									</el-input>
 								</el-form-item>
 							</el-col>
-							<el-col :span="5">
+							<el-col :span="4">
 								<el-form-item label="结算金额" class="form-item-max moneyright">
 									<span slot='label'>结算金额</span>
 									<el-input style="width:100%;" disabled v-model="form.sum"
 										:precision="2" placeholder="请填写结算金额" class="noBorder"></el-input>
+								</el-form-item>
+							</el-col>
+							<el-col :span="4">
+								<el-form-item label="结算含税金额" class="form-item-max moneyright">
+									<span slot='label'>结算含税金额</span>
+									<el-input style="width:100%;" disabled v-model="form.taxsum"
+										:precision="2" placeholder="请填写结算含税金额" class="noBorder"></el-input>
 								</el-form-item>
 							</el-col>
 						</el-row>

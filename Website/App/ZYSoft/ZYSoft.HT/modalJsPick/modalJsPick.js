@@ -1,4 +1,4 @@
-var dialog = {},
+﻿var dialog = {},
   table = {},
   _opt = {};
 function init(opt) {
@@ -192,7 +192,9 @@ function getSelect() {
     }
     return rows.map(function (r) {
       r.FAccountSum = 0;
-      r.FSourceSum = r.FTaxSum
+      r.FAccountTaxSum = 0;
+      r.FSourceSum = r.FSum
+      r.FSourceTaxSum=r.FTaxSum
       return r;
     });
   }

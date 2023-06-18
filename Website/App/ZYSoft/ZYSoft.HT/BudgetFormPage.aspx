@@ -27,7 +27,7 @@
         <asp:Label ID="lblUserName" runat="server" Visible="false"></asp:Label>
         <asp:Label ID="lbUserId" runat="server" Visible="false"></asp:Label>
         <asp:Label ID="lbAccount" runat="server" Visible="false"></asp:Label>
-        <div id="app" v-cloak>
+       <div id="app" v-cloak>
             <el-container class="contain">
                 <el-header id="header" style="height: inherit !important;padding:0 !important">
                     <div id="toolbarContainer" class="t-page-tb" style="position: relative; z-index: 999;">

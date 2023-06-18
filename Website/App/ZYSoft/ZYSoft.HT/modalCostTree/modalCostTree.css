@@ -72,4 +72,12 @@ body {
 .txt:focus {
   outline: none;
   border: none;
+} 
+
+.number_noboard_like input {
+  border-style: none;
+    background-color: transparent !important;
+    height: inherit !important;
+    line-height: inherit !important;
+    color: #606266 !important;
 }

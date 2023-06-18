@@ -38,6 +38,7 @@ function init(opt) {
             accountId: node.FAccountID,
             projectId: node.FProjectID,
             entryId: node.FEntryID,
+            year: node.FYear
           },
           dataType: "json",
           success: function (result) {

@@ -8,11 +8,13 @@ var self = (vm = new Vue({
       form: {
         startDate: curDate.startOf("year"),
         endDate: curDate.endOf("year"),
-        accountId: accountId,
+        accountId: accountId || localStorage.getItem('t_accountId'),
         custId: "",
         custName: "",
         billerName: "",
-        billStatus: ""
+        billStatus: "",
+        projectCode: "",
+        projectName: ""
       },
       list: [],
       maxHeight: 0,
@@ -40,7 +42,7 @@ var self = (vm = new Vue({
           iframeWin.init({
             layer,
             dialogType: type,
-            accountId: accountId,
+            accountId: accountId || localStorage.getItem('t_accountId'),
           });
         },
         onBtnYesClick: function (index, layero) {
@@ -132,7 +134,7 @@ var self = (vm = new Vue({
     },
     doVerify() {
       if (table.getSelectedData().length <= 0)
-        return layer.msg("请先选择要审批的记录行", { icon: 5 });
+        return layer.msg("请先选择要审核的记录行", { icon: 5 });
       var ids = table.getSelectedData().map(function (row) {
         return row.FItemID;
       });
@@ -140,7 +142,7 @@ var self = (vm = new Vue({
         return layer.msg("没有获取到当前账套登录信息!", { icon: 5 });
       if (this.beforeVerify(table.getSelectedData())) {
         layer.confirm(
-          "确定要批量审批选中记录吗?",
+          "确定要批量审核选中记录吗?",
           { icon: 3, title: "提示" },
           function (index) {
             $.ajax({
@@ -151,7 +153,7 @@ var self = (vm = new Vue({
                 SelectApi: "verfiy",
                 ids: ids.join(","),
                 billerId: loginUserId,
-                accountId: accountId,
+                accountId: accountId || localStorage.getItem('t_accountId'),
                 flag: 0,
               },
               dataType: "json",
@@ -171,12 +173,12 @@ var self = (vm = new Vue({
     },
     doUnVerify() {
       if (table.getSelectedData().length <= 0)
-        return layer.msg("请先选择要反审批的记录行", { icon: 5 });
+        return layer.msg("请先选择要弃审的记录行", { icon: 5 });
       var ids = table.getSelectedData().map(function (row) {
         return row.FItemID;
       });
       layer.confirm(
-        "确定要批量反审批选中记录吗?",
+        "确定要批量弃审选中记录吗?",
         { icon: 3, title: "提示" },
         function (index) {
           $.ajax({
@@ -187,7 +189,7 @@ var self = (vm = new Vue({
               SelectApi: "verfiy",
               ids: ids.join(","),
               billerId: loginUserId,
-              accountId: accountId,
+              accountId: accountId || localStorage.getItem('t_accountId'),
               flag: 1,
             },
             dataType: "json",
@@ -302,7 +304,7 @@ var self = (vm = new Vue({
         ajaxResponse: function (url, params, response) {
           if (response.state == "success") {
             var t = response.data.map(function (m, i) {
-              m.FDate = dayjs(m.FDate).format("YYYY-MM-DD HH:mm:ss");
+              m.FDate = dayjs(m.FDate).format("YYYY-MM-DD");
               if (m.FVerifyDate != null)
                 m.FVerifyDate = dayjs(m.FVerifyDate).format(
                   "YYYY-MM-DD HH:mm:ss"

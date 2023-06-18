@@ -5,3 +5,10 @@
     border-radius: 0px;
     background-color: transparent !important;
 }
+
+.noBorder_all input,
+.noBorder_all textarea { 
+    background-color: transparent !important;
+    text-align: center;
+    border-style: none; 
+}

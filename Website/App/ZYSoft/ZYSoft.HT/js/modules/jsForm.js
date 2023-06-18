@@ -1,4 +1,4 @@
-Vue.directive("number", {
+﻿Vue.directive("number", {
   inserted(el, binding, vnode) {
     el.oninput = function (e) {
       var value = e.target.value;
@@ -18,10 +18,11 @@ var self = (vm = new Vue({
     var curDate = dayjs().format("YYYY-MM-DD");
     return {
       form: {
-        accountId: accountId,
+        accountId: accountId || localStorage.getItem('t_accountId'),
         custId: "",
         custName: "",
         sum: 0,
+        taxsum: 0,
         memo: "",
         billNo: "",
         date: curDate,
@@ -44,7 +45,8 @@ var self = (vm = new Vue({
         custName: [
           { required: true, message: "客户不可为空!", trigger: "blur" },
         ],
-        sum: [{ required: true, message: "金额不能为空", trigger: "blur" }],
+        sum: [{ required: true, message: "结算金额不能为空", trigger: "blur" }],
+        taxsum: [{ required: true, message: "含税金额不能为空", trigger: "blur" }],
         date: [{ required: true, message: "日期不能为空", trigger: "blur" }]
       },
       canShow: false,
@@ -124,12 +126,12 @@ var self = (vm = new Vue({
         self.form.custId = custId;
         self.form.custName = custName;
         rows.forEach(function (r) {
-          // var isExist = oldRows.filter(function (old) {
-          //   return r.FProjectCode == old.FProjectCode
-          // });
-          // if (isExist.length <= 0) {
-          oldRows.push(r)
-          // }
+          var isExist = oldRows.filter(function (old) {
+            return r.FBillNo == old.FBillNo
+          });
+          if (isExist.length <= 0) {
+            oldRows.push(r)
+          }
         });
         this.forbidden = true;
         table
@@ -143,6 +145,15 @@ var self = (vm = new Vue({
                 return total + num;
               }, 0);
             self.form.sum = total;
+
+            var total1 = rows
+            .map(function (row) {
+              return row.FAccountTaxSum;
+            })
+            .reduce(function (total, num) {
+              return total + num;
+            }, 0);
+          self.form.taxsum = total1;
           })
           .catch(function (error) {
             //handle error loading data
@@ -210,6 +221,11 @@ var self = (vm = new Vue({
       this.form.sum = _d.reduce(function (total, num) {
         return total + num;
       }, 0);
+
+      var _d1 = table.getData().map(function (r) { return r.FAccountTaxSum });
+      this.form.taxsum = _d1.reduce(function (total, num) {
+        return total + num;
+      }, 0);
       this.$refs["form"].validate(function (valid) {
         if (valid) {
           if (table.getData().length <= 0) {
@@ -244,6 +260,7 @@ var self = (vm = new Vue({
                           FCustID: row.custId,
                           FMemo: row.memo,
                           FAccountSum: 0,
+                          FAccountTaxSum: 0,
                           FBillerID: row.billerId,
                         };
                       })[0]
@@ -289,13 +306,16 @@ var self = (vm = new Vue({
     doCancelEdit() {
       this.query.state = "read";
       table.updateColumnDefinition("FAccountSum", { editor: false });
+      table.updateColumnDefinition("FAccountTaxSum", { editor: false });
     },
     doEdit() {
       if (self.canShow) {
-        return layer.msg("当前单据已审批,禁止编辑!", { icon: 5 });
+        return layer.msg("当前单据已审核,禁止编辑!", { icon: 5 });
       }
       this.query.state = "edit";
       table.updateColumnDefinition("FAccountSum", { editor: "number" });
+      table.updateColumnDefinition("FAccountTaxSum", { editor: "number" });
+      table.updateColumnDefinition("FEntryMemo", { editor: "input" });
     },
     doInitBillNo() {
       $.ajax({
@@ -330,7 +350,8 @@ var self = (vm = new Vue({
             result = result.data[0];
             self.form.accountId = result.FAccountID;
             self.form.custId = result.FCustID;
-            self.form.sum = numeral(result.FTotalAccountSum).format('0,0.00');;
+            self.form.sum = numeral(result.FTotalAccountSum).format('0,0.00');
+            self.form.taxsum = numeral(result.FTotalAccountTaxSum).format('0,0.00');;
 
             self.form.veriferId = result.FVeriferID;
             self.form.veriferName = result.FVeriferName;
@@ -382,7 +403,7 @@ var self = (vm = new Vue({
           }
         },
         error: function () {
-          layer.msg("生成预算明细发生错误!", { icon: 5 });
+          layer.msg("生成结算明细发生错误!", { icon: 5 });
         },
       });
     },
@@ -425,6 +446,16 @@ var self = (vm = new Vue({
                         return Number(total) + Number(num);
                       }, 0);
                     self.form.sum = total;
+
+                    var total1 = table
+                    .getData()
+                    .map(function (row) {
+                      return row.FTaxSum;
+                    })
+                    .reduce(function (total, num) {
+                      return Number(total) + Number(num);
+                    }, 0);
+                    self.form.taxsum = total1;
                   });
               } else {
                 layer.msg("请先编辑单据!", { icon: 5 });
@@ -497,7 +528,7 @@ var self = (vm = new Vue({
       if (loginUserId == "")
         return layer.msg("没有获取到当前账套登录信息!", { icon: 5 });
       layer.confirm(
-        "确定要反审批单据吗?",
+        "确定要弃审单据吗?",
         { icon: 3, title: "提示" },
         function (index) {
           $.ajax({
@@ -546,6 +577,15 @@ var self = (vm = new Vue({
         this.form.sum = result.bottom.FAccountSum
       }
 
+      if (result.bottom.FAccountTaxSum == void 0) {
+        var _d1 = table.getData().map(function (r) { return r.FAccountTaxSum });
+        this.form.taxsum = _d1.reduce(function (total, num) {
+          return total + num;
+        }, 0);
+      } else {
+        this.form.taxsum = result.bottom.FAccountTaxSum
+      }
+
       try {
         var index = cell.getRow().getNextRow().getIndex();
         if (index) {
@@ -553,6 +593,16 @@ var self = (vm = new Vue({
         }
       } catch (e) {
         var cell = table.getRows()[0].getCell('FAccountSum');
+        cell.edit(true)
+      }
+
+      try {
+        var index = cell.getRow().getNextRow().getIndex();
+        if (index) {
+          cell.getRow().getNextRow().getCell('FAccountTaxSum').edit(true)
+        }
+      } catch (e) {
+        var cell = table.getRows()[0].getCell('FAccountTaxSum');
         cell.edit(true)
       }
     }

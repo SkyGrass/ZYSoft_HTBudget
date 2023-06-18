@@ -17,7 +17,7 @@ var self = (vm = new Vue({
   data() {
     return {
       form: {
-        accountId: accountId,
+        accountId: accountId || localStorage.getItem('t_accountId'),
         custId: "",
         projectId: "",
         contractNo: "",
@@ -30,8 +30,8 @@ var self = (vm = new Vue({
         endDate: "",
         projectType: "",
         year: "",
-            cost: 0,
-            profit:0,
+        cost: 0,
+        profit: 0,
         custName: "",
         projectName: "",
         billerName: loginName,
@@ -152,6 +152,14 @@ var self = (vm = new Vue({
     },
   },
   methods: {
+    formatAmount(value) {
+      debugger
+      return parseFloat(value).toLocaleString('en-US');
+    },
+    parseAmount(value) {
+      debugger
+      return parseFloat(value.replace(/,/g, ''));
+    },
     openBaseDialog(type, title, success, filter) {
       openDialog({
         title: title,
@@ -274,6 +282,7 @@ var self = (vm = new Vue({
         btn: ["确定"],
         onSuccess: function (layero, index) {
           var iframeWin = window[layero.find("iframe")[0]["name"]];
+          node.FYear = self.form.year;
           iframeWin.init({ node });
         },
         onBtnYesClick: function (index, layero) {
@@ -315,7 +324,7 @@ var self = (vm = new Vue({
 
             self.form.cost = result.FCost;
 
-              self.form.profit = result.FProfit;
+            self.form.profit = result.FProfit;
 
             self.form.custName = result.FCustName;
             self.form.projectName = result.FProjectName;
@@ -340,6 +349,7 @@ var self = (vm = new Vue({
           SelectApi: "checkcostdetail",
           accountId: this.form.accountId,
           projectId: this.form.projectId,
+          year: this.form.year,
         },
         dataType: "json",
         success: function (result) {

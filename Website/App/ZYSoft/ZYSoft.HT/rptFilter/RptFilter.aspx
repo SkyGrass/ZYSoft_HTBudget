@@ -76,7 +76,7 @@
                             <tr>
                                 <td>
                                     <el-form-item :label="managerName" class="form-item-max" prop='manager'
-                                        label-width="70px" style="margin-bottom: 0px !important;">
+                                       style="margin-bottom: 0px !important;">
                                         <el-input clearable style="width:100%" v-model="form.manager"
                                             placeholder="请填写项目经理" class="noBorder"></el-input>
                                     </el-form-item>
@@ -86,6 +86,31 @@
                                         style="margin-bottom: 0px !important;">
                                         <el-input clearable style="width:100%" v-model="form.custManager"
                                             placeholder="请填写客户项目经理" class="noBorder"></el-input>
+                                    </el-form-item>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <el-form-item label="销售员" class="form-item-max" prop='saleman'
+                                        style="margin-bottom: 0px !important;">
+                                        <el-input clearable style="width:100%" v-model="form.saleman"
+                                            placeholder="请填写销售员" class="noBorder"></el-input>
+                                    </el-form-item>
+                                </td>
+                                <td>
+                                    <el-form-item label="项目区域" class="form-item-max" prop='projectArea'
+                                        style="margin-bottom: 0px !important;">
+                                        <el-input clearable style="width:100%" v-model="form.projectArea"
+                                            placeholder="请填写项目区域" class="noBorder"></el-input>
+                                    </el-form-item>
+                                </td>
+                            </tr> 
+                            <tr>
+                                <td>
+                                    <el-form-item label="是否按年取值" class="form-item-max" prop='isByYear'
+                                        style="margin-bottom: 0px !important;">
+                                        <el-input clearable style="width:100%" v-model="form.isByYear"
+                                            placeholder="请填写是/否" class="noBorder"></el-input>
                                     </el-form-item>
                                 </td>
                             </tr>

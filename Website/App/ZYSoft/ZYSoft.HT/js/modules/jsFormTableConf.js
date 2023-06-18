@@ -1,4 +1,4 @@
-var tableConf = function (self) {
+﻿var tableConf = function (self) {
   return [
     {
       title: "序号",
@@ -46,6 +46,27 @@ var tableConf = function (self) {
         precision: 2,
       },
     },
+	{
+      title: "销货单含税金额",
+      field: "FSourceTaxSum",
+      headerHozAlign: "center",
+      hozAlign: "right",
+      width: 150,
+      headerSort: false, bottomCalc: "sum",
+      bottomCalc: function (values, data, calcParams) {
+        var total = 0;
+        values.forEach(function (value) {
+          total = Number(math.eval(total + "+" + value))
+        });
+        return numeral(total).format('0,0.00');
+      },
+      formatter: "money",
+      formatterParams: {
+        decimal: ".",
+        thousand: ",",
+        precision: 2,
+      },
+    },
     {
       title: "结算金额",
       field: "FAccountSum",
@@ -57,6 +78,35 @@ var tableConf = function (self) {
         var total = 0;
         data.forEach(function (row) {
           var value = row.FAccountSum
+          total = Number(math.eval(total + "+" + value))
+        });
+        return numeral(total).format('0,0.00');
+      },
+      formatter: "money",
+      editor: self.query.state == "read" ? false : "number",
+      editorParams: {
+        selectContents: true,
+      },
+      formatterParams: {
+        decimal: ".",
+        thousand: ",",
+        precision: 2,
+      },
+      cellEdited: function (cell) {
+        self.reCalc(cell);
+      },
+    },
+	{
+      title: "结算含税金额",
+      field: "FAccountTaxSum",
+      headerHozAlign: "center",
+      hozAlign: "right",
+      width: 150,
+      headerSort: false, bottomCalc: "sum",
+      bottomCalc: function (values, data, calcParams) {
+        var total = 0;
+        data.forEach(function (row) {
+          var value = row.FAccountTaxSum
           total = Number(math.eval(total + "+" + value))
         });
         return numeral(total).format('0,0.00');

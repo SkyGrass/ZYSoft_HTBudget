@@ -1,4 +1,4 @@
-var table = {};
+﻿var table = {};
 //accountId = '250116'
 var self = (vm = new Vue({
     el: "#app",
@@ -7,7 +7,7 @@ var self = (vm = new Vue({
             form: {
                 startDate: "",
                 endDate: "",
-                accountId: accountId,
+                accountId: accountId || localStorage.getItem('t_accountId'),
                 contractNo: "",
                 year: "",
                 custName: "",
@@ -15,6 +15,9 @@ var self = (vm = new Vue({
                 projectId: "",
                 projectClsId: "",
                 custId: "",
+                saleman: "",
+                projectArea: "",
+                isByYear: ""
             },
             maxHeight: 0,
             offset: {
@@ -179,6 +182,7 @@ var self = (vm = new Vue({
                             m.FSum = numeral(m.FSum).format('0,0.00')
                             m.FAddSum = numeral(m.FAddSum).format('0,0.00')
                             m.FTotalSum = numeral(m.FTotalSum).format('0,0.00')
+	            m.FAccountSum = numeral(m.FAccountSum).format('0,0.00')
                             m.FCost = numeral(m.FCost).format('0,0.00')
                             m.FProfit = numeral(m.FProfit).format('0,0.00')
                             return m;

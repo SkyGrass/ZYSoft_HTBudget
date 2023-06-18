@@ -17,7 +17,7 @@ var self = (vm = new Vue({
     var curDate = dayjs().format("YYYY-MM-DD");
     return {
       form: {
-        accountId: accountId,
+        accountId: accountId || localStorage.getItem('t_accountId'),
         custId: "",
         projectId: "",
         contractNo: "",
@@ -316,7 +316,6 @@ var self = (vm = new Vue({
             self.form.projectType = result.FProjectType;
 
             // self.form.budget = result.FSum;
-
             self.form.date = result.FCreateDate;
             self.form.custName = result.FCustName;
             self.form.projectName = result.FProjectName;
@@ -491,7 +490,7 @@ var self = (vm = new Vue({
         async: true,
         data: {
           SelectApi: "getprojecttypes",
-          accountId: accountId
+          accountId: accountId || localStorage.getItem('t_accountId')
         },
         dataType: "json",
         success: function (result) {

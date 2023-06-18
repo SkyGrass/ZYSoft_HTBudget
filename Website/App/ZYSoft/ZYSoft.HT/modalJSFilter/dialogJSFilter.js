@@ -10,7 +10,9 @@ function init(opt) {
           custId: "",
           custName: "",
           billerName: "",
-          billStatus: ""
+          billStatus: "",
+          projectName: "",
+          projectCode: ""
         },
         billStatusList: [{ value: "0", label: "未审批" }, { value: "1", label: "已审批" }]
       };

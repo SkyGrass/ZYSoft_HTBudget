@@ -1,0 +1,6 @@
+E:\SouceCode\TPlusSourceCode\ZYSoft_HTBudget\Chanjet.ZYSoft.HT\Chanjet.ZYSoft.HT.Interface\bin\Release\Chanjet.ZYSoft.HT.Interface.dll
+E:\SouceCode\TPlusSourceCode\ZYSoft_HTBudget\Chanjet.ZYSoft.HT\Chanjet.ZYSoft.HT.Interface\bin\Release\Chanjet.ZYSoft.HT.Interface.pdb
+E:\SouceCode\TPlusSourceCode\ZYSoft_HTBudget\Chanjet.ZYSoft.HT\Chanjet.ZYSoft.HT.Interface\obj\Release\Chanjet.ZYSoft.HT.Interface.csproj.AssemblyReference.cache
+E:\SouceCode\TPlusSourceCode\ZYSoft_HTBudget\Chanjet.ZYSoft.HT\Chanjet.ZYSoft.HT.Interface\obj\Release\Chanjet.ZYSoft.HT.Interface.csproj.CoreCompileInputs.cache
+E:\SouceCode\TPlusSourceCode\ZYSoft_HTBudget\Chanjet.ZYSoft.HT\Chanjet.ZYSoft.HT.Interface\obj\Release\Chanjet.ZYSoft.HT.Interface.dll
+E:\SouceCode\TPlusSourceCode\ZYSoft_HTBudget\Chanjet.ZYSoft.HT\Chanjet.ZYSoft.HT.Interface\obj\Release\Chanjet.ZYSoft.HT.Interface.pdb

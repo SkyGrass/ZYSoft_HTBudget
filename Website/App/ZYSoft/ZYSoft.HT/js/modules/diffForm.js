@@ -16,7 +16,7 @@ var self = (vm = new Vue({
   data() {
     return {
       form: {
-        accountId: accountId,
+        accountId: accountId || localStorage.getItem('t_accountId'),
         custId: "",
         projectId: "",
         contractNo: "",
@@ -317,6 +317,7 @@ var self = (vm = new Vue({
           SelectApi: "checkdiffdetail",
           accountId: this.form.accountId,
           projectId: this.form.projectId,
+          year: this.form.year,
         },
         dataType: "json",
         success: function (result) {

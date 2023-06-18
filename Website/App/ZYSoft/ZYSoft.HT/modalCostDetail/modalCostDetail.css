@@ -62,6 +62,15 @@ body {
   text-align: right;
   margin: 3px;
   background-color: transparent;
+} 
+
+.number_noboard_like input{
+  text-align: center;
+  border-style: none;
+  background-color: transparent !important;
+  height: inherit !important;
+  line-height: inherit !important;
+  color: #333 !important;
 }
 
 .txt:focus {

@@ -1,0 +1,2 @@
+E:\SouceCode\TPlusSourceCode\ZYSoft_HTBudget\Chanjet.ZYSoft.HT\Chanjet.ZYSoft.HT.UIP\obj\Release\Chanjet.ZYSoft.HT.UIP.csproj.AssemblyReference.cache
+E:\SouceCode\TPlusSourceCode\ZYSoft_HTBudget\Chanjet.ZYSoft.HT\Chanjet.ZYSoft.HT.UIP\obj\Release\Chanjet.ZYSoft.HT.UIP.csproj.CoreCompileInputs.cache

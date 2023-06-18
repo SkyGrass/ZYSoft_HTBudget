@@ -21,7 +21,7 @@ var tableConf = [
     headerHozAlign: "center",
     hozAlign: "center",
     width: 150,
-    headerSort: false,
+    headerSort: false
   },
   {
     title: "客户",
@@ -40,6 +40,14 @@ var tableConf = [
     headerSort: false,
   },
   {
+    title: "项目名称",
+    field: "FProjectName",
+    headerHozAlign: "center",
+    hozAlign: "center",
+    width: 250,
+    headerSort: false,
+  },
+  {
     title: "销货金额",
     field: "FSourceSum",
     headerHozAlign: "center",
@@ -53,8 +61,34 @@ var tableConf = [
     },
   },
   {
+    title: "销货含税金额",
+    field: "FSourceTaxSum",
+    headerHozAlign: "center",
+    hozAlign: "right",
+    width: 120,
+    headerSort: false, formatter: "money",
+    formatterParams: {
+      decimal: ",",
+      thousand: ".",
+      precision: 2,
+    },
+  },
+  {
     title: "结算金额",
     field: "FAccountSum",
+    headerHozAlign: "center",
+    hozAlign: "right",
+    width: 120,
+    headerSort: false, formatter: "money",
+    formatterParams: {
+      decimal: ",",
+      thousand: ".",
+      precision: 2,
+    },
+  },
+  {
+    title: "结算含税金额",
+    field: "FAccountTaxSum",
     headerHozAlign: "center",
     hozAlign: "right",
     width: 120,
@@ -82,7 +116,7 @@ var tableConf = [
     headerSort: false,
     formatter: function (cell, formatterParams, onRendered) {
       var val = cell.getValue();
-      return "<div>" + (val ? "已审批" : "未审批") + "</div>";
+      return "<div>" + (val ? "已审核" : "未审核") + "</div>";
     },
   },
   {

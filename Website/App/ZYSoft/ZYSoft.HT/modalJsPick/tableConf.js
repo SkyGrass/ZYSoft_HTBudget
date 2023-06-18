@@ -41,6 +41,14 @@ var tableConf = [
   },
   {
     title: "金额",
+    field: "FSum",
+    headerHozAlign: "center",
+    hozAlign: "right",
+    width: 100,
+    headerSort: false,
+  },
+  {
+    title: "含税金额",
     field: "FTaxSum",
     headerHozAlign: "center",
     hozAlign: "right",

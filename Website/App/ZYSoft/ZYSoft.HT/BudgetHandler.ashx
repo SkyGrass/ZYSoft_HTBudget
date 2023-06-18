@@ -516,6 +516,11 @@ public class BudgetHandler : IHttpHandler
                 string custId = CommMethod.SafeString(request.Form["custId"], "");
                 string manager = CommMethod.SafeString(request.Form["manager"], "");
                 string custManager = CommMethod.SafeString(request.Form["custManager"], "");
+                string saleman = BudgetHandler.CommMethod.SafeString(request.Form["saleman"], "");
+                string projectArea = BudgetHandler.CommMethod.SafeString(request.Form["projectArea"], "");
+                string isByYear = BudgetHandler.CommMethod.SafeString(request.Form["isByYear"], "");
+
+
                 if (!string.IsNullOrEmpty(startDate))
                 {
                     sqlWhere += string.Format(@" AND t1.FEndDate >= ''{0} 00:00:00''", startDate);
@@ -594,6 +599,18 @@ public class BudgetHandler : IHttpHandler
 
                     //sqlWhere += string.Format(@" AND t3.priuserdefnvc1 = ''{0}''", year);
                 }
+                if (!string.IsNullOrEmpty(saleman))
+                {
+                    sqlWhere += string.Format(@" AND t6.name like ''%{0}%''", saleman);
+                }
+                if (!string.IsNullOrEmpty(projectArea))
+                {
+                    sqlWhere += string.Format(@" AND t5.pubuserdefnvc11 like ''%{0}%''", projectArea);
+                }
+                if (!string.IsNullOrEmpty(isByYear))
+                {
+                    sqlWhere += string.Format(@" AND t3.priuserdefnvc2  like ''%{0}%''", isByYear);
+                }
 
                 string sql = string.Format(@" EXEC dbo.P_Total_ProjectProfit 
                                             @FAccountID = '{0}', -- varchar(20)
@@ -629,6 +646,165 @@ public class BudgetHandler : IHttpHandler
                 });
             }
         }
+
+        public static string GetYearProjectProfitList(string accountId, HttpRequest request)
+        {
+            try
+            {
+                string sqlWhere = " 1=1 ";
+                var form = request.Form;
+
+                int pageIndex = CommMethod.SafeInt(request.Form["pageIndex"], 1);
+                int pageSize = CommMethod.SafeInt(request.Form["pageSize"], 20);
+                string startDate = CommMethod.SafeString(request.Form["startDate"], "");
+                string endDate = CommMethod.SafeString(request.Form["endDate"], "");
+                string year = CommMethod.SafeString(request.Form["year"], "");
+                string contractNo = CommMethod.SafeString(request.Form["contractNo"], "");
+                string projectClsId = CommMethod.SafeString(request.Form["projectClsId"], "");
+                string projectId = CommMethod.SafeString(request.Form["projectId"], "");
+                string projectNo = CommMethod.SafeString(request.Form["projectNo"], "");
+                string custId = CommMethod.SafeString(request.Form["custId"], "");
+                string manager = CommMethod.SafeString(request.Form["manager"], "");
+                string custManager = CommMethod.SafeString(request.Form["custManager"], "");
+                string saleman = BudgetHandler.CommMethod.SafeString(request.Form["saleman"], "");
+                string projectArea = BudgetHandler.CommMethod.SafeString(request.Form["projectArea"], "");
+                string yearPeriod = BudgetHandler.CommMethod.SafeString(request.Form["yearPeriod"], "");
+
+                if (!string.IsNullOrEmpty(startDate))
+                {
+                    sqlWhere += string.Format(@" AND t1.FEndDate >= ''{0} 00:00:00''", startDate);
+                }
+
+                if (!string.IsNullOrEmpty(endDate))
+                {
+                    sqlWhere += string.Format(@" AND t1.FEndDate <= ''{0} 23:59:59''", endDate);
+                }
+                if (!string.IsNullOrEmpty(contractNo))
+                {
+                    string sw = "";
+                    string[] cns = (contractNo.Split(','));
+                    foreach (string c in cns)
+                    {
+                        sw += string.Format(@" t1.FContractNo like ''%{0}%'' OR", c); ;
+                    }
+                    sw = sw.TrimEnd('O', 'R');
+                    sqlWhere += string.Format(@" AND ({0})", sw);
+                    //sqlWhere += string.Format(@" AND t1.FContractNo like ''%{0}%''", contractNo);
+                }
+                if (!string.IsNullOrEmpty(projectClsId))
+                {
+                    sqlWhere += string.Format(@" AND t4.ID =''{0}''", projectClsId);
+                }
+                if (!string.IsNullOrEmpty(projectId))
+                {
+                    sqlWhere += string.Format(@" AND t1.FProjectId =''{0}''", projectId);
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(projectNo))
+                    {
+                        sqlWhere += string.Format(@" AND t3.Name LIKE ''%{0}%''", projectNo);
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(custId))
+                {
+                    sqlWhere += string.Format(@" AND t1.FCustId = ''{0}''", custId);
+                }
+                if (!string.IsNullOrEmpty(manager))
+                {
+                    string sw = "";
+                    string[] ms = (manager.Split(','));
+                    foreach (string m in ms)
+                    {
+                        sw += string.Format(@" t1.FManager like ''%{0}%'' OR", m); ;
+                    }
+                    sw = sw.TrimEnd('O', 'R');
+                    sqlWhere += string.Format(@" AND ({0})", sw);
+                    //sqlWhere += string.Format(@" AND t.FManager like ''%{0}%''", manager);
+                }
+                if (!string.IsNullOrEmpty(custManager))
+                {
+                    string sw = "";
+                    string[] cms = (custManager.Split(','));
+                    foreach (string cm in cms)
+                    {
+                        sw += string.Format(@" t1.FCustManager like ''%{0}%'' OR", cm); ;
+                    }
+                    sw = sw.TrimEnd('O', 'R');
+                    sqlWhere += string.Format(@" AND ({0})", sw);
+                    //sqlWhere += string.Format(@" AND t.FCustManager like  ''%{0}%''", custManager);
+                }
+                if (!string.IsNullOrEmpty(year))
+                {
+                    string sw = "";
+                    string[] ys = (year.Split(','));
+                    foreach (string y in ys)
+                    {
+                        sw += string.Format(@" t3.priuserdefnvc1 = ''{0}'' OR", y); ;
+                    }
+                    sw = sw.TrimEnd('O', 'R');
+                    sqlWhere += string.Format(@" AND ({0})", sw);
+
+                    //sqlWhere += string.Format(@" AND t3.priuserdefnvc1 = ''{0}''", year);
+                }
+                if (!string.IsNullOrEmpty(saleman))
+                {
+                    sqlWhere += string.Format(@" AND t6.name like ''%{0}%''", saleman);
+                }
+                if (!string.IsNullOrEmpty(projectArea))
+                {
+                    sqlWhere += string.Format(@" AND t5.pubuserdefnvc11 like ''%{0}%''", projectArea);
+                }
+                if (!string.IsNullOrEmpty(yearPeriod))
+                {
+                    string sw = "";
+                    string[] ys = (yearPeriod.Split(','));
+                    foreach (string y in ys)
+                    {
+                        sw += string.Format(@" t1.FYear = ''{0}'' OR", y); ;
+                    }
+                    sw = sw.TrimEnd('O', 'R');
+                    sqlWhere += string.Format(@" AND ({0})", sw);
+                }
+
+
+                string sql = string.Format(@" EXEC dbo.P_Total_ProjectYearProfit 
+                                            @FAccountID = '{0}', -- varchar(20)
+                                            @FilterSql = '{1}'   -- varchar(max)", accountId, sqlWhere);
+                DataTable dt = ZYSoft.DB.BLL.Common.ExecuteDataTable(sql);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    return JsonConvert.SerializeObject(new
+                    {
+                        state = dt.Rows.Count > 0 ? "success" : "error",
+                        data = dt,
+                        icon = 1,
+                        msg = "查询成功!"
+                    });
+                }
+                else
+                {
+                    return JsonConvert.SerializeObject(new
+                    {
+                        state = "error",
+                        data = DBNull.Value,
+                        msg = "没有查询到记录!"
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    state = "error",
+                    data = DBNull.Value,
+                    msg = ex.Message
+                });
+            }
+        }
+
+
 
         public static string GetBudget(string id)
         {
@@ -709,16 +885,18 @@ public class BudgetHandler : IHttpHandler
         /// </summary>
         /// <param name="accountId"></param>
         /// <param name="projectId"></param>
+        /// <param name="year"></param>
         /// <param name="type">1 预算、2 成本、 3 差异</param>
         /// <returns></returns>
-        public static string GenBudgetInfo(string accountId, string projectId, int type = 1)
+        public static string GenBudgetInfo(string accountId, string projectId, string year, int type = 1)
         {
             var list = new List<TreeNode>();
             try
             {
                 string sql = string.Format(@"EXEC dbo.P_Get_ProjectItem @FType = {0},
                                         @FAccountID = '{1}',
-                                        @FProjectID = '{2}'", type, accountId, projectId);
+                                        @FProjectID = '{2}',
+                                        @FYear = '{3}'", type, accountId, projectId, year);
                 DataTable dt = ZYSoft.DB.BLL.Common.ExecuteDataTable(sql);
                 if (dt != null && dt.Rows.Count > 0)
                 {
@@ -1037,14 +1215,15 @@ public class BudgetHandler : IHttpHandler
         /// <param name="projectId"></param> 
         /// <param name="entryId"></param>    
         /// <returns></returns>
-        public static string GetCostDetailList(string accountId, string projectId, string entryId)
+        public static string GetCostDetailList(string accountId, string projectId, string entryId, string year)
         {
             var list = new List<TreeNode>();
             try
             {
                 string sql = string.Format(@"EXEC dbo.P_Get_ProjectCostDetail @FAccountID = '{0}', -- varchar(20)
-                                  @FProjectID = '{1}',  -- int
-                                  @FEntryID = '{2}'     -- int	", accountId, projectId, entryId);
+                                  @FProjectID = '{1}',
+                                  @FEntryID = '{2}',
+                                  @FYear = '{3}'", accountId, projectId, entryId, year);
                 DataTable dt = ZYSoft.DB.BLL.Common.ExecuteDataTable(sql);
                 if (dt != null && dt.Rows.Count > 0)
                 {
@@ -1177,6 +1356,10 @@ public class BudgetHandler : IHttpHandler
                 string billId = CommMethod.SafeString(request.Form["billId"], "");
                 string billStatus = CommMethod.SafeString(request.Form["billStatus"], "");
                 string billerName = CommMethod.SafeString(request.Form["billerName"], "");
+
+                string projectName = CommMethod.SafeString(request.Form["projectName"], "");
+                string projectCode = CommMethod.SafeString(request.Form["projectCode"], "");
+
                 if (!string.IsNullOrEmpty(startDate))
                 {
                     sqlWhere += string.Format(@" AND t.FDate >= ''{0} 00:00:00''", startDate);
@@ -1200,6 +1383,15 @@ public class BudgetHandler : IHttpHandler
                 if (!string.IsNullOrEmpty(billStatus))
                 {
                     sqlWhere += string.Format(@" AND t.FStatus = ''{0}''", billStatus);
+                }
+
+                if (!string.IsNullOrEmpty(projectName))
+                {
+                    sqlWhere += string.Format(@" AND t.FProjectName like ''%{0}%''", projectName);
+                }
+                if (!string.IsNullOrEmpty(projectCode))
+                {
+                    sqlWhere += string.Format(@" AND t.FProjectCode like ''%{0}%''", projectCode);
                 }
 
                 string sql = string.Format(@" EXEC dbo.P_GetJSRecord @FAccountID = '{0}', -- varchar(20)
@@ -1348,13 +1540,22 @@ public class BudgetHandler : IHttpHandler
                 List<string> sqls = new List<string>();
                 if (main != null)
                 {
-                    #region 查询计算下合计
+                    #region 查询计算下FAccountSum合计
                     decimal sum = 0;
                     list.ForEach(f =>
                     {
                         sum += f.FAccountSum;
                     });
                     main.FAccountSum = sum;
+                    #endregion
+
+                    #region 查询计算下FAccountTaxSum合计
+                    sum = 0;
+                    list.ForEach(f =>
+                    {
+                        sum += f.FAccountTaxSum;
+                    });
+                    main.FAccountTaxSum = sum;
                     #endregion
 
                     if (main.FItemID <= 0)
@@ -1366,15 +1567,15 @@ public class BudgetHandler : IHttpHandler
                         }
 
                         sqls.Add(string.Format(@"INSERT INTO dbo.t_ProjectAccount(
-								    FItemID, FAccountID,FBillNo,FDate,FCustID,FMemo,FAccountSum,FBillerID)VALUES
-								( '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}')",
+								    FItemID, FAccountID,FBillNo,FDate,FCustID,FMemo,FAccountSum,FBillerID,FAccountTaxSum)VALUES
+								( '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')",
                         main.FItemID, main.FAccountID, main.FBillNo, main.FDate, main.FCustID,
-                        main.FMemo, main.FAccountSum, main.FBillerID));
+                        main.FMemo, main.FAccountSum, main.FBillerID, main.FAccountTaxSum));
                     }
                     else
                     {
-                        sqls.Add(string.Format(@"Update dbo.t_ProjectAccount Set FCustID ='{1}',FMemo='{2}',FAccountSum='{3}' Where FItemID = '{0}'",
-                            main.FItemID, main.FCustID, main.FMemo, main.FAccountSum));
+                        sqls.Add(string.Format(@"Update dbo.t_ProjectAccount Set FCustID ='{1}',FMemo='{2}',FAccountSum='{3}',FAccountTaxSum='{4}' Where FItemID = '{0}'",
+                            main.FItemID, main.FCustID, main.FMemo, main.FAccountSum, main.FAccountTaxSum));
 
                         sqls.Add(string.Format(@"DELETE FROM t_ProjectAccountEntry Where FItemID ='{0}'", main.FItemID));
                     }
@@ -1383,10 +1584,11 @@ public class BudgetHandler : IHttpHandler
                     {
                         list.ForEach(row =>
                         {
-                            sqls.Add(string.Format(@"INSERT INTO dbo.t_ProjectAccountEntry ( FItemID, FProjectID, FSourceBillNo, FSourceBillID, FSOBillNo,FSourceSum, FAccountSum, FEntryMemo) VALUES
-                                      (  '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}')",
+                            sqls.Add(string.Format(@"INSERT INTO dbo.t_ProjectAccountEntry ( FItemID, FProjectID, FSourceBillNo, FSourceBillID, 
+                            FSOBillNo,FSourceSum, FAccountSum, FEntryMemo,FSourceTaxSum,FAccountTaxSum) VALUES
+                                      (  '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}')",
                                                            main.FItemID, row.FProjectID, row.FSourceBillNo, row.FSourceBillID, row.FSOBillNo,
-                                                           row.FSourceSum, row.FAccountSum, row.FEntryMemo));
+                                                           row.FSourceSum, row.FAccountSum, row.FEntryMemo, row.FSourceTaxSum, row.FAccountTaxSum));
                         });
 
                         int effectRow = ZYSoft.DB.BLL.Common.ExecuteSQLTran(sqls);
@@ -1715,6 +1917,7 @@ public class BudgetHandler : IHttpHandler
         public string FDate { get; set; }
         public int FCustID { get; set; }
         public string FMemo { get; set; }
+        public decimal FAccountTaxSum { get; set; }
         public decimal FAccountSum { get; set; }
         public int FBillerID { get; set; }
         public int FVeriferID { get; set; }
@@ -1737,6 +1940,10 @@ public class BudgetHandler : IHttpHandler
         public decimal FAccountSum { get; set; }
 
         public string FEntryMemo { get; set; }
+
+
+        public decimal FSourceTaxSum { get; set; }
+        public decimal FAccountTaxSum { get; set; }
 
     }
 
@@ -2032,21 +2239,24 @@ public class BudgetHandler : IHttpHandler
                     break;
                 case "genbudgetdetail":
                     string projectId = context.Request.Form["projectId"] ?? "";
-                    result = DBMethod.GenBudgetInfo(accountId, projectId, GenBudgetType.Budget.GetHashCode());
+                    string year = context.Request.Form["year"] ?? "";
+                    result = DBMethod.GenBudgetInfo(accountId, projectId, year, GenBudgetType.Budget.GetHashCode());
                     break;
                 case "checkcostdetail":
                     projectId = context.Request.Form["projectId"] ?? "";
-                    result = DBMethod.GenBudgetInfo(accountId, projectId, GenBudgetType.Cost.GetHashCode());
+                    year = context.Request.Form["year"] ?? "";
+                    result = DBMethod.GenBudgetInfo(accountId, projectId, year, GenBudgetType.Cost.GetHashCode());
                     break;
                 case "checkdiffdetail":
                     projectId = context.Request.Form["projectId"] ?? "";
-                    result = DBMethod.GenBudgetInfo(accountId, projectId, GenBudgetType.Diff.GetHashCode());
+                    year = context.Request.Form["year"] ?? "";
+                    result = DBMethod.GenBudgetInfo(accountId, projectId, year, GenBudgetType.Diff.GetHashCode());
                     break;
                 case "getitemdetail":
                     projectId = context.Request.Form["projectId"] ?? "";
                     string clsCode = context.Request.Form["clsCode"] ?? "";
                     string groupCode = context.Request.Form["groupCode"] ?? "";
-                    string year = context.Request.Form["year"] ?? "";
+                    year = context.Request.Form["year"] ?? "";
                     result = DBMethod.GetBudgetDetailInfo(accountId, projectId, clsCode, groupCode, year);
                     break;
                 case "getbudget":
@@ -2103,10 +2313,14 @@ public class BudgetHandler : IHttpHandler
                 case "getcostdetaillist":
                     projectId = context.Request.Form["projectId"] ?? "";
                     string entryId = context.Request.Form["entryId"] ?? "";
-                    result = DBMethod.GetCostDetailList(accountId, projectId, entryId);
+                    year = context.Request.Form["year"] ?? "";
+                    result = DBMethod.GetCostDetailList(accountId, projectId, entryId, year);
                     break;
                 case "getprojectprofit":
                     result = DBMethod.GetProjectProfitList(accountId, context.Request);
+                    break;
+                case "getyearprojectprofit":
+                    result = DBMethod.GetYearProjectProfitList(accountId, context.Request);
                     break;
                 case "genbillno":
                     result = DBMethod.GenBillNo("JS");
